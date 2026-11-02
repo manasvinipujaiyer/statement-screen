@@ -1,0 +1,32 @@
+name: CI
+
+# Run on every push to any branch, and on pull requests.
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Download the repository's code onto the runner.
+      - uses: actions/checkout@v5
+
+      # 2. Install uv (it will fetch Python 3.12 from .python-version).
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      # 3. Install exactly the versions pinned in uv.lock (fails if the lock is stale).
+      - name: Install dependencies
+        run: uv sync --locked
+
+      # 4. Lint and format checks.
+      - name: Ruff lint
+        run: uv run ruff check .
+      - name: Ruff format check
+        run: uv run ruff format --check .
+
+      # 5. Tests.
+      - name: Pytest
+        run: uv run pytest

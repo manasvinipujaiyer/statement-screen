@@ -1,0 +1,36 @@
+[project]
+name = "statementscreen"
+version = "0.1.0"
+description = "Income verification and tamper detection for bank-statement PDFs, built on synthetic data and classical ML."
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "manasvini_puja", email = "166587238+manasvinipujaiyer@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+# ---------- Ruff: linter + formatter ----------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/W = style errors, F = real bugs (unused imports, undefined names),
+# I = import sorting, B = common bug patterns, UP = modern Python syntax
+select = ["E", "W", "F", "I", "B", "UP"]
+
+# ---------- Pytest ----------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+]
