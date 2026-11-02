@@ -12,18 +12,25 @@ import numpy as np
 from faker import Faker
 
 from statementscreen.synth.banks import FICTIONAL_BANKS
+from statementscreen.synth.descriptions import CITIES, MERCHANTS, random_style
 from statementscreen.synth.models import IncomeTruth, Statement, Transaction
 
 CENT = Decimal("0.01")
 
-# (description, category, typical amount, spread) for everyday card spending.
-_SPENDING = [
-    ("GROCERY MART", "groceries", 65.0, 25.0),
-    ("CORNER CAFE", "dining", 12.0, 5.0),
-    ("FUEL STOP", "transport", 45.0, 12.0),
-    ("ONLINE SHOP", "shopping", 40.0, 30.0),
-    ("PHARMACY PLUS", "health", 20.0, 10.0),
-]
+# Category -> (typical amount, spread) for everyday card spending.
+_SPENDING = {
+    "groceries": (65.0, 25.0),
+    "dining": (12.0, 5.0),
+    "transport": (45.0, 12.0),
+    "shopping": (40.0, 30.0),
+    "health": (20.0, 10.0),
+}
+
+# Probabilities of optional, less common events in a month.
+P_SIDE_TRANSFER = 0.35  # money from a friend/family: NOT salary, a classic income-verification trap
+P_BONUS = 0.10
+P_REFUND = 0.25
+P_ATM = 0.50
 
 
 def _money(x: float) -> Decimal:
@@ -31,13 +38,28 @@ def _money(x: float) -> Decimal:
     return Decimal(str(x)).quantize(CENT, rounding=ROUND_HALF_UP)
 
 
+def _business_day(d: date, start: date) -> date:
+    """Move a weekend payday to the previous Friday (or next Monday if that leaves the month)."""
+    if d.weekday() < 5:
+        return d
+    friday = d - timedelta(days=d.weekday() - 4)
+    return friday if friday >= start else d + timedelta(days=7 - d.weekday())
+
+
 def generate_statement(seed: int, year: int = 2026, month: int = 1) -> Statement:
     rng = np.random.default_rng(seed)
     fake = Faker()
     fake.seed_instance(seed)
+    style = random_style(rng)
 
     start = date(year, month, 1)
     end = date(year, month, calendar.monthrange(year, month)[1])
+    days_in_month = (end - start).days + 1
+    home_city = str(rng.choice(CITIES))
+
+    def day_in_range(lo: int, hi: int) -> date:
+        """A random date between start+lo and start+hi-1 days."""
+        return start + timedelta(days=int(rng.integers(lo, hi)))
 
     pay_frequency = str(rng.choice(["monthly", "biweekly"]))
     net_pay = _money(
@@ -47,48 +69,83 @@ def generate_statement(seed: int, year: int = 2026, month: int = 1) -> Statement
         employer=fake.company().upper(), pay_frequency=pay_frequency, net_pay=net_pay
     )
 
-    # Build the un-ordered list of (date, description, amount, category).
+    # Un-ordered list of (date, description, amount, category).
     raw: list[tuple[date, str, Decimal, str]] = []
 
-    # Paychecks
+    # --- Paychecks (weekend paydays shift to a business day, like real payroll) ---
     if pay_frequency == "monthly":
         pay_dates = [end - timedelta(days=int(rng.integers(0, 3)))]
     else:
-        first = start + timedelta(days=int(rng.integers(0, 14)))
-        pay_dates = [
-            d for d in (first, first + timedelta(days=14), first + timedelta(days=28)) if d <= end
-        ]
+        first = day_in_range(0, 14)
+        pay_dates = [first + timedelta(days=14 * k) for k in range(3)]
+    pay_dates = [_business_day(d, start) for d in pay_dates]
     for d in pay_dates:
-        raw.append((d, f"PAYROLL {income.employer}", net_pay, "salary"))
+        if d <= end:
+            raw.append((d, style.payroll(rng, income.employer), net_pay, "salary"))
 
-    # Fixed monthly bills
-    rent = _money(rng.uniform(900, 2200))
-    raw.append((start + timedelta(days=int(rng.integers(0, 4))), "RENT PAYMENT", -rent, "rent"))
+    if rng.random() < P_BONUS:
+        bonus = _money(rng.uniform(300, 2000))
+        raw.append(
+            (day_in_range(0, days_in_month), style.payroll(rng, income.employer), bonus, "bonus")
+        )
+
+    # --- Fixed monthly bills ---
     raw.append(
         (
-            start + timedelta(days=int(rng.integers(5, 20))),
-            "CITY UTILITIES",
+            day_in_range(0, 4),
+            style.bill(rng, "OAKRIDGE PROPERTY MGMT"),
+            -_money(rng.uniform(900, 2200)),
+            "rent",
+        )
+    )
+    raw.append(
+        (
+            day_in_range(5, 20),
+            style.bill(rng, "CITY UTILITIES"),
             -_money(rng.uniform(60, 180)),
             "utilities",
         )
     )
-    raw.append(
-        (
-            start + timedelta(days=int(rng.integers(5, 25))),
-            "STREAMFLIX SUBSCRIPTION",
-            -_money(15.99),
-            "subscription",
-        )
-    )
+    raw.append((day_in_range(5, 25), style.bill(rng, "STREAMFLIX"), -_money(15.99), "subscription"))
 
-    # Everyday card spending: a Poisson-distributed number of purchases
-    n_purchases = int(rng.poisson(25))
-    days_in_month = (end - start).days + 1
-    for _ in range(n_purchases):
-        desc, cat, mean, sd = _SPENDING[int(rng.integers(len(_SPENDING)))]
-        amount = max(1.0, rng.normal(mean, sd))
-        d = start + timedelta(days=int(rng.integers(0, days_in_month)))
-        raw.append((d, f"CARD PURCHASE {desc}", -_money(amount), cat))
+    # --- Everyday card spending: a Poisson-distributed number of purchases ---
+    categories = list(_SPENDING)
+    purchases: list[str] = []
+    for _ in range(int(rng.poisson(25))):
+        cat = categories[int(rng.integers(len(categories)))]
+        mean, sd = _SPENDING[cat]
+        merchant = str(rng.choice(MERCHANTS[cat]))
+        d = day_in_range(0, days_in_month)
+        raw.append(
+            (
+                d,
+                style.card(rng, merchant, home_city, d),
+                -_money(max(1.0, rng.normal(mean, sd))),
+                cat,
+            )
+        )
+        purchases.append(merchant)
+
+    # --- Occasional events ---
+    if purchases and rng.random() < P_REFUND:
+        merchant = str(rng.choice(purchases))
+        d = day_in_range(5, days_in_month)
+        raw.append((d, style.refund(rng, merchant, d), _money(rng.uniform(5, 80)), "refund"))
+
+    if rng.random() < P_SIDE_TRANSFER:
+        sender = fake.name().upper()
+        raw.append(
+            (
+                day_in_range(0, days_in_month),
+                style.transfer_in(rng, sender),
+                _money(rng.uniform(20, 600)),
+                "transfer_in",
+            )
+        )
+
+    if rng.random() < P_ATM:
+        amount = Decimal(int(rng.choice([20, 40, 60, 100, 200])))
+        raw.append((day_in_range(0, days_in_month), style.atm(rng, home_city), -amount, "cash"))
 
     # Sort by date (stable, so same-day order is deterministic) and compute running balance.
     raw.sort(key=lambda r: r[0])

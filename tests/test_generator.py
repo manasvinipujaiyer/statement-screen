@@ -40,3 +40,32 @@ def test_salary_matches_ground_truth() -> None:
 
 def test_only_fictional_banks() -> None:
     assert all(generate_statement(seed=i).bank_name in FICTIONAL_BANKS for i in range(20))
+
+
+def test_paydays_never_fall_on_weekends() -> None:
+    for seed in range(50):
+        s = generate_statement(seed=seed)
+        assert all(t.posted.weekday() < 5 for t in s.transactions if t.category == "salary")
+
+
+def test_payroll_description_names_the_employer() -> None:
+    for seed in range(20):
+        s = generate_statement(seed=seed)
+        for t in s.transactions:
+            if t.category in ("salary", "bonus"):
+                assert s.income.employer in t.description
+
+
+def test_description_styles_vary_across_statements() -> None:
+    # The first word of a payroll line differs by style ("ACH", "DIRECT", or the employer).
+    first_words = set()
+    for seed in range(30):
+        s = generate_statement(seed=seed)
+        salary = next(t for t in s.transactions if t.category == "salary")
+        first_words.add(salary.description.split()[0] in ("ACH", "DIRECT"))
+    assert first_words == {True, False}
+
+
+def test_optional_events_appear_somewhere_in_a_batch() -> None:
+    seen = {t.category for seed in range(50) for t in generate_statement(seed=seed).transactions}
+    assert {"bonus", "refund", "transfer_in", "cash"} <= seen
