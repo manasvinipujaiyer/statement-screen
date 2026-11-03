@@ -23,11 +23,23 @@ class Transaction:
 
 @dataclass(frozen=True)
 class IncomeTruth:
-    """Ground truth about the account holder's income, used later to score the model."""
+    """Ground truth about the account holder's income, used later to score the model.
 
-    employer: str
-    pay_frequency: str  # "monthly" | "biweekly"
-    net_pay: Decimal  # per paycheck
+    ``monthly_income`` is the true average of *regular* income per month (salary,
+    gig payouts or client payments). Bonuses, transfers and refunds are excluded,
+    because a lender shouldn't count them as stable income.
+    """
+
+    customer_type: str  # "salaried" | "gig" | "self_employed"
+    sources: tuple[str, ...]  # who pays them: the employer, gig platforms, or clients
+    pay_frequency: str  # "monthly" | "biweekly" | "weekly" | "irregular"
+    net_pay: Decimal | None  # fixed amount per paycheck (salaried); None when amounts vary
+    monthly_income: Decimal
+
+    @property
+    def employer(self) -> str:
+        """The main income source (for salaried customers, the employer)."""
+        return self.sources[0]
 
 
 @dataclass

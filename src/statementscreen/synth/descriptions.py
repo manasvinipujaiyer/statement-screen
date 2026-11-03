@@ -70,6 +70,22 @@ class DescriptionStyle:
             return f"TRANSFER FROM {sender}"
         return f"INSTANT PMT RECVD {sender}"
 
+    def platform_payout(self, rng: np.random.Generator, platform: str) -> str:
+        """Weekly payout from a gig platform (delivery, rides, tasks)."""
+        if self.name == "pos":
+            return f"ACH CREDIT {platform} PAYOUT PPD ID:{_digits(rng, 10)}"
+        if self.name == "visa":
+            return f"DIRECT DEP {platform} PAYOUT"
+        return f"{platform} INSTANT PAYOUT {_digits(rng, 6)}"
+
+    def client_payment(self, rng: np.random.Generator, client: str) -> str:
+        """A client paying a self-employed person's invoice."""
+        if self.name == "pos":
+            return f"ACH CREDIT {client} PMT REF {_digits(rng, 8)}"
+        if self.name == "visa":
+            return f"WIRE IN {client}"
+        return f"ONLINE TRANSFER FROM {client} INV{_digits(rng, 5)}"
+
     def atm(self, rng: np.random.Generator, city: str) -> str:
         if self.name == "pos":
             return f"ATM WITHDRAWAL {_digits(rng, 4)} {city}"
