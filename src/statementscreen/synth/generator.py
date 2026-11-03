@@ -68,6 +68,8 @@ def generate_statement(seed: int, year: int = 2026, month: int = 1) -> Statement
     income = IncomeTruth(
         employer=fake.company().upper(), pay_frequency=pay_frequency, net_pay=net_pay
     )
+    # Roughly what this person earns per month; keeps bills and balances believable.
+    monthly_income = float(net_pay) * (1 if pay_frequency == "monthly" else 26 / 12)
 
     # Un-ordered list of (date, description, amount, category).
     raw: list[tuple[date, str, Decimal, str]] = []
@@ -94,7 +96,7 @@ def generate_statement(seed: int, year: int = 2026, month: int = 1) -> Statement
         (
             day_in_range(0, 4),
             style.bill(rng, "OAKRIDGE PROPERTY MGMT"),
-            -_money(rng.uniform(900, 2200)),
+            -_money(monthly_income * rng.uniform(0.25, 0.40)),
             "rent",
         )
     )
@@ -144,12 +146,12 @@ def generate_statement(seed: int, year: int = 2026, month: int = 1) -> Statement
         )
 
     if rng.random() < P_ATM:
-        amount = Decimal(int(rng.choice([20, 40, 60, 100, 200])))
+        amount = _money(int(rng.choice([20, 40, 60, 100, 200])))
         raw.append((day_in_range(0, days_in_month), style.atm(rng, home_city), -amount, "cash"))
 
     # Sort by date (stable, so same-day order is deterministic) and compute running balance.
     raw.sort(key=lambda r: r[0])
-    opening = _money(rng.uniform(500, 5000))
+    opening = _money(monthly_income * rng.uniform(0.6, 1.3))
     balance = opening
     transactions = []
     for d, desc, amt, cat in raw:

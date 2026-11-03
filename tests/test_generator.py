@@ -69,3 +69,14 @@ def test_description_styles_vary_across_statements() -> None:
 def test_optional_events_appear_somewhere_in_a_batch() -> None:
     seen = {t.category for seed in range(50) for t in generate_statement(seed=seed).transactions}
     assert {"bonus", "refund", "transfer_in", "cash"} <= seen
+
+
+def test_overdrafts_are_rare() -> None:
+    # Real people occasionally overdraw, so we allow a few, but most months stay positive.
+    n = 200
+    negative = sum(
+        1
+        for seed in range(n)
+        if min(t.balance for t in generate_statement(seed=seed).transactions) < 0
+    )
+    assert negative / n < 0.05
