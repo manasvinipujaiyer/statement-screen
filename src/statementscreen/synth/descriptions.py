@@ -1,112 +1,252 @@
-"""Turn clean transaction facts into messy, bank-style description strings.
+"""Indian bank-statement narrations, with per-statement mess.
 
-Real banks don't print "GROCERY MART"; they print things like
-``POS DEBIT 4821 FRESHWAY MARKET SPRINGFIELD 09/14``. Each statement picks one
-*style* (like a bank's house format) and uses it for every line, so the text is
-consistent within a statement but varies across statements.
+Real narrations look like ``UPI/DR/412398765012/SHARMA KIRANA STORE/TRGM/...`` or
+``NEFT CR-KSVB0004821-RAVENIKA INFOTECH PVT LTD-ANANYA IYER-KSVBN25032004811``. Each
+statement gets one ``Narrator`` whose quirks are drawn from the statement's seed:
 
-All merchant names below are invented.
+- ``style``:   "slash" (``UPI/DR/...``) or "dash" (``UPI-...-...``), like a bank's house format
+- ``case``:    all upper case, or names in Title Case
+- ``max_len``: some banks cut narrations at a fixed width; others don't
+- ``typo_rate``: how often a name is misspelt (swapped, dropped or doubled letter)
+- ``sal_word``: whether salary credits say "SALARY", "SAL", or nothing at all
+- ``ltd_style``: how "PVT LTD" is written (PVT LTD / PRIVATE LIMITED / P LTD / PVT. LTD.)
+
+Only names get typos; IFSC codes, reference numbers and channel keywords stay exact.
+All counterparty banks, IFSC codes and UPI handles are fictional (see ``banks.py``).
 """
 
-from dataclasses import dataclass
+import re
+from dataclasses import dataclass, field
 from datetime import date
 
 import numpy as np
 
-# Invented merchants per spending category.
-MERCHANTS: dict[str, tuple[str, ...]] = {
-    "groceries": ("FRESHWAY MARKET", "GREENLEAF GROCERS", "VALUBASKET FOODS"),
-    "dining": ("CORNER CAFE", "BLUE FERN BISTRO", "NOODLE NOOK"),
-    "transport": ("FUEL STOP", "QUIKGAS 112", "METRO TRANSIT"),
-    "shopping": ("ONLINE SHOP", "PARCELPOINT RETAIL", "HOMEGOODS DEPOT"),
-    "health": ("PHARMACY PLUS", "WELLCARE CLINIC"),
-}
+from statementscreen.synth.banks import FictionalBank, random_bank, random_ifsc
 
-CITIES = ("SPRINGFIELD", "RIVERTON", "MAPLE GROVE", "LAKESIDE", "FAIRVIEW")
+_LTD_STYLES = ("PVT LTD", "PRIVATE LIMITED", "P LTD", "PVT. LTD.")
+_TECHNICAL_RETURN_REASONS = ("MANDATE NOT REGISTERED", "PAYMENT STOPPED", "A/C BLOCKED")
 
 
 def _digits(rng: np.random.Generator, n: int) -> str:
     return "".join(str(int(d)) for d in rng.integers(0, 10, size=n))
 
 
-@dataclass(frozen=True)
-class DescriptionStyle:
-    """One bank's house format. Pick with ``random_style``."""
-
-    name: str
-
-    def card(self, rng: np.random.Generator, merchant: str, city: str, d: date) -> str:
-        if self.name == "pos":
-            return f"POS DEBIT {_digits(rng, 4)} {merchant} {city} {d:%m/%d}"
-        if self.name == "visa":
-            return f"VISA DDA PUR {_digits(rng, 6)} {merchant} {city}"
-        return f"DEBIT CARD PURCHASE - {merchant} {d:%m%d}"
-
-    def refund(self, rng: np.random.Generator, merchant: str, d: date) -> str:
-        if self.name == "pos":
-            return f"POS RETURN {_digits(rng, 4)} {merchant} {d:%m/%d}"
-        if self.name == "visa":
-            return f"VISA DDA REFUND {merchant}"
-        return f"DEBIT CARD CREDIT - {merchant} {d:%m%d}"
-
-    def payroll(self, rng: np.random.Generator, employer: str) -> str:
-        if self.name == "pos":
-            return f"ACH CREDIT {employer} PAYROLL PPD ID:{_digits(rng, 10)}"
-        if self.name == "visa":
-            return f"DIRECT DEP {employer}"
-        return f"{employer} DIR DEP {_digits(rng, 6)}"
-
-    def bill(self, rng: np.random.Generator, payee: str) -> str:
-        if self.name == "pos":
-            return f"ACH DEBIT {payee} WEB ID:{_digits(rng, 10)}"
-        if self.name == "visa":
-            return f"AUTOPAY {payee}"
-        return f"ONLINE PMT {payee} CONF#{_digits(rng, 8)}"
-
-    def transfer_in(self, rng: np.random.Generator, sender: str) -> str:
-        if self.name == "pos":
-            return f"P2P CREDIT FROM {sender} REF {_digits(rng, 8)}"
-        if self.name == "visa":
-            return f"TRANSFER FROM {sender}"
-        return f"INSTANT PMT RECVD {sender}"
-
-    def platform_payout(self, rng: np.random.Generator, platform: str) -> str:
-        """Weekly payout from a gig platform (delivery, rides, tasks)."""
-        if self.name == "pos":
-            return f"ACH CREDIT {platform} PAYOUT PPD ID:{_digits(rng, 10)}"
-        if self.name == "visa":
-            return f"DIRECT DEP {platform} PAYOUT"
-        return f"{platform} INSTANT PAYOUT {_digits(rng, 6)}"
-
-    def client_payment(self, rng: np.random.Generator, client: str) -> str:
-        """A client paying a self-employed person's invoice."""
-        if self.name == "pos":
-            return f"ACH CREDIT {client} PMT REF {_digits(rng, 8)}"
-        if self.name == "visa":
-            return f"WIRE IN {client}"
-        return f"ONLINE TRANSFER FROM {client} INV{_digits(rng, 5)}"
-
-    def returned_debit(self, rng: np.random.Generator, payee: str) -> str:
-        """The bank sending back a payment that couldn't be covered."""
-        if self.name == "pos":
-            return f"ACH RETURN {payee} R01 NSF"
-        if self.name == "visa":
-            return f"RETURNED ITEM {payee}"
-        return f"REVERSAL - {payee} INSUFFICIENT FUNDS"
-
-    def fee(self, name: str) -> str:
-        return {"pos": f"FEE {name}", "visa": f"SERVICE CHARGE {name}"}.get(self.name, name)
-
-    def atm(self, rng: np.random.Generator, city: str) -> str:
-        if self.name == "pos":
-            return f"ATM WITHDRAWAL {_digits(rng, 4)} {city}"
-        if self.name == "visa":
-            return f"ATM W/D {city} #{_digits(rng, 5)}"
-        return f"CASH WITHDRAWAL - ATM {city}"
+def typo(rng: np.random.Generator, name: str) -> str:
+    """Misspell one word of length >= 4 by swapping, dropping or doubling a letter."""
+    words = name.split(" ")
+    long_words = [i for i, w in enumerate(words) if len(w) >= 4 and w.isalpha()]
+    if not long_words:
+        return name
+    i = long_words[int(rng.integers(len(long_words)))]
+    w = words[i]
+    j = int(rng.integers(1, len(w) - 1))
+    op = int(rng.integers(3))
+    if op == 0:
+        w = w[:j] + w[j + 1] + w[j] + w[j + 2 :]
+    elif op == 1:
+        w = w[:j] + w[j + 1 :]
+    else:
+        w = w[:j] + w[j] + w[j:]
+    words[i] = w
+    return " ".join(words)
 
 
-STYLES = ("pos", "visa", "plain")
+def spelling_variants(name: str) -> list[str]:
+    """Other ways the same organisation's name gets written (sorted, so the order is fixed)."""
+    variants = {name}
+    if name.endswith(" PVT LTD"):
+        base = name.removesuffix(" PVT LTD")
+        variants |= {base, f"{base} PRIVATE LIMITED", f"{base} P LTD"}
+    for full, short in (("TECHNOLOGIES", "TECH"), ("SOLUTIONS", "SOLN"), (" & ", " AND "),
+                        ("ENGINEERING", "ENGG"), ("CONSULTANCY", "CONSULTANTS")):  # fmt: skip
+        variants |= {v.replace(full, short) for v in variants}
+    return sorted(variants)
 
 
-def random_style(rng: np.random.Generator) -> DescriptionStyle:
-    return DescriptionStyle(str(rng.choice(STYLES)))
+def pay_month_label(posted: date) -> str:
+    """Salary paid early in a month is for the previous month: credited 3 Feb -> 'JAN25'."""
+    year, month = posted.year, posted.month
+    if posted.day <= 10:
+        year, month = (year - 1, 12) if month == 1 else (year, month - 1)
+    return f"{date(year, month, 1):%b%y}".upper()
+
+
+@dataclass
+class Narrator:
+    rng: np.random.Generator
+    own_bank: FictionalBank
+    holder: str
+    style: str
+    case: str
+    max_len: int | None
+    typo_rate: float
+    sal_word: str | None
+    ltd_style: str
+    card4: str
+    _accounts: dict[str, tuple[FictionalBank, str, str]] = field(default_factory=dict)
+
+    @classmethod
+    def random(cls, rng: np.random.Generator, own_bank: FictionalBank, holder: str) -> "Narrator":
+        return cls(
+            rng=rng,
+            own_bank=own_bank,
+            holder=holder,
+            style=str(rng.choice(["slash", "dash"])),
+            case=str(rng.choice(["upper", "title_names"], p=[0.7, 0.3])),
+            max_len=int(rng.integers(38, 61)) if rng.random() < 0.5 else None,
+            typo_rate=float(rng.uniform(0.0, 0.04)),
+            sal_word=[None, "SALARY", "SAL"][int(rng.integers(3))],
+            ltd_style=str(rng.choice(_LTD_STYLES)),
+            card4=_digits(rng, 4),
+        )
+
+    # ------------------------------------------------------------------ helpers
+
+    def name(self, name: str) -> str:
+        """Display a counterparty name with this statement's quirks applied."""
+        name = name.replace(" PVT LTD", f" {self.ltd_style}")
+        if self.rng.random() < self.typo_rate:
+            name = typo(self.rng, name)
+        return name.title() if self.case == "title_names" else name.upper()
+
+    def _finish(self, text: str) -> str:
+        if self.max_len is not None and len(text) > self.max_len:
+            text = text[: self.max_len].rstrip("-/ ")
+        return text
+
+    def _rrn(self) -> str:
+        return _digits(self.rng, 12)
+
+    def _utr(self, bank: FictionalBank, d: date) -> str:
+        return f"{bank.code}N{d:%y}{d.timetuple().tm_yday:03d}{_digits(self.rng, 6)}"
+
+    def _account(self, name: str) -> tuple[FictionalBank, str, str]:
+        """(bank, UPI ID, IFSC) for a counterparty. Fixed per counterparty: an employer pays
+        from one account, a shop has one UPI ID."""
+        if name not in self._accounts:
+            bank = random_bank(self.rng)
+            slug = re.sub(r"[^a-z]", "", name.lower())[:10] or "pay"
+            vpa = f"{slug}{_digits(self.rng, 2)}@{bank.upi_handle}"
+            self._accounts[name] = (bank, vpa, random_ifsc(self.rng, bank))
+        return self._accounts[name]
+
+    def _credit_parts(self, remitter: str, d: date) -> tuple[FictionalBank, str, str]:
+        bank, _, ifsc = self._account(remitter)
+        return bank, ifsc, self._utr(bank, d)
+
+    # ------------------------------------------------------------------ credits
+
+    def neft_credit(self, remitter: str, d: date, note: str | None = None) -> str:
+        bank, ifsc, utr = self._credit_parts(remitter, d)
+        who = self.name(remitter)
+        tail = f" {note}" if note else ""
+        if self.style == "slash":
+            return self._finish(f"NEFT/CR/{utr}/{who}/{ifsc}{('/' + note) if note else ''}")
+        return self._finish(f"NEFT CR-{ifsc}-{who}-{self.name(self.holder)}-{utr}{tail}")
+
+    def rtgs_credit(self, remitter: str, d: date) -> str:
+        bank, ifsc, utr = self._credit_parts(remitter, d)
+        utr = utr.replace("N", "R", 1)
+        if self.style == "slash":
+            return self._finish(f"RTGS/CR/{utr}/{self.name(remitter)}/{ifsc}")
+        return self._finish(f"RTGS CR-{ifsc}-{self.name(remitter)}-{self.name(self.holder)}-{utr}")
+
+    def imps_credit(self, sender: str, note: str = "") -> str:
+        bank = self._account(sender)[0]
+        if self.style == "slash":
+            return self._finish(f"IMPS/P2A/{self._rrn()}/{self.name(sender)}/{bank.code}/{note}")
+        return self._finish(
+            f"MMT/IMPS/{self._rrn()}/{note or 'TRANSFER'}/{self.name(sender)}/{bank.name.upper()}"
+        )
+
+    def upi_credit(self, sender: str, note: str = "UPI") -> str:
+        bank, vpa, ifsc = self._account(sender)
+        if self.style == "slash":
+            return self._finish(
+                f"UPI/CR/{self._rrn()}/{self.name(sender)}/{bank.code}/{vpa}/{note}"
+            )
+        return self._finish(f"UPI-{self.name(sender)}-{vpa}-{ifsc}-{self._rrn()}-{note}")
+
+    def salary(self, employer: str, d: date, note: str | None = None) -> str:
+        """Salary arrives as a NEFT credit; whether it says SALARY depends on the employer/bank."""
+        word = note or self.sal_word
+        return self.neft_credit(employer, d, f"{word} {pay_month_label(d)}" if word else None)
+
+    def interest(self, start: date, end: date) -> str:
+        acct = self.card4
+        if self.style == "slash":
+            return f"INT.PD:{acct}:{start:%d-%m-%Y} TO {end:%d-%m-%Y}"
+        return f"CREDIT INTEREST CAPITALISED {start:%d%m%y}-{end:%d%m%y}"
+
+    def refund(self, merchant: str) -> str:
+        if self.style == "slash":
+            return self._finish(f"UPI/REV/{self._rrn()}/{self.name(merchant)}/REFUND")
+        return self._finish(f"REV-UPI-{self._rrn()}-{self.name(merchant)}")
+
+    # ------------------------------------------------------------------ debits
+
+    def upi_debit(self, payee: str, note: str = "UPI") -> str:
+        bank, vpa, ifsc = self._account(payee)
+        if self.style == "slash":
+            return self._finish(f"UPI/DR/{self._rrn()}/{self.name(payee)}/{bank.code}/{vpa}/{note}")
+        return self._finish(f"UPI-{self.name(payee)}-{vpa}-{ifsc}-{self._rrn()}-{note}")
+
+    def imps_debit(self, payee: str, note: str = "") -> str:
+        bank = self._account(payee)[0]
+        if self.style == "slash":
+            return self._finish(
+                f"MMT/IMPS/{self._rrn()}/{note}/{self.name(payee)}/{bank.name.upper()}"
+            )
+        return self._finish(f"IMPS-{self._rrn()}-{self.name(payee)}-{bank.code}-{note}")
+
+    def neft_debit(self, payee: str, d: date, note: str = "") -> str:
+        _, _, ifsc = self._account(payee)
+        utr = self._utr(self.own_bank, d)
+        if self.style == "slash":
+            return self._finish(f"NEFT/DR/{utr}/{self.name(payee)}/{ifsc}/{note}")
+        return self._finish(f"NEFT DR-{ifsc}-{self.name(payee)}-NETBANK-{utr}-{note}")
+
+    def card(self, merchant: str) -> str:
+        if self.style == "slash":
+            return self._finish(f"POS/{self.card4}/{self.name(merchant)}/{_digits(self.rng, 6)}")
+        return self._finish(f"PCD/{self.card4}/{self.name(merchant)}/ONLINE")
+
+    def bill(self, biller: str) -> str:
+        if self.style == "slash":
+            return self._finish(f"BBPS/{_digits(self.rng, 10)}/{self.name(biller)}")
+        return self._finish(f"BIL/BPAY/{_digits(self.rng, 9)}/{self.name(biller)}")
+
+    def atm(self, city: str) -> str:
+        atm_id = f"{self.own_bank.code}{_digits(self.rng, 4)}"
+        if self.style == "slash":
+            return f"ATM/WDL/{self.card4}/{atm_id}/{city.upper()}"
+        return f"ATW-{self.card4}-{atm_id}-{city.upper()}"
+
+    def nach_debit(self, lender: str, umrn: str) -> str:
+        if self.style == "slash":
+            return self._finish(f"NACH/DR/{umrn}/{self.name(lender)}")
+        return self._finish(f"ACH D- {self.name(lender)}-{umrn}")
+
+    def nach_return(self, lender: str, umrn: str, reason: str) -> str:
+        if self.style == "slash":
+            return self._finish(f"NACH/RTN/{umrn}/{self.name(lender)}/{reason}")
+        return self._finish(f"ACH RTN-{self.name(lender)}-{umrn}-{reason}")
+
+    def bounce_charge(self, lender: str, reason: str) -> str:
+        if self.style == "slash":
+            return self._finish(f"NACH RTN CHRGS/{self.name(lender)}/{reason}")
+        return self._finish(f"ACH RTN CHRG-{self.name(lender)}-{reason}")
+
+    def bounce_gst(self) -> str:
+        return (
+            "GST @18% ON NACH RTN CHRGS" if self.style == "slash" else "CGST+SGST ON ACH RTN CHRG"
+        )
+
+    def advance_tax(self) -> str:
+        return f"TAX/ADVANCE TAX/CHALLAN {_digits(self.rng, 11)}"
+
+    def gst_payment(self) -> str:
+        return f"GST PMT/CPIN {_digits(self.rng, 14)}"
+
+    def technical_return_reason(self) -> str:
+        return str(self.rng.choice(_TECHNICAL_RETURN_REASONS))

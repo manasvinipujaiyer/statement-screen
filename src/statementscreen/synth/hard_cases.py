@@ -2,13 +2,14 @@
 
 Each one is something that breaks a naive income model:
 
-- ``salary_date_shift``: one paycheck arrives 3-10 days late.
-- ``employer_rename``:   partway through, payroll arrives under a new employer name
+- ``salary_date_shift``: one salary credit arrives 3-10 days late.
+- ``employer_rename``:   partway through, salary arrives under a new employer name
                          (a rebrand or acquisition), so "same employer?" isn't a string match.
+                         The canonical counterparty stays the original employer.
 - ``bonus_month``:       one large one-off bonus. Real money, but not regular income.
-- ``missed_salary``:     one payday with no paycheck at all.
-- ``emi_bounce``:        a loan instalment (EMI) fails: the debit posts, the bank returns
-                         it, and a returned-payment fee follows.
+- ``missed_salary``:     one month with no salary credit at all.
+- ``emi_bounce``:        a loan EMI collected by NACH fails, and the bank charges
+                         a return fee (INR 500) plus 18% GST on it (INR 90).
 
 The first four only make sense for salaried customers. Every transaction a hard case
 creates or changes is tagged in ``Draft.hard_cases``. ``missed_salary`` removes a
@@ -17,18 +18,23 @@ transaction, so there's nothing to tag; the missed date goes in ``details`` inst
 All functions take the list of drafts and return a new list; they never edit in place.
 """
 
+from bisect import bisect_left
 from datetime import date, timedelta
+from decimal import Decimal
 
 import numpy as np
 
-from statementscreen.synth.descriptions import DescriptionStyle
+from statementscreen.synth.descriptions import Narrator
 from statementscreen.synth.models import Draft, IncomeTruth
-from statementscreen.synth.util import money, next_business_day
+from statementscreen.synth.util import next_working_day, rupees
 
 HARD_CASES = ("salary_date_shift", "employer_rename", "bonus_month", "missed_salary", "emi_bounce")
 SALARIED_ONLY = frozenset({"salary_date_shift", "employer_rename", "bonus_month", "missed_salary"})
 
-# Payroll entries are re-described when the employer is renamed.
+BOUNCE_CHARGE = Decimal("500.00")
+BOUNCE_GST = Decimal("90.00")  # 18% GST on the charge
+
+# Salary-like entries are re-described when the employer is renamed.
 _PAYROLL = ("salary", "bonus")
 
 
@@ -50,9 +56,8 @@ def _tag(d: Draft, case: str) -> Draft:
 
 def _salary_positions(drafts: list[Draft]) -> list[int]:
     """Indexes of salary drafts, in date order."""
-    return sorted(
-        (i for i, d in enumerate(drafts) if d.category == "salary"), key=lambda i: drafts[i].posted
-    )
+    salary = (i for i, d in enumerate(drafts) if d.category == "salary")
+    return sorted(salary, key=lambda i: drafts[i].posted)
 
 
 def missed_salary(
@@ -73,7 +78,7 @@ def salary_date_shift(
 
     candidates = []
     for i in _salary_positions(drafts):
-        new_date = next_business_day(drafts[i].posted + delay)
+        new_date = next_working_day(drafts[i].posted + delay)
         near_missed = missed is not None and abs((new_date - missed).days) <= 7
         if new_date <= period_end and not near_missed:
             candidates.append((i, new_date))
@@ -88,40 +93,43 @@ def salary_date_shift(
 def bonus_month(
     drafts: list[Draft],
     rng: np.random.Generator,
-    style: DescriptionStyle,
+    narrator: Narrator,
     income: IncomeTruth,
     month_firsts: list[date],
     details: dict[str, str],
 ) -> list[Draft]:
     first = month_firsts[int(rng.integers(len(month_firsts)))]
-    posted = next_business_day(first + timedelta(days=int(rng.integers(10, 24))))
-    paychecks_per_month = 1 if income.pay_frequency == "monthly" else 26 / 12
-    assert income.net_pay is not None  # salaried customers always have a fixed paycheck
-    amount = money(float(income.net_pay) * paychecks_per_month * rng.uniform(0.5, 1.5))
+    posted = next_working_day(first + timedelta(days=int(rng.integers(10, 24))))
+    assert income.net_pay is not None  # salaried customers always have a fixed salary
+    amount = rupees(float(income.net_pay) * rng.uniform(0.5, 1.5))
 
     details["bonus_month"] = f"{posted.isoformat()} {amount}"
-    bonus = Draft(posted, style.payroll(rng, income.employer), amount, "bonus", ("bonus_month",))
+    # Half the time the narration says BONUS; otherwise it looks exactly like salary.
+    note = "BONUS" if rng.random() < 0.5 else None
+    text = narrator.salary(income.employer, posted, note)
+    bonus = Draft(posted, text, amount, "bonus", ("bonus_month",), income.employer)
     return [*drafts, bonus]
 
 
-_LEGAL_SUFFIXES = {"LLC", "LTD", "INC", "PLC", "GROUP"}
+_LEGAL_WORDS = {"PVT", "LTD", "PRIVATE", "LIMITED", "LLP", "&", "SONS"}
 
 
 def _renamed(employer: str, rng: np.random.Generator) -> str:
-    """A believable new name for the same employer, e.g. TURNER LTD -> TURNER HOLDINGS."""
-    words = [w for w in employer.replace(",", "").split() if w not in _LEGAL_SUFFIXES]
-    core = " ".join(words)
-    options = [f"{core} HOLDINGS", f"{words[0]} GROUP"]
-    if len(words) > 1:  # "SCOTT HOWARD AND VAUGHN" -> "SCOTT VAUGHN PARTNERS"
-        options.append(f"{words[0]} {words[-1]} PARTNERS")
-    options = [o for o in options if o != employer]
+    """A believable new name, e.g. RAVENIKA INFOTECH PVT LTD -> RAVENIKA INDIA PVT LTD.
+
+    The second word always changes, so the rename stays visible even when a bank cuts
+    narrations short (a suffix-only change like "PVT LTD" -> "LLP" would get cut off).
+    """
+    words = [w for w in employer.split() if w not in _LEGAL_WORDS]
+    second = words[1] if len(words) > 1 else ""
+    options = [f"{words[0]} {w} PVT LTD" for w in ("INDIA", "GLOBAL", "DIGITAL") if w != second]
     return str(rng.choice(options))
 
 
 def employer_rename(
     drafts: list[Draft],
     rng: np.random.Generator,
-    style: DescriptionStyle,
+    narrator: Narrator,
     employer: str,
     details: dict[str, str],
 ) -> tuple[list[Draft], str]:
@@ -133,34 +141,85 @@ def employer_rename(
     out = []
     for d in drafts:
         if d.category in _PAYROLL and d.posted >= cut:
-            d = _tag(d._replace(description=style.payroll(rng, new_name)), "employer_rename")
+            # New narration, same canonical counterparty: it's still the same employer.
+            d = _tag(d._replace(description=narrator.salary(new_name, d.posted)), "employer_rename")
         out.append(d)
     return out, new_name
 
 
 def emi_bounce(
-    drafts: list[Draft],
+    posted: list[Draft],
+    balance_before: list[Decimal],
+    declined: list[Draft],
     rng: np.random.Generator,
-    style: DescriptionStyle,
-    lender: str,
-    period_end: date,
+    narrator: Narrator,
+    umrn: str,
     details: dict[str, str],
 ) -> list[Draft]:
-    loans = [
-        i
-        for i, d in enumerate(drafts)
-        if d.category == "loan_payment" and d.posted + timedelta(days=5) <= period_end
-    ]
-    i = loans[int(rng.integers(len(loans)))]
-    emi = drafts[i]
-    returned_on = next_business_day(emi.posted + timedelta(days=1))
-    details["emi_bounce"] = f"{emi.posted.isoformat()} {-emi.amount}"
+    """Make one EMI bounce. Runs on already-posted drafts, because it depends on balances.
+
+    Three ways it can happen, most realistic first:
+
+    - Natural: an EMI the account genuinely couldn't cover (declined while posting).
+    - Shortfall (70% otherwise): the customer moves money out just before the EMI date
+      (a self-transfer), leaving less than the EMI but enough for the charges. The EMI
+      debit never posts; the transfer and the charges do. The transfer is tagged too:
+      it's the cause a model should learn to spot.
+    - Technical (e.g. mandate problem): the debit posts, is reversed the same day, and
+      the charges follow.
+
+    For insufficient funds the charge narration names the lender and the reason. New lines
+    go where the balance is known, so the charges can never overdraw the account.
+    """
+    charges = BOUNCE_CHARGE + BOUNCE_GST
+    closing = balance_before[-1] + posted[-1].amount if posted else Decimal(0)
+
+    def balance_at(pos: int) -> Decimal:
+        return balance_before[pos] if pos < len(posted) else closing
+
+    # Natural bounces: the charges go at the start of that day, where the balance can pay.
+    dates = [d.posted for d in posted]
+    short = []
+    for d in declined:
+        if d.category == "loan_payment":
+            pos = bisect_left(dates, d.posted)
+            if balance_at(pos) >= charges:
+                short.append((pos, d))
+    emis = [i for i, d in enumerate(posted) if d.category == "loan_payment"]
+    ample = [i for i in emis if balance_before[i] >= -posted[i].amount + charges]
+    can_shortfall = [i for i in emis if balance_before[i] >= charges + 1000]
+    if not short and not ample and not can_shortfall:
+        raise RuntimeError("no EMI with enough balance to pay bounce charges")
 
     tags = ("emi_bounce",)
-    reversal = Draft(
-        returned_on, style.returned_debit(rng, lender), -emi.amount, "loan_reversal", tags
-    )
-    fee = Draft(returned_on, style.fee("RETURNED PAYMENT"), -money(35), "fee", tags)
-    out = list(drafts)
-    out[i] = _tag(emi, "emi_bounce")
-    return [*out, reversal, fee]
+    reason = "INSUFFICIENT BAL"
+    if short:
+        pos, emi = short[int(rng.integers(len(short)))]
+        lines: list[Draft] = []  # the EMI debit never posts
+        head, tail = posted[:pos], posted[pos:]
+    elif can_shortfall and (rng.random() < 0.7 or not ample):
+        i = can_shortfall[int(rng.integers(len(can_shortfall)))]
+        emi, before = posted[i], balance_before[i]
+        # Leave between the charges and (just under) the EMI in the account.
+        room = min(-emi.amount, before) - charges - 2
+        left = charges + Decimal(str(rng.uniform(0, float(room)))).quantize(Decimal("0.01"))
+        moved = Decimal(int(before - left))  # whole rupees; leaves slightly more than `left`
+        text = narrator.neft_debit(narrator.holder, emi.posted, "SELF TRANSFER")
+        lines = [Draft(emi.posted, text, -moved, "transfer_out", tags, narrator.holder)]
+        head, tail = posted[:i], posted[i + 1 :]
+    else:
+        i = ample[int(rng.integers(len(ample)))]
+        emi, reason = posted[i], narrator.technical_return_reason()
+        reversal = Draft(emi.posted, narrator.nach_return(emi.counterparty, umrn, reason),
+                         -emi.amount, "loan_reversal", tags, emi.counterparty)  # fmt: skip
+        lines = [_tag(emi, "emi_bounce"), reversal]
+        head, tail = posted[:i], posted[i + 1 :]
+
+    bank = narrator.own_bank.name.upper()
+    charge_text = narrator.bounce_charge(emi.counterparty, reason)
+    lines += [
+        Draft(emi.posted, charge_text, -BOUNCE_CHARGE, "bounce_charge", tags, bank),
+        Draft(emi.posted, narrator.bounce_gst(), -BOUNCE_GST, "bounce_gst", tags, bank),
+    ]
+    details["emi_bounce"] = f"{emi.posted.isoformat()} {-emi.amount} {reason}"
+    return head + lines + tail
