@@ -86,6 +86,17 @@ class DescriptionStyle:
             return f"WIRE IN {client}"
         return f"ONLINE TRANSFER FROM {client} INV{_digits(rng, 5)}"
 
+    def returned_debit(self, rng: np.random.Generator, payee: str) -> str:
+        """The bank sending back a payment that couldn't be covered."""
+        if self.name == "pos":
+            return f"ACH RETURN {payee} R01 NSF"
+        if self.name == "visa":
+            return f"RETURNED ITEM {payee}"
+        return f"REVERSAL - {payee} INSUFFICIENT FUNDS"
+
+    def fee(self, name: str) -> str:
+        return {"pos": f"FEE {name}", "visa": f"SERVICE CHARGE {name}"}.get(self.name, name)
+
     def atm(self, rng: np.random.Generator, city: str) -> str:
         if self.name == "pos":
             return f"ATM WITHDRAWAL {_digits(rng, 4)} {city}"

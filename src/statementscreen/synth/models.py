@@ -8,6 +8,17 @@ use exact decimal arithmetic throughout.
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
+from typing import NamedTuple
+
+
+class Draft(NamedTuple):
+    """A transaction before its running balance is known (used while building a statement)."""
+
+    posted: date
+    description: str
+    amount: Decimal
+    category: str
+    hard_cases: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -19,6 +30,7 @@ class Transaction:
     amount: Decimal
     balance: Decimal  # running balance *after* this transaction
     category: str  # ground-truth label, e.g. "salary", "rent" (never printed on the PDF)
+    hard_cases: tuple[str, ...] = ()  # which injected hard cases touched this line, if any
 
 
 @dataclass(frozen=True)
@@ -52,6 +64,8 @@ class Statement:
     opening_balance: Decimal
     income: IncomeTruth
     transactions: list[Transaction] = field(default_factory=list)
+    hard_cases: tuple[str, ...] = ()  # hard cases injected into this statement
+    hard_case_details: dict[str, str] = field(default_factory=dict)  # e.g. which payday was missed
 
     @property
     def closing_balance(self) -> Decimal:
