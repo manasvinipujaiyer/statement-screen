@@ -183,14 +183,21 @@ _INCOME_BUILDERS = {
 class _Household:
     """One person's fixed habits, drawn once: rent, loan, bills, favourite shops."""
 
-    def __init__(self, rng: np.random.Generator, fake: Faker, usual: float, customer_type: str):
+    def __init__(
+        self,
+        rng: np.random.Generator,
+        fake: Faker,
+        usual: float,
+        customer_type: str,
+        force_loan: bool = False,  # emi_bounce needs a loan; budget for it from the start
+    ):
         self.rent = rupees(usual * rng.uniform(0.15, 0.35)) if rng.random() < P_RENT else None
         self.landlord = fake.name().upper()
         self.rent_day = int(rng.integers(1, 8))
         self.rent_channel = str(rng.choice(["upi", "imps", "neft"], p=[0.6, 0.25, 0.15]))
 
         rent_share = float(self.rent or 0) / usual
-        has_loan = rng.random() < P_LOAN
+        has_loan = rng.random() < P_LOAN or force_loan  # always draw, so the stream is stable
         emi_share = min(rng.uniform(0.10, 0.35), 0.55 - rent_share)  # lenders cap commitments
         self.emi = rupees(usual * max(emi_share, 0.05))
         self.has_loan = has_loan
@@ -468,9 +475,7 @@ def generate_statement(
     )
 
     # 3. Spending, month by month.
-    home = _Household(rng, fake, usual, customer_type)
-    if "emi_bounce" in cases:
-        home.has_loan = True
+    home = _Household(rng, fake, usual, customer_type, force_loan="emi_bounce" in cases)
     for first in month_firsts:
         drafts += _month_spending(
             rng, fake, narrator, home, first, (period_start, period_end), usual

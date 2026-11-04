@@ -18,7 +18,7 @@ transaction, so there's nothing to tag; the missed date goes in ``details`` inst
 All functions take the list of drafts and return a new list; they never edit in place.
 """
 
-from bisect import bisect_left
+from bisect import bisect_left, bisect_right
 from datetime import date, timedelta
 from decimal import Decimal
 
@@ -213,6 +213,15 @@ def emi_bounce(
         text = narrator.neft_debit(narrator.holder, emi.posted, "SELF TRANSFER")
         lines = [Draft(emi.posted, text, -moved, "transfer_out", tags, narrator.holder)]
         head, tail = posted[:i], posted[i + 1 :]
+        # A few days later most of it comes back (they'd parked it in another account),
+        # so the bounce doesn't leave the customer without a buffer for months.
+        back_on = next_working_day(emi.posted + timedelta(days=int(rng.integers(2, 6))))
+        if tail and back_on <= tail[-1].posted:
+            back = Decimal(int(float(moved) * rng.uniform(0.9, 1.0)))
+            text = narrator.imps_credit(narrator.holder, "SELF TRANSFER")
+            k = bisect_right([d.posted for d in tail], back_on)
+            returned = Draft(back_on, text, back, "transfer_in", tags, narrator.holder)
+            tail = tail[:k] + [returned] + tail[k:]
     else:
         i = ample[int(rng.integers(len(ample)))]
         emi, reason = posted[i], narrator.technical_return_reason()

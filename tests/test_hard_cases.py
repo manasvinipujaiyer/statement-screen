@@ -143,3 +143,19 @@ def test_salary_cases_are_rejected_for_non_salaried(case: str) -> None:
 def test_unknown_hard_case_is_rejected() -> None:
     with pytest.raises(ValueError):
         generate_statement(1, hard_cases=["alien_invasion"])
+
+
+@pytest.mark.parametrize("customer_type", CUSTOMER_TYPES)
+def test_emi_bounce_does_not_starve_the_customer(customer_type: str) -> None:
+    # Regression: a bounce once wiped out the buffer and caused dozens of extra declined
+    # payments, an artificial "spending stops" pattern. For the same person (who has a
+    # loan anyway), a bounce should add only a handful of declines on average.
+    extra = []
+    for seed in range(40):
+        plain = generate_statement(seed, customer_type)
+        if not any(t.is_emi for t in plain.transactions):
+            continue
+        bounced = generate_statement(seed, customer_type, hard_cases=["emi_bounce"])
+        extra.append(bounced.declined_debits - plain.declined_debits)
+    assert len(extra) >= 10
+    assert sum(extra) / len(extra) <= 3
