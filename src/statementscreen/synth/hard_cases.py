@@ -198,11 +198,17 @@ def emi_bounce(
         lines: list[Draft] = []  # the EMI debit never posts
         head, tail = posted[:pos], posted[pos:]
     elif can_shortfall and (rng.random() < 0.7 or not ample):
-        i = can_shortfall[int(rng.integers(len(can_shortfall)))]
+        # Bounce in one of the leanest months (lowest balance before the EMI), so only a
+        # small transfer is needed and the customer isn't stripped of their savings.
+        leanest = sorted(can_shortfall, key=lambda j: balance_before[j])[:2]
+        i = leanest[int(rng.integers(len(leanest)))]
         emi, before = posted[i], balance_before[i]
-        # Leave between the charges and (just under) the EMI in the account.
-        room = min(-emi.amount, before) - charges - 2
-        left = charges + Decimal(str(rng.uniform(0, float(room)))).quantize(Decimal("0.01"))
+        # Leave the account a bit short: 60-98% of the EMI (never less than the charges).
+        # Emptying it entirely would stop all spending for the rest of the month, an
+        # artificial pattern a model could learn as a shortcut.
+        cap = float(min(-emi.amount, before)) - 2
+        low = max(float(charges), 0.6 * cap)
+        left = Decimal(str(rng.uniform(low, cap))).quantize(Decimal("0.01"))
         moved = Decimal(int(before - left))  # whole rupees; leaves slightly more than `left`
         text = narrator.neft_debit(narrator.holder, emi.posted, "SELF TRANSFER")
         lines = [Draft(emi.posted, text, -moved, "transfer_out", tags, narrator.holder)]

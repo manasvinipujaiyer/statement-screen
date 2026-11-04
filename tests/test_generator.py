@@ -93,7 +93,7 @@ def test_gig_income_comes_weekly_from_listed_platforms() -> None:
     s = generate_statement(seed=5, customer_type="gig", months=6)
     payouts = [t for t in s.transactions if t.category == "gig_income"]
     assert len(payouts) >= 20  # ~26 weeks per platform, minus some skipped weeks
-    assert all(t.counterparty in s.income.sources for t in payouts)
+    assert all(t.canonical_counterparty in s.income.sources for t in payouts)
     assert s.income.net_pay is None  # amounts vary, there's no fixed paycheck
 
 
@@ -155,7 +155,7 @@ def test_salary_counterparty_is_the_employer_and_narration_names_it() -> None:
         variants = [v.upper() for v in spelling_variants(s.income.employer)]
         for t in s.transactions:
             if t.category == "salary":
-                assert t.counterparty == s.income.employer
+                assert t.canonical_counterparty == s.income.employer
                 total += 1
                 text = t.description.upper()
                 named += any(v.split()[0] in text for v in variants)
@@ -222,5 +222,5 @@ def test_upi_payee_keeps_one_upi_id() -> None:
     ids: dict[str, set[str]] = {}
     for t in s.transactions:
         for vpa in re.findall(r"[a-z]+\d\d@[a-z]+", t.description.lower()):
-            ids.setdefault(t.counterparty, set()).add(vpa)
+            ids.setdefault(t.canonical_counterparty, set()).add(vpa)
     assert ids and all(len(v) == 1 for v in ids.values())

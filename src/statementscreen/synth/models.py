@@ -22,9 +22,16 @@ class Draft(NamedTuple):
     counterparty: str = ""  # canonical name of who paid / was paid, whatever the narration says
 
 
+BOUNCE_CATEGORIES = frozenset({"loan_reversal", "bounce_charge", "bounce_gst"})
+
+
 @dataclass(frozen=True)
 class Transaction:
-    """One line on the statement. Positive amount = money in, negative = money out."""
+    """One line on the statement. Positive amount = money in, negative = money out.
+
+    The ``is_*`` flags are derived from ``category`` (and the bounce tag), so they can
+    never disagree with it.
+    """
 
     posted: date
     description: str
@@ -32,7 +39,24 @@ class Transaction:
     balance: Decimal  # running balance *after* this transaction
     category: str  # ground-truth label, e.g. "salary", "rent" (never printed on the PDF)
     hard_cases: tuple[str, ...] = ()  # which injected hard cases touched this line, if any
-    counterparty: str = ""  # canonical counterparty (spelling variants and renames collapse)
+    canonical_counterparty: str = ""  # one name per counterparty: variants and renames collapse
+
+    @property
+    def is_salary(self) -> bool:
+        return self.category == "salary"  # bonuses are deliberately not salary
+
+    @property
+    def is_emi(self) -> bool:
+        return self.category == "loan_payment"
+
+    @property
+    def is_bounce(self) -> bool:
+        """Lines that exist because an EMI bounced: the reversal and the charges, plus the
+        EMI debit itself when it was posted and then reversed. Not the self-transfer that
+        caused a shortfall: that's the cause, not part of the bounce."""
+        if self.category in BOUNCE_CATEGORIES:
+            return True
+        return self.is_emi and "emi_bounce" in self.hard_cases
 
 
 @dataclass(frozen=True)
@@ -51,9 +75,9 @@ class IncomeTruth:
     monthly_income: Decimal
 
     @property
-    def employer(self) -> str:
-        """The main income source (for salaried customers, the employer's canonical name)."""
-        return self.sources[0]
+    def employer(self) -> str | None:
+        """The employer's canonical name for salaried customers; None for gig/self-employed."""
+        return self.sources[0] if self.customer_type == "salaried" else None
 
 
 @dataclass

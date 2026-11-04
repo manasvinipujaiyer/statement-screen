@@ -68,7 +68,7 @@ def test_employer_rename_keeps_one_canonical_counterparty() -> None:
         old, new = s.income.sources
         assert old != new
         renamed = [t for t in s.transactions if "employer_rename" in t.hard_cases]
-        assert renamed and all(t.counterparty == old for t in renamed)
+        assert renamed and all(t.canonical_counterparty == old for t in renamed)
         # The new name shows in the narration (allowing for a typo or truncation now and then).
         mark = new.split()[1]  # the rename always changes the second word
         assert mark not in old.split()
@@ -80,7 +80,7 @@ def test_bonus_is_not_counted_as_regular_income() -> None:
     plain = generate_statement(8, "salaried")
     bonus = generate_statement(8, "salaried", hard_cases=["bonus_month"])
     lines = [t for t in bonus.transactions if t.category == "bonus"]
-    assert len(lines) == 1 and lines[0].counterparty == bonus.income.employer
+    assert len(lines) == 1 and lines[0].canonical_counterparty == bonus.income.employer
     assert bonus.income.monthly_income == plain.income.monthly_income
 
 
