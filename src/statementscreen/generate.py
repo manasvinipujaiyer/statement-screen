@@ -16,6 +16,7 @@ Options:
 import argparse
 import shutil
 import sys
+import time
 from collections import Counter
 from collections.abc import Sequence
 from pathlib import Path
@@ -113,8 +114,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     except OutputFolderError as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
-    print("Writing outputs arrives in step 6; nothing written yet.", file=sys.stderr)
-    return 1
+    from statementscreen.writer import write_batch  # imported here: --dry-run needs no Polars
+
+    def progress(done: int, total: int) -> None:
+        if done == total or done % max(total // 10, 1) == 0:
+            print(f"  wrote {done}/{total}", file=sys.stderr)
+
+    started = time.perf_counter()
+    rows = write_batch(plans, args.out, progress)
+    elapsed = time.perf_counter() - started
+    print(f"Wrote {len(rows)} statements to {args.out} in {elapsed:.1f} s "
+          f"({elapsed / len(rows):.2f} s per statement)")  # fmt: skip
+    return 0
 
 
 if __name__ == "__main__":
