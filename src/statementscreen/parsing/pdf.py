@@ -13,9 +13,13 @@ For each page (opened, read and closed one at a time):
 
 Header fields come from page 1 and summary fields from page 1 or the last page, read by
 their labels. Anything the parser can't place or read becomes an Issue, never a guess.
+
+Layout-specific parts are small: how a row's first line is read (``_ROW_READERS``) and
+how dates look (``_DATE_TESTS``). Everything else is shared.
 """
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -32,15 +36,20 @@ from statementscreen.parsing.layouts import (
 )
 from statementscreen.parsing.models import ParsedRow, ParsedStatement, StatementHeader
 from statementscreen.parsing.values import (
+    is_amount,
+    is_dmony,
     is_dmy,
     parse_amount,
+    parse_dmony,
     parse_dmy,
     parse_dmy_short,
+    parse_signed_amount,
     to_paise,
 )
 from statementscreen.parsing.words import Line, Word, group_lines, is_footer, text_of, to_words
 
 VALUE_GAP = 12.0  # points: a wider gap between words ends a "Label : value" value
+MARKER_GAP = 4.0  # points: a Dr/Cr marker this close after an amount belongs to it
 
 SUMMARY_LABELS = {
     "Opening Balance": "opening_balance_paise",
@@ -51,9 +60,7 @@ SUMMARY_LABELS = {
     "Closing Bal": "closing_balance_paise",
 }
 
-
-class LayoutNotSupportedError(ValueError):
-    pass
+Period = tuple[date, date] | None
 
 
 @dataclass
@@ -98,20 +105,34 @@ def _split_page(lines: list[Line], spec: LayoutSpec):
     return geometry, rest[:stop], lines[:i] + rest[stop:]
 
 
-# ---------------------------------------------------------------------- columns rows
+def _merge_markers(line: Line) -> Line:
+    """Join a 'Dr'/'Cr' word to the amount just before it: ['1,254.00', 'Dr'] becomes one
+    word '1,254.00 Dr' whose right edge is the marker's, so it lines up with its column."""
+    out: Line = []
+    for w in line:
+        prev = out[-1] if out else None
+        if (w.text in ("Dr", "Cr") and prev is not None and is_amount(prev.text)
+                and w.x0 - prev.x1 <= MARKER_GAP):  # fmt: skip
+            out[-1] = Word(f"{prev.text} {w.text}", prev.x0, w.x1, prev.top)
+        else:
+            out.append(w)
+    return out
 
 
 def _cells(line: Line, geometry: Geometry) -> tuple[dict[str, list[Word]], list[Word]]:
     cells: dict[str, list[Word]] = {}
     unplaced: list[Word] = []
-    for w in line:
+    for w in _merge_markers(line):
         key = geometry.column_for(w)
         (cells.setdefault(key, []) if key else unplaced).append(w)
     return cells, unplaced
 
 
-def _start_row_columns(cells: dict[str, list[Word]], page: int) -> _RowDraft:
-    """Read a 'columns' row's first line. Raises ValueError if a value can't be read."""
+# ---------------------------------------------------------------------- row readers
+
+
+def _start_row_columns(cells: dict[str, list[Word]], page: int, period: Period) -> _RowDraft:
+    """'columns': DD/MM/YYYY, separate Withdrawal/Deposit columns, Chq./Ref.No., Value Dt."""
     posted = parse_dmy(text_of(cells["date"]))
     value_text = text_of(cells.get("value_date", []))
     value_date = parse_dmy_short(value_text, near=posted) if value_text else None
@@ -134,9 +155,34 @@ def _start_row_columns(cells: dict[str, list[Word]], page: int) -> _RowDraft:
     )
 
 
-def _is_row_start(cells: dict[str, list[Word]], spec: LayoutSpec) -> bool:
+def _start_row_drcr(cells: dict[str, list[Word]], page: int, period: Period) -> _RowDraft:
+    """'drcr': DD-Mon-YY (century from the period), one Amount with Dr/Cr, Cr balances."""
+    amount_text = text_of(cells.get("amount", []))
+    balance_text = text_of(cells.get("balance", []))
+    if not amount_text or not balance_text:
+        raise ValueError("missing amount or balance")
+    return _RowDraft(
+        page=page,
+        posted=parse_dmony(text_of(cells["date"]), period),
+        value_date=None,  # this layout doesn't print one
+        ref=None,  # nor a reference column
+        narration=text_of(cells.get("narration", [])),
+        amount_paise=to_paise(parse_signed_amount(amount_text)),
+        balance_paise=to_paise(parse_signed_amount(balance_text)),
+    )
+
+
+_ROW_READERS: dict[str, Callable[[dict[str, list[Word]], int, Period], _RowDraft]] = {
+    "columns": _start_row_columns,
+    "drcr": _start_row_drcr,
+}
+_DATE_TESTS: dict[str, Callable[[str], bool]] = {"columns": is_dmy, "drcr": is_dmony}
+_PERIOD_DATES: dict[str, Callable[[str], date]] = {"columns": parse_dmy, "drcr": parse_dmony}
+
+
+def _is_row_start(cells: dict[str, list[Word]], layout: str) -> bool:
     date_words = cells.get("date")
-    return bool(date_words) and len(date_words) == 1 and is_dmy(date_words[0].text)
+    return bool(date_words) and len(date_words) == 1 and _DATE_TESTS[layout](date_words[0].text)
 
 
 # ---------------------------------------------------------------------- header fields
@@ -161,6 +207,18 @@ def _label_value(lines: list[Line], label: str) -> str | None:
     return None
 
 
+def _read_period(lines: list[Line], layout: str) -> tuple[Period, str | None]:
+    """(period, problem). The period's own dates use the layout's date format."""
+    text = _label_value(lines, "Statement Period")
+    if not text or " to " not in text:
+        return None, f"no statement period found ({text!r})"
+    start, end = text.split(" to ", 1)
+    try:
+        return (_PERIOD_DATES[layout](start), _PERIOD_DATES[layout](end)), None
+    except ValueError as e:
+        return None, f"statement period {text!r}: {e}"
+
+
 def _summary_values(lines: list[Line]) -> dict[str, str]:
     """Printed summary values by label: on the same line to the right of the label, or
     else on the next line, under the label (closest centre)."""
@@ -183,16 +241,13 @@ def _summary_values(lines: list[Line]) -> dict[str, str]:
     return found
 
 
-def _read_header(lines: list[Line], summary_lines: list[Line], result: ParsedStatement):
+def _read_header(
+    lines: list[Line], summary_lines: list[Line], period: Period, result: ParsedStatement
+) -> None:
     h = StatementHeader()
     h.account_number = _label_value(lines, "Account No")
-    period = _label_value(lines, "Statement Period")
-    if period and " to " in period:
-        start, end = period.split(" to ", 1)
-        try:
-            h.period_start, h.period_end = parse_dmy(start), parse_dmy(end)
-        except ValueError as e:
-            result.issue("BAD_DATE", 1, None, f"statement period {period!r}: {e}")
+    if period is not None:
+        h.period_start, h.period_end = period
     values = _summary_values(summary_lines)
     for label, attr in SUMMARY_LABELS.items():
         text = values.get(label)
@@ -225,6 +280,7 @@ def parse_pdf(path: str | Path, force_layout: str | None = None) -> ParsedStatem
     with pdf:
         result = ParsedStatement(sid, None, len(pdf.pages), "ok")
         spec: LayoutSpec | None = None
+        period: Period = None
         first_page_other: list[Line] = []
         last_page_other: list[Line] = []
         drafts: list[_RowDraft] = []
@@ -245,9 +301,9 @@ def parse_pdf(path: str | Path, force_layout: str | None = None) -> ParsedStatem
                     result.status, result.error = "error", str(e)
                     result.issue("UNKNOWN_LAYOUT", page_no, None, str(e))
                     return result
-                if name != "columns":
+                if name not in _ROW_READERS:
                     result.layout = name
-                    result.status, result.error = "error", f"no parser for layout {name!r} yet"
+                    result.status, result.error = "error", f"no parser for layout {name!r}"
                     result.issue("LAYOUT_NOT_SUPPORTED", page_no, None, result.error)
                     return result
                 spec, result.layout = LAYOUTS[name], name
@@ -257,15 +313,19 @@ def parse_pdf(path: str | Path, force_layout: str | None = None) -> ParsedStatem
             # and on the latest page (an end-of-statement summary, if the layout has one).
             if page_no == 1:
                 first_page_other = other
+                # The period is needed before any row: it settles two-digit years.
+                period, problem = _read_period(other, spec.name)
+                if problem:
+                    result.issue("BAD_DATE", 1, None, problem)
             last_page_other = other
             if geometry is None:
                 continue
 
             for line in table:
                 cells, unplaced = _cells(line, geometry)
-                if _is_row_start(cells, spec):
+                if _is_row_start(cells, spec.name):
                     try:
-                        draft = _start_row_columns(cells, page_no)
+                        draft = _ROW_READERS[spec.name](cells, page_no, period)
                     except (ValueError, KeyError) as e:
                         result.issue("BAD_ROW", page_no, len(drafts), f"{e}: {text_of(line)!r}")
                         continue
@@ -279,7 +339,7 @@ def parse_pdf(path: str | Path, force_layout: str | None = None) -> ParsedStatem
 
         # Summary fields can be on page 1 (summary box) or the last page (summary block).
         summary_lines = first_page_other + (last_page_other if result.pages > 1 else [])
-        _read_header(first_page_other, summary_lines, result)
+        _read_header(first_page_other, summary_lines, period, result)
 
     result.rows = [
         ParsedRow(sid, i, d.posted, d.value_date, d.ref, _join_narration(d.narration, d.extra),

@@ -57,6 +57,62 @@ def is_dmy(text: str) -> bool:
     return True
 
 
+_MONTH_NAMES = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+_MONTHS = {name: i for i, name in enumerate(_MONTH_NAMES, start=1)}
+_DMONY = re.compile(r"(\d{2})-([A-Z][a-z]{2})-(\d{2})")  # 01-Feb-24
+_SIGNED = re.compile(r"(\S+) (Dr|Cr)")  # 25,453.00 Dr
+
+
+def parse_dmony(text: str, period: tuple[date, date] | None = None) -> date:
+    """'01-Feb-24' -> a date. Month names are matched explicitly (not via the locale).
+
+    A two-digit year is ambiguous, so the statement period settles the century: take the
+    candidate inside the period, else the one closest to it. Without a period (e.g. when
+    reading the period line itself), years 00-69 are 20xx and 70-99 are 19xx.
+    """
+    m = _DMONY.fullmatch(text.strip())
+    if not m or m.group(2) not in _MONTHS:
+        raise ValueError(f"not a DD-Mon-YY date: {text!r}")
+    day, month, yy = int(m.group(1)), _MONTHS[m.group(2)], int(m.group(3))
+    # Candidate centuries: those the period spans (or 1900/2000 without a period).
+    centuries = sorted({d.year // 100 * 100 for d in period}) if period else [1900, 2000]
+    candidates = []
+    for century in centuries:
+        try:
+            candidates.append(date(century + yy, month, day))
+        except ValueError:
+            pass  # e.g. 29-Feb in a non-leap century
+    if not candidates:
+        raise ValueError(f"impossible date: {text!r}")
+    if period is None:
+        pivot = 2000 + yy if yy < 70 else 1900 + yy
+        return next((d for d in candidates if d.year == pivot), candidates[-1])
+    start, end = period
+    inside = [d for d in candidates if start <= d <= end]
+    if inside:
+        return inside[0]
+    return min(candidates, key=lambda d: min(abs((d - start).days), abs((d - end).days)))
+
+
+def is_dmony(text: str) -> bool:
+    m = _DMONY.fullmatch(text.strip())
+    return bool(m) and m.group(2) in _MONTHS
+
+
+def parse_signed_amount(text: str) -> Decimal:
+    """'25,453.00 Dr' -> Decimal('-25453.00'); '1,61,030.55 Cr' -> Decimal('161030.55').
+
+    Dr (money out, or an overdrawn balance) is negative; Cr is positive. The marker is
+    required: an amount without one is rejected rather than assumed to be either.
+    """
+    m = _SIGNED.fullmatch(text.strip())
+    if not m:
+        raise ValueError(f"expected an amount followed by Dr or Cr: {text!r}")
+    amount = parse_amount(m.group(1))
+    assert amount is not None  # the regex guarantees a non-blank amount
+    return -amount if m.group(2) == "Dr" else amount
+
+
 def parse_dmy_short(text: str, near: date) -> date:
     """'01/01/25' -> a date, choosing the century that lands closest to ``near``.
 
