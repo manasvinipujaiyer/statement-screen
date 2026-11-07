@@ -8,7 +8,13 @@ authors = [
     { name = "manasvini_puja", email = "166587238+manasvinipujaiyer@users.noreply.github.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "faker>=40.44.0",
+    "numpy>=2.5.4",
+    "polars>=2.1.0",
+    "pypdf>=6.21.4",
+    "reportlab>=5.1.0",
+]
 
 [build-system]
 requires = ["uv_build>=0.13.6,<0.14.0"]
