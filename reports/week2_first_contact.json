@@ -1,0 +1,19 @@
+{
+  "batch": "week1_n2000",
+  "exact_row_rate": 0.0,
+  "exact_rows": 0,
+  "fully_clean_statements": 0,
+  "issue_codes": {
+    "BAD_DATE": 103
+  },
+  "normal_detection": {
+    "drcr": 103
+  },
+  "parsed_rows": 0,
+  "sample": "drcr statements among stmt_0001..stmt_0200",
+  "seconds": 81.4,
+  "statements": 103,
+  "statements_with_any_row": 0,
+  "truth_rows": 61592,
+  "what": "columns parser rules forced onto drcr PDFs, before any drcr code existed"
+}

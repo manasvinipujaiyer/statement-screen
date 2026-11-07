@@ -40,8 +40,14 @@ class OutputFolderError(Exception):
     pass
 
 
-def prepare_output_folder(out: Path, overwrite: bool) -> None:
-    """Make sure ``out`` is ready for a fresh batch, without ever deleting foreign files."""
+def prepare_output_folder(
+    out: Path, overwrite: bool, allowed: Sequence[str] = OUTPUT_NAMES
+) -> None:
+    """Make sure ``out`` is ready for a fresh run, without ever deleting foreign files.
+
+    ``allowed`` names the files and folders this tool writes (the batch outputs by
+    default); anything else in ``out`` means it isn't ours, so nothing is deleted.
+    """
     if out.exists() and not out.is_dir():
         raise OutputFolderError(f"{out} exists and is not a folder")
     out.mkdir(parents=True, exist_ok=True)
@@ -53,7 +59,7 @@ def prepare_output_folder(out: Path, overwrite: bool) -> None:
             f"{out} is not empty ({len(existing)} entries); pass --overwrite to replace a "
             "previous batch, or choose another --out"
         )
-    foreign = [name for name in existing if name not in OUTPUT_NAMES]
+    foreign = [name for name in existing if name not in allowed]
     if foreign:
         raise OutputFolderError(
             f"{out} contains files this tool didn't write ({', '.join(foreign[:5])}); "

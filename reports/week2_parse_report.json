@@ -1,0 +1,144 @@
+{
+  "batch": "week1_n2000",
+  "by_layout": {
+    "columns": {
+      "aligned_rows": 594261,
+      "exact_row_rate": 1.0,
+      "exact_rows": 594261,
+      "field_accuracy": {
+        "amount_paise": 1.0,
+        "balance_paise": 1.0,
+        "posted": 1.0
+      },
+      "fully_clean_rate": 1.0,
+      "fully_clean_statements": 1015,
+      "layout_detected_correctly": 1015,
+      "meets_target": true,
+      "narration": {
+        "cut_short_by_layout": 0,
+        "cut_short_rate": 0.0,
+        "equal_ignoring_whitespace": 594261,
+        "equal_ignoring_whitespace_rate": 1.0,
+        "exact": 592236,
+        "exact_rate": 0.996592,
+        "wrong": 0
+      },
+      "parsed_rows": 594261,
+      "row_count_match_rate": 1.0,
+      "statements": 1015,
+      "truth_rows": 594261
+    },
+    "drcr": {
+      "aligned_rows": 582997,
+      "exact_row_rate": 1.0,
+      "exact_rows": 582997,
+      "field_accuracy": {
+        "amount_paise": 1.0,
+        "balance_paise": 1.0,
+        "posted": 1.0
+      },
+      "fully_clean_rate": 1.0,
+      "fully_clean_statements": 985,
+      "layout_detected_correctly": 985,
+      "meets_target": true,
+      "narration": {
+        "cut_short_by_layout": 102851,
+        "cut_short_rate": 0.176418,
+        "equal_ignoring_whitespace": 480146,
+        "equal_ignoring_whitespace_rate": 0.823582,
+        "exact": 480110,
+        "exact_rate": 0.823521,
+        "wrong": 0
+      },
+      "parsed_rows": 582997,
+      "row_count_match_rate": 1.0,
+      "statements": 985,
+      "truth_rows": 582997
+    }
+  },
+  "failures": {
+    "count": 0,
+    "first": []
+  },
+  "first_contact": {
+    "batch": "week1_n2000",
+    "exact_row_rate": 0.0,
+    "exact_rows": 0,
+    "fully_clean_statements": 0,
+    "issue_codes": {
+      "BAD_DATE": 103
+    },
+    "normal_detection": {
+      "drcr": 103
+    },
+    "parsed_rows": 0,
+    "sample": "drcr statements among stmt_0001..stmt_0200",
+    "seconds": 81.4,
+    "statements": 103,
+    "statements_with_any_row": 0,
+    "truth_rows": 61592,
+    "what": "columns parser rules forced onto drcr PDFs, before any drcr code existed"
+  },
+  "manifest_statements_not_parsed": 0,
+  "overall": {
+    "aligned_rows": 1177258,
+    "exact_row_rate": 1.0,
+    "exact_rows": 1177258,
+    "field_accuracy": {
+      "amount_paise": 1.0,
+      "balance_paise": 1.0,
+      "posted": 1.0
+    },
+    "fully_clean_rate": 1.0,
+    "fully_clean_statements": 2000,
+    "layout_detected_correctly": 2000,
+    "narration": {
+      "cut_short_by_layout": 102851,
+      "cut_short_rate": 0.087365,
+      "equal_ignoring_whitespace": 1074407,
+      "equal_ignoring_whitespace_rate": 0.912635,
+      "exact": 1072346,
+      "exact_rate": 0.910884,
+      "wrong": 0
+    },
+    "parsed_rows": 1177258,
+    "row_count_match_rate": 1.0,
+    "statements": 2000,
+    "truth_rows": 1177258
+  },
+  "parse_errors": [],
+  "parse_issues": {
+    "by_code": {},
+    "count": 0,
+    "first_50": []
+  },
+  "parse_run": {
+    "detected_layouts": {
+      "columns": 1015,
+      "drcr": 985
+    },
+    "issues": {},
+    "pdfs": 2000,
+    "peak_memory_mb": 260.0,
+    "platform": "darwin",
+    "python": "3.12.16",
+    "seconds_per_pdf": {
+      "max": 2.4243,
+      "mean": 0.8668,
+      "median": 0.8163,
+      "p95": 1.4383
+    },
+    "seconds_total": 1738.5,
+    "status": {
+      "ok": 2000
+    }
+  },
+  "row_count_mismatches": [],
+  "self_check_flags": {
+    "all": [],
+    "by_code": {},
+    "count": 0
+  },
+  "statements_not_in_manifest": [],
+  "target_exact_row_rate": 0.995
+}
