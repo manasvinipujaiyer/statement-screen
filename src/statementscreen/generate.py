@@ -1,4 +1,4 @@
-"""Command line: plan (and, from step 6, write) a batch of synthetic statements.
+"""Command line: plan and write a batch of synthetic statements, then verify it.
 
     uv run python -m statementscreen.generate --n 50 --seed 42 --out data/synthetic/
     uv run python -m statementscreen.generate --n 2000 --dry-run      # plan only, no files
@@ -14,6 +14,7 @@ Options:
 """
 
 import argparse
+import json
 import shutil
 import sys
 import time
@@ -120,12 +121,48 @@ def main(argv: Sequence[str] | None = None) -> int:
         if done == total or done % max(total // 10, 1) == 0:
             print(f"  wrote {done}/{total}", file=sys.stderr)
 
+    from statementscreen.summary import build_run_summary
+    from statementscreen.verify import verify_batch
+
     started = time.perf_counter()
     rows = write_batch(plans, args.out, progress)
-    elapsed = time.perf_counter() - started
-    print(f"Wrote {len(rows)} statements to {args.out} in {elapsed:.1f} s "
-          f"({elapsed / len(rows):.2f} s per statement)")  # fmt: skip
+    write_seconds = time.perf_counter() - started
+
+    # Check the batch from its files alone, then record what the run produced and cost.
+    started = time.perf_counter()
+    report = verify_batch(args.out)
+    verify_seconds = time.perf_counter() - started
+    summary = build_run_summary(
+        config, plans, rows, report, write_seconds, verify_seconds, args.out
+    )
+    text = json.dumps(summary, indent=2, sort_keys=True) + "\n"
+    (args.out / "run_summary.json").write_text(text, encoding="utf-8")
+
+    print(_describe(summary))
+    if not report.ok:
+        print(f"error: verify found {len(report.failures)} problem(s):", file=sys.stderr)
+        for failure in report.failures[:20]:
+            print(f"    {failure}", file=sys.stderr)
+        return 1
     return 0
+
+
+def _describe(summary: dict) -> str:
+    c, v, t, d = summary["counts"], summary["verify"], summary["timing"], summary["disk"]
+    return "\n".join([
+        f"Wrote {summary['n']} statements ({c['transactions']:,} transactions)",
+        "  customer types: " + ", ".join(f"{k}={n}" for k, n in c["customer_type"].items()),
+        "  layouts:        " + ", ".join(f"{k}={n}" for k, n in c["layout"].items()),
+        "  hard cases:     " + ", ".join(f"{k}={n}" for k, n in c["hard_cases"].items()),
+        f"  reconciliation: {v['reconciled']}/{v['statements_checked']} "
+        f"({v['reconciliation_pass_rate']:.0%})",
+        f"  time:           {t['write_seconds']} s writing + {t['verify_seconds']} s verifying "
+        f"({t['seconds_per_statement']} s per statement)",
+        f"  disk:           {d['total_bytes'] / 1024**2:.1f} MB "
+        f"(PDFs {d.get('pdfs_bytes', 0) / 1024**2:.1f} MB, "
+        f"Parquet {d.get('transactions.parquet_bytes', 0) / 1024**2:.1f} MB)",
+        f"  peak memory:    {summary['peak_memory_mb']} MB",
+    ])  # fmt: skip
 
 
 if __name__ == "__main__":

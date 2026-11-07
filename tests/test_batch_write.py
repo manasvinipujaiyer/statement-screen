@@ -15,6 +15,7 @@ from pypdf import PdfReader
 
 from statementscreen.batch import BatchConfig, plan_batch
 from statementscreen.generate import main
+from statementscreen.synth.hard_cases import HARD_CASES
 from statementscreen.writer import MANIFEST_COLUMNS, TRANSACTION_SCHEMA, write_batch
 
 
@@ -26,10 +27,15 @@ def _run_cli_subprocess(out: Path, n: int, seed: int, hashseed: str) -> None:
 
 
 def _hashes(folder: Path) -> dict[str, str]:
+    """SHA-256 of every PDF, label, the manifest and the Parquet file.
+
+    run_summary.json is left out on purpose: it records timings and memory, which are
+    meant to differ between runs.
+    """
     return {
         str(p.relative_to(folder)): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in sorted(folder.rglob("*"))
-        if p.is_file()
+        if p.is_file() and p.name != "run_summary.json"
     }
 
 
@@ -142,3 +148,27 @@ def test_cli_refuses_a_non_empty_folder_and_overwrite_replaces(tmp_path: Path, c
     assert "not empty" in capsys.readouterr().err
     assert main(["--n", "2", "--out", str(tmp_path), "--overwrite"]) == 0
     assert _hashes(tmp_path) == first  # same seed, same files
+
+
+def test_cli_writes_a_run_summary_with_full_reconciliation(tmp_path: Path) -> None:
+    assert main(["--n", "4", "--seed", "3", "--out", str(tmp_path)]) == 0
+    summary = json.loads((tmp_path / "run_summary.json").read_text(encoding="utf-8"))
+    assert summary["n"] == 4
+    assert sum(summary["counts"]["customer_type"].values()) == 4
+    assert sum(summary["counts"]["layout"].values()) == 4
+    assert set(summary["counts"]["hard_cases"]) == set(HARD_CASES)
+    assert summary["verify"]["reconciliation_pass_rate"] == 1.0
+    assert summary["verify"]["failures"] == 0
+    assert summary["timing"]["seconds_per_statement"] > 0
+    assert summary["disk"]["total_bytes"] == sum(
+        v for k, v in summary["disk"].items() if k != "total_bytes")  # fmt: skip
+    assert summary["peak_memory_mb"] > 10
+    text = (tmp_path / "run_summary.json").read_text(encoding="utf-8")
+    assert str(tmp_path) not in text and str(Path.home()) not in text  # no absolute paths
+
+
+def test_peak_memory_units_differ_by_os() -> None:
+    from statementscreen.summary import peak_memory_bytes
+
+    assert peak_memory_bytes(maxrss=1_000_000, system="darwin") == 1_000_000  # macOS: bytes
+    assert peak_memory_bytes(maxrss=1_000_000, system="linux") == 1_024_000_000  # Linux: KB
