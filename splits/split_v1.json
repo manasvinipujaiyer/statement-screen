@@ -1,0 +1,55 @@
+{
+  "counts": {
+    "dev": {
+      "by_customer_type": {
+        "gig": 63,
+        "salaried": 185,
+        "self_employed": 52
+      },
+      "by_layout": {
+        "columns": 152,
+        "drcr": 148
+      },
+      "statements": 300
+    },
+    "test": {
+      "by_customer_type": {
+        "gig": 63,
+        "salaried": 185,
+        "self_employed": 52
+      },
+      "by_layout": {
+        "columns": 152,
+        "drcr": 148
+      },
+      "statements": 300
+    },
+    "train": {
+      "by_customer_type": {
+        "gig": 291,
+        "salaried": 865,
+        "self_employed": 244
+      },
+      "by_layout": {
+        "columns": 711,
+        "drcr": 689
+      },
+      "statements": 1400
+    }
+  },
+  "fractions": {
+    "dev": 0.15,
+    "test": 0.15,
+    "train": 0.7
+  },
+  "manifest": "week1_n2000/manifest.csv",
+  "manifest_sha256": "4bb5f314b131bcf01927e12a7ca1f71dfaf7c331757c1e0890dfd1eee42f0fb0",
+  "seed": 42,
+  "statement_ids_sha256": "b4e90c4651722a59faeaa2547346674a1f580174eed803f709ffc77a56a01a0c",
+  "statements": 2000,
+  "stratified_by": [
+    "layout",
+    "customer_type"
+  ],
+  "version": "v1"
+}
