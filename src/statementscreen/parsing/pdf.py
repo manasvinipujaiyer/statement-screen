@@ -26,6 +26,7 @@ from pathlib import Path
 
 import pdfplumber
 
+from statementscreen.parsing.checks import run_checks
 from statementscreen.parsing.layouts import (
     LAYOUTS,
     Geometry,
@@ -346,4 +347,6 @@ def parse_pdf(path: str | Path, force_layout: str | None = None) -> ParsedStatem
                   d.amount_paise, d.balance_paise, d.page, result.layout or "")
         for i, d in enumerate(drafts)
     ]  # fmt: skip
+    # Self-checks only report; they run on exactly what was read and change nothing.
+    result.issues.extend(run_checks(result))
     return result
