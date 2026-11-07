@@ -70,26 +70,38 @@ def test_balance_chain_flags_only_the_broken_row() -> None:
 def test_first_row_is_chained_to_the_opening_balance() -> None:
     s = _clean()
     s.header.opening_balance_paise = 99_999
-    s.header.closing_balance_paise = 119_999  # summary identity still holds
-    assert _codes(s) == [("BALANCE_CHAIN", 1, 0)]
+    s.header.closing_balance_paise = 119_999  # keeps the summary identity true...
+    # ...so the closing no longer matches the last row (1,200.00): the edited opening
+    # shows up as the first chain link plus the closing mismatch.
+    assert _codes(s) == [("BALANCE_CHAIN", 1, 0), ("CLOSING_MISMATCH", 2, 2)]
 
 
-def test_summary_identity() -> None:
+def test_edited_closing_balance() -> None:
     s = _clean()
     s.header.closing_balance_paise = 120_100
-    # The chain ends at 1,200.00 but nothing compares that to the printed closing, so only
-    # the identity (opening + credits - debits) catches this.
-    assert _codes(s) == [("SUMMARY_IDENTITY", None, None)]
+    # The rows end at 1,200.00 and opening + credits - debits is also 1,200.00, so both
+    # the closing check and the identity catch the edited closing.
+    assert _codes(s) == [("CLOSING_MISMATCH", 2, 2), ("SUMMARY_IDENTITY", None, None)]
+
+
+def test_closing_without_rows_is_compared_with_the_opening() -> None:
+    s = _clean()
+    s.rows = []
+    s.header.total_credits_paise = s.header.total_debits_paise = 0
+    s.header.dr_count = s.header.cr_count = 0
+    s.header.closing_balance_paise = 100_000
+    assert _codes(s) == []
+    s.header.closing_balance_paise = 100_001
+    assert _codes(s) == [("CLOSING_MISMATCH", None, None), ("SUMMARY_IDENTITY", None, None)]
 
 
 def test_summary_totals() -> None:
     s = _clean()
-    s.header.total_debits_paise = 31_000  # rows only add up to 300.00
-    s.header.opening_balance_paise = 101_000  # keeps opening + credits - debits = closing
-    s.rows[0].balance_paise = 151_000  # and keeps the chain unbroken from the new opening
-    s.rows[1].balance_paise = 131_000
-    s.rows[2].balance_paise = 121_000
-    assert _codes(s) == [("SUMMARY_TOTALS", None, None)]
+    # Both printed totals are 10.00 too high. Their difference is unchanged, so the
+    # identity and the closing still agree, and only the totals check notices.
+    s.header.total_credits_paise = 51_000
+    s.header.total_debits_paise = 31_000
+    assert _codes(s) == [("SUMMARY_TOTALS", None, None), ("SUMMARY_TOTALS", None, None)]
 
 
 def test_summary_counts() -> None:
@@ -120,9 +132,9 @@ def test_missing_values_report_check_not_run_never_a_pass() -> None:
     flags = run_checks(s)
     assert {i.code for i in flags} == {"CHECK_NOT_RUN"}
     named = " ".join(i.detail for i in flags)
-    for check in ("BALANCE_CHAIN", "SUMMARY_IDENTITY", "SUMMARY_TOTALS", "SUMMARY_COUNTS",
-                  "DATE_OUT_OF_PERIOD"):  # fmt: skip
-        assert check in named
+    for check in CHECK_CODES:
+        if check not in ("DATE_ORDER", "CHECK_NOT_RUN"):  # date order needs no header value
+            assert check in named, check
 
 
 @pytest.mark.parametrize("layout", ["columns", "drcr"])

@@ -8,6 +8,8 @@ naming the check, so a skipped check is never mistaken for a passed one.
 Codes:
     BALANCE_CHAIN       a row's balance != previous balance + its amount (row 0 uses the
                         printed opening balance)
+    CLOSING_MISMATCH    the last row's balance != the printed closing balance (with no
+                        rows, the opening balance is compared instead)
     SUMMARY_IDENTITY    opening + total credits - total debits != closing (printed values)
     SUMMARY_TOTALS      parsed rows' credit/debit totals != the printed totals
     SUMMARY_COUNTS      parsed rows' Cr/Dr counts != the printed counts
@@ -20,6 +22,7 @@ from statementscreen.parsing.models import Issue, ParsedStatement
 
 CHECK_CODES = (
     "BALANCE_CHAIN",
+    "CLOSING_MISMATCH",
     "SUMMARY_IDENTITY",
     "SUMMARY_TOTALS",
     "SUMMARY_COUNTS",
@@ -44,6 +47,24 @@ def check_balance_chain(s: ParsedStatement) -> list[Issue]:
             ))  # fmt: skip
         previous = r.balance_paise  # carry on from what was printed, so one bad row = one flag
     return out
+
+
+def check_closing_matches_last_row(s: ParsedStatement) -> list[Issue]:
+    closing = s.header.closing_balance_paise
+    last, where = (
+        (s.rows[-1].balance_paise, f"last row's balance (row {s.rows[-1].row})")
+        if s.rows
+        else (s.header.opening_balance_paise, "opening balance (no rows)")
+    )
+    if closing is None or last is None:
+        return [Issue(s.statement_id, "CHECK_NOT_RUN", None, None,
+                      "CLOSING_MISMATCH: no closing or comparison balance read")]  # fmt: skip
+    if last != closing:
+        page = s.rows[-1].page if s.rows else None
+        row = s.rows[-1].row if s.rows else None
+        return [Issue(s.statement_id, "CLOSING_MISMATCH", page, row,
+                      f"{where} is {last}, printed closing {closing} (paise)")]  # fmt: skip
+    return []
 
 
 def check_summary_identity(s: ParsedStatement) -> list[Issue]:
@@ -131,6 +152,7 @@ def check_dates_in_period(s: ParsedStatement) -> list[Issue]:
 
 CHECKS = (
     check_balance_chain,
+    check_closing_matches_last_row,
     check_summary_identity,
     check_summary_totals,
     check_summary_counts,
