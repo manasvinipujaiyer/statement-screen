@@ -25,6 +25,7 @@ from dataclasses import dataclass, replace
 
 import polars as pl
 from rapidfuzz import fuzz
+from rapidfuzz.distance import OSA
 
 from statementscreen.patterns.config import DEFAULT, PatternConfig
 
@@ -119,6 +120,18 @@ def _is_clutter(tok: str) -> bool:
     )
 
 
+_LEGAL_LONG = ("limited", "private")
+
+
+def _is_legal(tok: str) -> bool:
+    """A legal-form word, or a misspelling of a long one ("limtied", "privte", "limted"):
+    at least 5 letters and one edit away, where swapping two letters counts as one edit
+    (OSA distance). Real words such as "limits", "limestone" or "pirate" are kept."""
+    if tok in _LEGAL:
+        return True
+    return len(tok) >= 5 and tok.isalpha() and min(OSA.distance(tok, w) for w in _LEGAL_LONG) <= 1
+
+
 def clean_name(text: str, cut: bool = False) -> str:
     """Lowercase name text without references, handles, codes, dates, filler or legal form.
 
@@ -131,7 +144,7 @@ def clean_name(text: str, cut: bool = False) -> str:
     out: list[str] = []
     for i, tok in enumerate(tokens):
         nxt = tokens[i + 1] if i + 1 < len(tokens) else ""
-        if tok in _LEGAL or (tok == "p" and nxt in ("ltd", "limited")):
+        if _is_legal(tok) or (tok == "p" and (nxt == "ltd" or _is_legal(nxt))):
             continue
         out.append(tok)
     while cut and out and any(word.startswith(out[-1]) for word in _LEGAL):

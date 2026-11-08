@@ -92,11 +92,19 @@ def test_no_references_handles_or_codes_survive(narration) -> None:
 
 def test_clean_name_rules() -> None:
     assert clean_name("KESALU SOLUTIONS PVT. LTD.") == "kesalu solutions"
-    assert clean_name("SAGAR & SONS PRIVATE LIMTIED") == "sagar and sons limtied"  # typo kept
+    assert clean_name("SAGAR & SONS PRIVATE LIMTIED") == "sagar and sons"  # misspelt legal word
     assert clean_name("SALARY MAR25") == ""
     assert clean_name("hoteltiyo26@pravahini VSTK0384513 VSTKN25093705947 01-07-2024") == ""
     assert clean_name("NERANA TECHNOLOGIES PVT L", cut=True) == "nerana technologies"
     assert clean_name("Lakshmi P Rao") == "lakshmi p rao"  # an initial isn't a legal word
+
+
+def test_misspelt_legal_words_go_but_real_words_stay() -> None:
+    for typo in ("LIMTIED", "LIMTED", "LIMITD", "PRIVTE", "PVIVATE"):
+        assert clean_name(f"KESALU SOLUTIONS {typo}") == "kesalu solutions"
+    assert clean_name("KESALU SOLUTIONS P LIMTIED") == "kesalu solutions"
+    for word in ("LIMITS", "LIMESTONE", "PIRATE", "PRIVY"):
+        assert clean_name(f"ANAND {word}") == f"anand {word.lower()}"
 
 
 # --------------------------------------------------------------- cut-off narrations
