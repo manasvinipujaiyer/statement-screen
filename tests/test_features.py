@@ -54,7 +54,8 @@ def test_monthly_salary_with_a_bonus_and_a_late_month() -> None:
         "narration": [SALARY.format(i) for i in range(7)],
         "amount_paise": amounts,
     })  # fmt: skip
-    rows, feats = process_statement(stmt, date(2025, 1, 1), date(2025, 7, 31), "columns")
+    tables = process_statement(stmt, date(2025, 1, 1), date(2025, 7, 31), "columns")
+    rows, feats = tables["rows"], tables["group_features"]
     assert rows["group_id"].n_unique() == 1 and feats.height == 1
     f = feats.row(0, named=True)
     assert (f["direction"], f["main_channel"], f["group_name"]) == (

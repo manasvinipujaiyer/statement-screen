@@ -45,7 +45,12 @@ def test_runs_on_parser_output_alone(world, alone, tmp_path) -> None:
     out = tmp_path / "patterns"
     assert _run(alone, out, world["splits"]) == 0
     assert sorted(p.name for p in (out / "train").iterdir()) == [
-        "group_features.parquet", "patterns_run.json", "rows.parquet"]  # fmt: skip
+        "group_features.parquet", "group_rules.parquet", "patterns_run.json", "rows.parquet",
+        "statement_results.parquet"]  # fmt: skip
+    results = pl.read_parquet(out / "train" / "statement_results.parquet")
+    assert results.height == len(set(pl.read_parquet(out / "train" / "rows.parquet")[
+        "statement_id"]))  # fmt: skip
+    assert results["salary_reason"].null_count() == 0  # a reason whether or not it fired
 
     train = splits.load_split_for_parsed(
         "train", pl.read_parquet(alone / "statements.parquet")["statement_id"].to_list(),
