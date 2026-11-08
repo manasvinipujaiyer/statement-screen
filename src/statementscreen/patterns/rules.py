@@ -8,14 +8,18 @@ A group's "core" is its rows within a band of the group's median amount, so a bo
 another one-off amount never counts towards (or is flagged as) salary, EMI or rent.
 
 salary  credit groups paid by NEFT/RTGS/IMPS/OTHER whose core is monthly and on time.
-        Groups with no months in common, similar medians and the same usual day are tried
-        together as one stream (an employer rename). Employer = the latest name of the
-        stream with the largest core total.
+        Not core: credits saying "bonus", and an extra credit in a month (unless a
+        neighbouring month is empty: a shifted salary). Groups with no months in common,
+        similar medians and the same usual day are tried together as one stream (an
+        employer rename). Employer = the earliest name of the stream with the largest
+        core total (the employer of record).
 EMI     NACH debit groups whose core (+-2%) is monthly and on time. A debit later returned
-        is still an EMI.
-bounce  returned EMIs (NACH/ACH return styles), their return charges, and the GST line
-        straight after a return charge. UPI refunds are not bounces.
-rent    debit transfers to one counterparty, monthly, the same amount, on time.
+        is still an EMI (and also a bounce).
+bounce  returned EMIs (NACH/ACH return styles), the debit each one returned, their
+        return charges, and the GST line straight after a return charge. UPI refunds are
+        not bounces.
+rent    debit transfers to one counterparty, monthly, the same amount, on time, with a
+        median of at least rent_min_amount_paise.
 """
 
 import statistics
@@ -135,8 +139,66 @@ def _describe(what: str, core: Core, cfg: PatternConfig) -> str:
 class Stream:
     groups: list[str]
     core: Core
-    name: str  # the latest group name in the stream
+    name: str  # the earliest group name in the stream (the employer of record)
     reason: str
+
+
+def _not_counted(r: dict, core: Core, cfg: PatternConfig) -> str:
+    """Why a credit from a salary payer isn't counted as salary."""
+    if "bonus" in (r["purpose"] or ""):
+        return "not counted as salary: the narration says bonus"
+    amount = abs(r["amount_paise"])
+    off = abs(amount - core.median) / core.median if core.median else 0.0
+    if off > cfg.salary_core_band:
+        return (f"not counted as salary: amount {inr(amount)} is {off:.0%} from the salary "
+                f"median {inr(core.median)}")  # fmt: skip
+    days = circular_day_distance(r["posted"].day, core.medoid)
+    return (f"not counted as salary: an extra credit in its month, {days} days off the usual "
+            f"day {core.medoid}")  # fmt: skip
+
+
+def _neighbours(month: tuple[int, int]) -> list[tuple[int, int]]:
+    y, m = month
+    return [(y - 1, 12) if m == 1 else (y, m - 1), (y + 1, 1) if m == 12 else (y, m + 1)]
+
+
+def salary_core(rows: list[dict], months: int, cfg: PatternConfig) -> Core | None:
+    """The salary core of a credit group (or of several, for a rename).
+
+    Left out: credits whose narration says "bonus"; credits more than salary_core_band from
+    the median; and an extra credit in a month, i.e. one more than day_tolerance off the
+    usual day in a month that already has a credit nearer it. Extras are only dropped when
+    the group is monthly without dropping them (so weekly payouts are never thinned into a
+    "monthly" pattern), and never when a neighbouring month is empty (a shifted salary).
+    """
+    candidates = [r for r in rows if "bonus" not in (r["purpose"] or "")]
+    if not candidates:
+        return None
+    core = core_of(candidates, cfg.salary_core_band, months, cfg)
+    if core.per_month > cfg.salary_max_per_month:
+        return core  # not monthly to begin with (e.g. weekly payouts): drop nothing
+    by_month: dict[tuple[int, int], list[dict]] = {}
+    for r in core.rows:
+        by_month.setdefault((r["posted"].year, r["posted"].month), []).append(r)
+    extras = set()
+    first, last = min(by_month), max(by_month)
+    for month, in_month in by_month.items():
+        # A neighbouring month with no credit, inside the payer's run, means a shifted salary.
+        empty = [n for n in _neighbours(month) if n not in by_month and first <= n <= last]
+        if len(in_month) < 2 or empty:
+            continue
+
+        def off_by(r: dict) -> int:
+            return circular_day_distance(r["posted"].day, core.medoid)
+
+        keep = min(in_month, key=lambda r: (off_by(r), r["row"]))
+        # Only an off-day credit is an extra; one near the usual day is a shifted salary.
+        extras.update(r["row"] for r in in_month
+                      if r is not keep and off_by(r) > cfg.day_tolerance)  # fmt: skip
+    if not extras:
+        return core
+    return core_of([r for r in candidates if r["row"] not in extras], cfg.salary_core_band,
+                   months, cfg)  # fmt: skip
 
 
 def _could_be_one_employer(a: Core, b: Core, cfg: PatternConfig) -> bool:
@@ -156,15 +218,22 @@ def salary_streams(groups: dict[str, list[dict]], names: dict[str, str], months:
         if all(r["is_self"] for r in rows):
             notes[gid] = "not salary: transfers from the account holder (self)"
             continue
-        core = core_of(rows, cfg.salary_core_band, months, cfg)
+        core = salary_core(rows, months, cfg)
+        if core is None:
+            notes[gid] = "not salary: every credit says bonus"
+            continue
         if core.channel not in cfg.salary_channels:
             notes[gid] = f"not salary: paid by {core.channel}"
             continue
         cores[gid] = core
 
-    def check(core: Core) -> str | None:
-        return _failure(core, cfg.salary_min_months, cfg.salary_min_coverage,
-                        cfg.salary_max_per_month, cfg.salary_min_on_time, cfg)  # fmt: skip
+    def check(core: Core, n_credits: int) -> str | None:
+        failed = _failure(core, cfg.salary_min_months, cfg.salary_min_coverage,
+                          cfg.salary_max_per_month, cfg.salary_min_on_time, cfg)  # fmt: skip
+        if failed is None and len(core.rows) < cfg.salary_min_core_share * n_credits:
+            failed = (f"only {len(core.rows)} of {n_credits} credits are the regular amount "
+                      f"(needs {cfg.salary_min_core_share:.0%})")  # fmt: skip
+        return failed
 
     # Regular-looking groups that could be one employer under two names: link them.
     regular = sorted(g for g, c in cores.items()
@@ -190,14 +259,14 @@ def salary_streams(groups: dict[str, list[dict]], names: dict[str, str], months:
     for members in components.values():
         if len(members) < 2:
             continue
-        union = core_of([r for g in members for r in groups[g]], cfg.salary_core_band, months,
-                        cfg)  # fmt: skip
-        if check(union) is None:
+        member_rows = [r for g in members for r in groups[g]]
+        union = salary_core(member_rows, months, cfg)
+        if union is not None and check(union, len(member_rows)) is None:
             by_time = sorted(members, key=lambda g: cores[g].last_posted)
-            latest = names[by_time[-1]]
+            earliest = names[by_time[0]]
             reason = (_describe("credit", union, cfg) + "; name changed: "
                       + " -> ".join(f"'{names[g]}'" for g in by_time))  # fmt: skip
-            streams.append(Stream(by_time, union, latest, reason))
+            streams.append(Stream(by_time, union, earliest, reason))
             in_stream.update(members)
             for g in members:
                 notes[g] = f"salary (one employer under {len(members)} names)"
@@ -205,14 +274,15 @@ def salary_streams(groups: dict[str, list[dict]], names: dict[str, str], months:
     for gid, core in sorted(cores.items()):
         if gid in in_stream:
             continue
-        failed = check(core)
+        failed = check(core, len(groups[gid]))
         if failed:
             notes[gid] = f"not salary: {failed}"
             continue
         reason = _describe("credit", core, cfg)
-        if core.n_outside:
-            reason += (f"; {core.n_outside} other credit(s) more than "
-                       f"{cfg.salary_core_band:.0%} from the median not counted")  # fmt: skip
+        left_out = len(groups[gid]) - len(core.rows)
+        if left_out:
+            reason += (f"; {left_out} other credit(s) from this payer not counted "
+                       f"(bonus, an extra credit in a month, or a different amount)")  # fmt: skip
         streams.append(Stream([gid], core, names[gid], reason))
         notes[gid] = "salary"
     return streams, notes
@@ -251,6 +321,8 @@ def regular_debits(groups: dict[str, list[dict]], names: dict[str, str], months:
         failed = _failure(core, cfg.rent_min_months, cfg.rent_min_coverage,
                           cfg.rent_max_per_month, cfg.rent_min_on_time, cfg)  # fmt: skip
         near = len(core.rows) / len(rows)
+        if not failed and core.median < cfg.rent_min_amount_paise:
+            failed = f"median {inr(core.median)} is below {inr(cfg.rent_min_amount_paise)}"
         if not failed and near < cfg.rent_min_near_median:
             failed = (f"only {len(core.rows)} of {len(rows)} payments within "
                       f"{cfg.amount_tolerance:.0%} of the median (needs "
@@ -300,8 +372,13 @@ def apply_rules(
         reasons[row].append(reason)
 
     for s in streams:
+        counted = {r["row"] for r in s.core.rows}
         for r in s.core.rows:
             flag(r["row"], "is_salary", f"salary: {s.reason}")
+        for g in s.groups:  # say why each other credit from the employer isn't salary
+            for r in groups[g]:
+                if r["row"] not in counted:
+                    reasons[r["row"]].append(_not_counted(r, s.core, cfg))
     for gid, core in emi.items():
         reason = f"EMI to {names[gid]}: " + _describe("debit", core, cfg)
         for r in core.rows:
@@ -315,8 +392,23 @@ def apply_rules(
 
     bounce_rows = 0
     by_row = {r["row"]: r for r in rows}
+    nach_debits = [r for r in rows if r["channel"] == "NACH" and r["direction"] == "debit"]
     for r in rows:
         style = r["style"]
+        if style in cfg.bounce_return_styles:
+            # The debit that was returned: same lender and amount, a few days before.
+            returned = [d for d in nach_debits
+                        if abs(d["amount_paise"]) == abs(r["amount_paise"])
+                        and 0 <= (r["posted"] - d["posted"]).days <= cfg.bounce_link_days
+                        and d["row"] < r["row"]
+                        and fuzz.token_sort_ratio(d["counterparty"], r["counterparty"])
+                        >= cfg.lender_match]  # fmt: skip
+            if returned:
+                d = max(returned, key=lambda x: x["row"])
+                if not flags[d["row"]]["is_bounce"]:
+                    why = f"bounce: EMI debit to {d['counterparty']} returned in row {r['row']}"
+                    flag(d["row"], "is_bounce", why)
+                    bounce_rows += 1
         if style in cfg.bounce_return_styles or style in cfg.bounce_charge_styles:
             what = "EMI returned" if style in cfg.bounce_return_styles else "return charge"
             linked = [g for g in emi if fuzz.token_sort_ratio(r["counterparty"], names[g])

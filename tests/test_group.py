@@ -107,3 +107,12 @@ def test_distances_are_symmetric_with_zero_diagonal() -> None:
     d = name_distances(["nerana technologies", "nerana technolgies", "hotel tiyo"])
     assert np.allclose(d, d.T) and np.allclose(np.diag(d), 0)
     assert d[0, 1] < d[0, 2]
+
+
+def test_group_name_counts_cut_forms_towards_the_full_form() -> None:
+    from statementscreen.patterns.group import _canonical
+
+    forms = ["shakapu technol"] * 5 + ["shakapu technologies"] * 3
+    assert _canonical(forms) == "shakapu technologies"
+    assert _canonical(["hotel tiyo", "hotel tiyo", "hotel tiy0"]) == "hotel tiyo"
+    assert _canonical(["a b", "a bc", "a bd", "a bd"]) == "a bd"  # "a b" starts both

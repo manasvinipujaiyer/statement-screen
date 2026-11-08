@@ -17,7 +17,8 @@ Within one direction:
      they are all in ONE group; if they span several groups it's ambiguous and it keeps a
      group of its own.
 
-The group's name is its most frequent cleaned form (ties: the longest, then A-Z).
+The group's name is its most frequent cleaned form, where a cut-off form counts towards
+the longer form it starts (ties: the longest, then A-Z).
 """
 
 from collections import Counter
@@ -95,8 +96,16 @@ class NameClusterer:
 
 
 def _canonical(forms: list[str]) -> str:
+    """The most frequent form, where a cut-off form ("shakapu technol") counts towards the
+    longer form it starts ("shakapu technologies"). Ties: the longest, then A-Z."""
     counts = Counter(forms)
-    return min(counts, key=lambda f: (-counts[f], -len(f), f))
+    full = [f for f in counts if not any(g != f and g.startswith(f) for g in counts)]
+    total = {f: counts[f] for f in full}
+    for f in counts:
+        if f not in total:
+            longer = [g for g in full if g.startswith(f)]
+            total[min(longer, key=lambda g: (-counts[g], -len(g), g))] += counts[f]
+    return min(total, key=lambda f: (-total[f], -len(f), f))
 
 
 def group_ids(cleaned: pl.DataFrame, thresholds: Sequence[float],

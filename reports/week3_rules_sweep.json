@@ -1,0 +1,1002 @@
+{
+  "final_config": {
+    "amount_tolerance": 0.05,
+    "bounce_charge_styles": [
+      "ach_rtn_chrg",
+      "nach_rtn_chrgs"
+    ],
+    "bounce_link_days": 7,
+    "bounce_return_styles": [
+      "nach_rtn",
+      "ach_rtn"
+    ],
+    "bounce_tax_style": "gst_on_charge",
+    "day_tolerance": 3,
+    "emi_channels": [
+      "NACH"
+    ],
+    "emi_core_band": 0.02,
+    "emi_max_per_month": 1.2,
+    "emi_min_months": 3,
+    "emi_min_on_time": 0.6,
+    "fuzz_weight": 0.5,
+    "group_grid": [
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+    ],
+    "group_threshold": 0.45,
+    "holder_match": 90.0,
+    "lender_match": 85.0,
+    "linkage": "average",
+    "min_prefix": 4,
+    "ngram_max": 4,
+    "ngram_min": 2,
+    "prefix_join_min": 6,
+    "rename_median_band": 0.1,
+    "rent_channels": [
+      "NEFT",
+      "IMPS",
+      "UPI",
+      "OTHER"
+    ],
+    "rent_max_per_month": 1.2,
+    "rent_min_amount_paise": 150000,
+    "rent_min_coverage": 0.5,
+    "rent_min_months": 3,
+    "rent_min_near_median": 0.8,
+    "rent_min_on_time": 0.6,
+    "salary_channels": [
+      "NEFT",
+      "RTGS",
+      "IMPS",
+      "OTHER"
+    ],
+    "salary_core_band": 0.1,
+    "salary_max_per_month": 1.5,
+    "salary_min_core_share": 0.5,
+    "salary_min_coverage": 0.6,
+    "salary_min_months": 3,
+    "salary_min_on_time": 0.6
+  },
+  "selection": "best F1 on the threshold's flag; ties go to the middle of the tied run; each winner carries into the next sweep",
+  "split": "dev",
+  "statements": 300,
+  "sweeps": [
+    {
+      "chosen": 150000,
+      "flag": "is_rent",
+      "grid": [
+        0,
+        50000,
+        100000,
+        150000,
+        200000,
+        250000
+      ],
+      "seconds": 25.5,
+      "threshold": "rent_min_amount_paise",
+      "tried": [
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.7590652699435938,
+              "fn": 7,
+              "fp": 1189,
+              "precision": 0.6130816791409046,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 0
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9010043041606887,
+              "fn": 7,
+              "fp": 407,
+              "precision": 0.8223483195111305,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 50000
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 100000
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 150000
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 200000
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9887700534759359,
+              "fn": 42,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9777895293495505,
+              "tp": 1849
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 250000
+        }
+      ],
+      "was": 0
+    },
+    {
+      "chosen": 0.5,
+      "flag": "is_rent",
+      "grid": [
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6
+      ],
+      "seconds": 21.3,
+      "threshold": "rent_min_coverage",
+      "tried": [
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 0.4
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 0.45
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 0.5
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 0.55
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 0.6
+        }
+      ],
+      "was": 0.6
+    },
+    {
+      "chosen": 0.6,
+      "flag": "is_salary",
+      "grid": [
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75
+      ],
+      "seconds": 21.2,
+      "threshold": "salary_min_coverage",
+      "tried": [
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9987577639751554,
+              "fn": 4,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9975186104218362,
+              "tp": 1608
+            }
+          },
+          "value": 0.55
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9987577639751554,
+              "fn": 4,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9975186104218362,
+              "tp": 1608
+            }
+          },
+          "value": 0.6
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9987577639751554,
+              "fn": 4,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9975186104218362,
+              "tp": 1608
+            }
+          },
+          "value": 0.65
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.997289972899729,
+            "fn": 1,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9945945945945946,
+            "tp": 184
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9972006220839814,
+              "fn": 9,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9944168734491315,
+              "tp": 1603
+            }
+          },
+          "value": 0.7
+        },
+        {
+          "false_salary": {
+            "gig": {
+              "rows": 0,
+              "statements": 0
+            },
+            "self_employed": {
+              "rows": 0,
+              "statements": 0
+            }
+          },
+          "has_salary": {
+            "f1": 0.9945652173913043,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9891891891891892,
+            "tp": 183
+          },
+          "transactions": {
+            "is_bounce": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            },
+            "is_emi": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "is_rent": {
+              "f1": 0.9981456953642384,
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            },
+            "is_salary": {
+              "f1": 0.9953256466188843,
+              "fn": 15,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9906947890818859,
+              "tp": 1597
+            }
+          },
+          "value": 0.75
+        }
+      ],
+      "was": 0.75
+    }
+  ]
+}

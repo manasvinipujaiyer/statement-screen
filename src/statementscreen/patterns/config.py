@@ -29,9 +29,14 @@ class PatternConfig:
     salary_channels: tuple[str, ...] = ("NEFT", "RTGS", "IMPS", "OTHER")
     salary_core_band: float = 0.10
     salary_min_months: int = 3
-    salary_min_coverage: float = 0.75  # of the statement's months
+    # Of the statement's months. Was 0.75; dev sweep (reports/week3_rules_sweep.json):
+    # 0.55-0.65 tie at the best salary F1 (15 -> 4 misses, no false salary); middle taken.
+    salary_min_coverage: float = 0.60
     salary_max_per_month: float = 1.5
     salary_min_on_time: float = 0.60  # share of core credits within day_tolerance
+    # Added on dev: a core that is a small slice of a payer's credits is not a salary
+    # (weekly gig payouts had a few near the median that looked monthly).
+    salary_min_core_share: float = 0.50
     rename_median_band: float = 0.10  # two names with medians this close may be one employer
     # EMI: NACH debit groups
     emi_channels: tuple[str, ...] = ("NACH",)
@@ -44,13 +49,18 @@ class PatternConfig:
     bounce_charge_styles: tuple[str, ...] = ("ach_rtn_chrg", "nach_rtn_chrgs")
     bounce_tax_style: str = "gst_on_charge"  # counted when straight after a return charge
     lender_match: float = 85.0  # RapidFuzz token_sort_ratio linking a return to an EMI group
+    bounce_link_days: int = 7  # a return links to a same-amount EMI debit at most this early
     # rent: debit transfer groups to one person
     rent_channels: tuple[str, ...] = ("NEFT", "IMPS", "UPI", "OTHER")
     rent_min_months: int = 3
+    # Kept at 0.60: the dev sweep gave identical results for 0.40-0.60 (no evidence to move).
     rent_min_coverage: float = 0.60
     rent_max_per_month: float = 1.2
     rent_min_near_median: float = 0.80  # share within amount_tolerance of the median
     rent_min_on_time: float = 0.60
+    # INR 1,500. Dev sweep: INR 1,000-2,000 tie (all 1,189 false flags, monthly phone
+    # recharges of INR 199-799, gone; no rent lost); middle taken. INR 2,500 loses rent.
+    rent_min_amount_paise: int = 150_000
 
     def as_dict(self) -> dict:
         return asdict(self)

@@ -95,3 +95,20 @@ def test_a_parse_of_another_batch_is_refused(world, alone, tmp_path) -> None:
     meta["statement_ids_sha256"] = "0" * 64
     (other / "split_v1.json").write_text(json.dumps(meta))
     assert _run(alone, tmp_path / "p", other) == 2
+
+
+def test_score_patterns_end_to_end(world, alone, tmp_path) -> None:
+    from statementscreen import score_patterns
+
+    out = tmp_path / "patterns"
+    assert _run(alone, out, world["splits"]) == 0
+    report_path = tmp_path / "report.json"
+    argv = [str(out), str(world["batch"]), "--split", "train", "--out", str(report_path),
+            "--splits-dir", str(world["splits"])]  # fmt: skip
+    assert score_patterns.main(argv) == 0
+    report = json.loads(report_path.read_text())
+    assert report["rows_without_truth"] == 0
+    assert set(report["overall"]["transactions"]) == {"is_salary", "is_emi", "is_bounce",
+                                                       "is_rent"}  # fmt: skip
+    assert {"by_layout", "by_customer_type", "by_hard_case"} <= set(report["breakdown"])
+    assert report["overall"]["grouping"]["precision"] is not None
