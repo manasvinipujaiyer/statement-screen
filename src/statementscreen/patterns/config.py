@@ -20,6 +20,10 @@ class PatternConfig:
     linkage: str = "average"
     prefix_join_min: int = 6  # a name this long or longer may join its longer form by prefix
 
+    # --- group features (step 4)
+    day_tolerance: int = 3  # days (circular) from the usual day-of-month that count as "on time"
+    amount_tolerance: float = 0.05  # share of the median that counts as "the same amount"
+
     def as_dict(self) -> dict:
         return asdict(self)
 

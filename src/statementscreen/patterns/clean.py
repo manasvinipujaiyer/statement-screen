@@ -83,6 +83,7 @@ STYLES = (
     Style("nach_rtn_chrgs", "CHARGE", r"NACH RTN CHRGS/", "/", ("name", "reason")),
     Style("gst_on_charge", "CHARGE", r"(?:CGST\+SGST|GST @\d+%) ON ", fixed=""),
     Style("nach_rtn", "REVERSAL", r"NACH/RTN/", "/", ("umrn", "name", "reason")),
+    Style("ach_rtn", "REVERSAL", r"ACH RTN-", "-", ("name", "umrn", "reason")),
     # bills, cash, cards
     Style("bbps", "BBPS", r"BBPS/", "/", ("num", "name")),
     Style("bil_bpay", "BBPS", r"BIL/BPAY/", "/", ("num", "name")),
@@ -195,8 +196,14 @@ def _match_style(style: Style, rest: str) -> Cleaned | None:
         fields.pop()  # cut right after a separator
     cut = len(fields) < len(style.roles)
     for i, (role, value) in enumerate(zip(style.roles, fields, strict=False)):
-        if not _valid(role, value, partial=cut and i == len(fields) - 1):
-            return None
+        if _valid(role, value, partial=False):
+            continue
+        # The last field present may be cut short, even when every field is there
+        # ("...-BALHAAR KOSHY-T": the UTR cut to "T").
+        if i == len(fields) - 1 and _valid(role, value, partial=True):
+            cut = True
+            continue
+        return None
     by_role = dict(zip(style.roles, fields, strict=False))
     purpose_parts = [by_role[r] for r in _PURPOSE_ROLES if r in by_role]
     if "utr_note" in by_role:
@@ -316,9 +323,9 @@ def clean_statement(rows: pl.DataFrame, cfg: PatternConfig = DEFAULT) -> pl.Data
     resolved = resolve_self([clean_narration(n) for n in rows["narration"]], cfg)
     return pl.DataFrame({
         "statement_id": rows["statement_id"],
-        "row": rows["row"],
+        "row": rows["row"].cast(pl.Int64),  # the parser stores Int32
         "posted": rows["posted"],
-        "amount_paise": rows["amount_paise"],
+        "amount_paise": rows["amount_paise"].cast(pl.Int64),
         "direction": ["credit" if a > 0 else "debit" for a in rows["amount_paise"]],
         "channel": [c.channel for c, _ in resolved],
         "style": [c.style for c, _ in resolved],

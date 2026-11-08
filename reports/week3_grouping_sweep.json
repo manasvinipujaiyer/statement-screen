@@ -2,6 +2,8 @@
   "best_f1": 0.9952238841721931,
   "best_threshold": 0.45,
   "config": {
+    "amount_tolerance": 0.05,
+    "day_tolerance": 3,
     "fuzz_weight": 0.5,
     "group_grid": [
       0.1,
@@ -14,7 +16,7 @@
       0.45,
       0.5
     ],
-    "group_threshold": 0.3,
+    "group_threshold": 0.45,
     "holder_match": 90.0,
     "linkage": "average",
     "min_prefix": 4,
@@ -269,8 +271,8 @@
   ],
   "rows_scored": 176576,
   "rows_without_truth": 0,
-  "seconds": 3.8,
-  "seconds_per_statement": 0.0128,
+  "seconds": 3.9,
+  "seconds_per_statement": 0.0132,
   "selection": "max pairwise F1 on this split; ties go to the smaller threshold",
   "split": "dev",
   "statements": 300

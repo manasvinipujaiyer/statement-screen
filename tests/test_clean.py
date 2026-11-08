@@ -148,8 +148,30 @@ def test_unseen_format_falls_back() -> None:
 
 
 def test_unseen_format_takes_its_channel_from_a_keyword() -> None:
+    c = clean_narration("ECS/RTN/004512/ANAND TRADERS PVT LTD")
+    assert (c.channel, c.style, c.counterparty) == ("REVERSAL", "unknown", "anand traders")
+
+
+def test_ach_return_style_seen_in_train() -> None:
+    # Was "unknown" until train showed its format: ACH RTN-<lender>-<UMRN>-<reason>.
     c = clean_narration("ACH RTN-NIVESHA HOME LOANS LTD-VSTK7475455546541154-INSUFFICIENT BAL")
-    assert (c.channel, c.style, c.counterparty) == ("REVERSAL", "unknown", "nivesha home loans")
+    assert (c.channel, c.style, c.counterparty, c.purpose) == (
+        "REVERSAL", "ach_rtn", "nivesha home loans", "insufficient bal")  # fmt: skip
+    c = clean_narration("ACH RTN-DHANVRIKSH FINANCE LTD-VSTK7072334074271931-MANDATE")
+    assert (c.style, c.counterparty, c.purpose) == ("ach_rtn", "dhanvriksh finance", "mandate")
+
+
+def test_cut_inside_the_last_field_when_every_field_is_there() -> None:
+    # Seen in train: the UTR cut to "T" or "VSTK" was wrongly a variant ("neft_cr_dash?").
+    for tail in ("T", "TR", "VSTK", "VSTKN243"):
+        c = clean_narration(f"NEFT CR-TRGM0263231-RIYONA TECHNOLOGIES LLP-BALHAAR KOSHY-{tail}")
+        assert (c.style, c.counterparty, c.holder, c.cut, c.counterparty_cut) == (
+            "neft_cr_dash", "riyona technologies", "balhaar koshy", True, False)  # fmt: skip
+
+
+def test_a_bad_field_before_the_last_is_still_a_variant() -> None:
+    c = clean_narration("NEFT CR-NOTANIFSC-RIYONA TECHNOLOGIES LLP-BALHAAR KOSHY-T")
+    assert c.style == "neft_cr_dash?"
 
 
 def test_no_name_gives_empty_counterparty() -> None:
