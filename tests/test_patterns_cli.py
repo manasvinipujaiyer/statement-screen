@@ -113,6 +113,8 @@ def test_score_patterns_end_to_end(world, alone, tmp_path, monkeypatch) -> None:
     assert any((tracking / "artifacts").rglob("report.json"))
     report = json.loads(report_path.read_text())
     assert report["rows_without_truth"] == 0
+    s = report["scoring_run"]  # step 8: scoring records its own time and memory
+    assert s["seconds_per_statement"] > 0 and s["peak_memory_mb"] > 0
     assert set(report["overall"]["transactions"]) == {"is_salary", "is_emi", "is_bounce",
                                                        "is_rent"}  # fmt: skip
     assert {"by_layout", "by_customer_type", "by_hard_case"} <= set(report["breakdown"])

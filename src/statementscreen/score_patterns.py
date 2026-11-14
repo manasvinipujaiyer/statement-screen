@@ -12,11 +12,13 @@ MLflow run to mlruns/ (see statementscreen.tracking; --tracking-dir, --no-mlflow
 import argparse
 import json
 import sys
+import time
 from collections.abc import Sequence
 from pathlib import Path
 
 from statementscreen.pattern_scoring import FLAGS, build_report
 from statementscreen.splits import SPLITS_DIR, SplitError, load_split
+from statementscreen.summary import peak_memory_bytes
 from statementscreen.tracking import DEFAULT_DIR, EXPERIMENT, TrackingRefused, log_run
 
 
@@ -41,14 +43,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     out = args.out or Path(f"reports/week3_patterns_{args.split}.json")
     patterns_dir = args.patterns / args.split
     try:
+        started = time.perf_counter()
         ids = load_split(args.split, args.batch / "manifest.csv", args.splits_dir)
         report = build_report(patterns_dir, args.batch, ids)
+        seconds = time.perf_counter() - started
     except (SplitError, ValueError, FileNotFoundError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
     run = json.loads((patterns_dir / "patterns_run.json").read_text(encoding="utf-8"))
+    scoring_run = {
+        "seconds_total": round(seconds, 1),
+        "seconds_per_statement": round(seconds / max(len(ids), 1), 4),
+        # peak_memory_bytes handles ru_maxrss: bytes on macOS, kilobytes on Linux
+        "peak_memory_mb": round(peak_memory_bytes() / 1024**2, 1),
+    }
     report = {"split": args.split, "batch": args.batch.name, "patterns_run": run,
-              "config": run["config"], **report}  # fmt: skip
+              "scoring_run": scoring_run, "config": run["config"], **report}  # fmt: skip
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=2, sort_keys=True, default=str) + "\n",
                    encoding="utf-8")  # fmt: skip
@@ -56,7 +66,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     o = report["overall"]
     g = o["grouping"]
     print(f"Wrote {out}: {report['statements']} {args.split} statements, {report['rows']} rows "
-          f"({report['rows_without_truth']} without truth)")  # fmt: skip
+          f"({report['rows_without_truth']} without truth) in {scoring_run['seconds_total']} s "
+          f"({scoring_run['seconds_per_statement']} s per statement, peak memory "
+          f"{scoring_run['peak_memory_mb']} MB)")  # fmt: skip
     print(f"  grouping   pairwise P {_pct(g['precision'])}  R {_pct(g['recall'])}  "
           f"F1 {_pct(g['f1'])}  employer recall {_pct(g['employer_recall'])}")  # fmt: skip
     for f in FLAGS:

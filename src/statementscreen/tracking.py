@@ -76,6 +76,10 @@ def headline_metrics(report: dict) -> dict[str, float]:
     if run:
         m["seconds_per_statement.mean"] = run["seconds_per_statement"]["mean"]
         m["peak_memory_mb"] = run["peak_memory_mb"]
+    scoring = report.get("scoring_run", {})
+    if scoring:
+        m["scoring.seconds_per_statement"] = scoring["seconds_per_statement"]
+        m["scoring.peak_memory_mb"] = scoring["peak_memory_mb"]
     return {k: float(v) for k, v in m.items() if v is not None}
 
 

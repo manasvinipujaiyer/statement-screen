@@ -15,7 +15,9 @@ the whole split). Outputs in <out>/<split>/:
     group_features.parquet     recurring-payment features per group (for Week 4)
     group_rules.parquet        per group: which rules fired, and why or why not
     statement_results.parquet  per statement: has_salary, employer and the reason
-    patterns_run.json       counts, seconds per statement, peak memory, the config, and
+    patterns_run.json       counts, seconds per statement, peak memory (resource.getrusage's
+                            ru_maxrss, converted by summary.peak_memory_bytes: it is bytes
+                            on macOS but kilobytes on Linux), the config, and
                             how many rows had an unknown or variant narration style
                             (with examples for the train split only)
 """

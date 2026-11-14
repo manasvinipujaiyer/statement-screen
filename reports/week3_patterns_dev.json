@@ -1127,6 +1127,11 @@
   },
   "rows": 176576,
   "rows_without_truth": 0,
+  "scoring_run": {
+    "peak_memory_mb": 283.1,
+    "seconds_per_statement": 0.0008,
+    "seconds_total": 0.2
+  },
   "split": "dev",
   "statement_errors": [
     {
