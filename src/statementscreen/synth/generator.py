@@ -33,6 +33,7 @@ from statementscreen.synth import hard_cases as hc
 from statementscreen.synth import names
 from statementscreen.synth.banks import random_bank, random_ifsc
 from statementscreen.synth.descriptions import Narrator, spelling_variants
+from statementscreen.synth.dialect import Dialect
 from statementscreen.synth.models import Draft, IncomeTruth, Statement, Transaction
 from statementscreen.synth.util import (
     CENT,
@@ -113,7 +114,8 @@ def _salaried_income(rng, fake, narrator, months, start, end):
     for d in dates:
         # A quarter of credits use another spelling of the employer's name.
         shown = employer if rng.random() >= 0.25 else str(rng.choice(variants))
-        drafts.append(Draft(d, narrator.salary(shown, d), net_pay, "salary", (), employer))
+        text = narrator.as_kind("salary", narrator.salary(shown, d), shown, d)
+        drafts.append(Draft(d, text, net_pay, "salary", (), employer))
     return drafts, IncomeTruth("salaried", (employer,), "monthly", net_pay, Decimal(0))
 
 
@@ -137,6 +139,7 @@ def _gig_income(rng, fake, narrator, months, start, end):
                     text = narrator.imps_credit(platform, "PAYOUT")
                 else:
                     text = narrator.neft_credit(platform, posted, "WEEKLY SETTLEMENT")
+                text = narrator.as_kind("gig_credit", text, platform, posted)
                 drafts.append(Draft(posted, text, amount, "gig_income", (), platform))
             d += timedelta(days=7)
     return drafts, IncomeTruth("gig", tuple(platforms), "weekly", None, Decimal(0))
@@ -166,6 +169,7 @@ def _self_employed_income(rng, fake, narrator, months, start, end):
             else:
                 payer = fake.name().upper()
                 text = narrator.imps_credit(payer, "PAYMENT")
+            text = narrator.as_kind("business_credit", text, payer, posted)
             drafts.append(Draft(posted, text, amount, "business_income", (), payer))
     return drafts, IncomeTruth("self_employed", tuple(clients), "irregular", None, Decimal(0))
 
@@ -253,26 +257,34 @@ def _month_spending(
             text = narrator.imps_debit(home.landlord, "RENT")
         else:
             text = narrator.neft_debit(home.landlord, d, "RENT")
+        text = narrator.as_kind("rent", text, home.landlord, d)
         add(d, text, -home.rent, "rent", home.landlord)
 
     # EMI collected by NACH on a working day.
     if home.has_loan:
         d = working_day_within(_day_in(first, home.emi_day), start, end)
-        add(d, narrator.nach_debit(home.lender, home.umrn), -home.emi, "loan_payment", home.lender)
+        text = narrator.nach_debit(home.lender, home.umrn)
+        text = narrator.as_kind("emi", text, home.lender, d, umrn=home.umrn)
+        add(d, text, -home.emi, "loan_payment", home.lender)
 
     # Bills via BBPS, prepaid recharge via UPI, subscriptions by card.
     d = _day_in(first, home.bill_day)
-    add(d, narrator.bill(names.ELECTRICITY), -rupees(rng.uniform(600, 4500)), "utilities",
-        names.ELECTRICITY)  # fmt: skip
+    text = narrator.as_kind("bill", narrator.bill(names.ELECTRICITY), names.ELECTRICITY, d)
+    add(d, text, -rupees(rng.uniform(600, 4500)), "utilities", names.ELECTRICITY)
     if home.postpaid is not None:
-        add(d, narrator.bill(names.POSTPAID), -home.postpaid, "utilities", names.POSTPAID)
+        text = narrator.as_kind("bill", narrator.bill(names.POSTPAID), names.POSTPAID, d)
+        add(d, text, -home.postpaid, "utilities", names.POSTPAID)
     else:
-        add(d, narrator.upi_debit(names.PREPAID, "RECHARGE"), -home.prepaid, "utilities",
-            names.PREPAID)  # fmt: skip
+        text = narrator.upi_debit(names.PREPAID, "RECHARGE")
+        text = narrator.as_kind("upi_spend", text, names.PREPAID, d)
+        add(d, text, -home.prepaid, "utilities", names.PREPAID)
     if home.broadband is not None:
-        add(d, narrator.bill(names.BROADBAND), -home.broadband, "utilities", names.BROADBAND)
+        text = narrator.as_kind("bill", narrator.bill(names.BROADBAND), names.BROADBAND, d)
+        add(d, text, -home.broadband, "utilities", names.BROADBAND)
     for sub, price, day in home.subscriptions:
-        add(_day_in(first, day), narrator.card(sub), -price, "subscription", sub)
+        posted = _day_in(first, day)
+        text = narrator.as_kind("card", narrator.card(sub), sub, posted, city=home.city)
+        add(posted, text, -price, "subscription", sub)
 
     # UPI spends: a budget that scales with income, split over many small payments.
     budget = usual * home.spend_share * rng.uniform(0.85, 1.15)
@@ -287,7 +299,9 @@ def _month_spending(
         value = float(np.clip(base * scale, SPEND_MIN, SPEND_MAX))
         # Most UPI payments are whole rupees; a few (fuel, online orders) carry paise.
         amount = -(rupees(value) if rng.random() < 0.8 else money(value))
-        add(_random_day(rng, first), narrator.upi_debit(merchant), amount, str(cat), merchant)
+        posted = _random_day(rng, first)
+        text = narrator.as_kind("upi_spend", narrator.upi_debit(merchant), merchant, posted)
+        add(posted, text, amount, str(cat), merchant)
 
     # ATM cash: mostly multiples of 500.
     for _ in range(min(int(rng.poisson(1.0)), 3)):
@@ -296,21 +310,26 @@ def _month_spending(
         else:
             cash = 100 * int(rng.integers(5, 101))
         bank = narrator.own_bank.name.upper()
-        add(_random_day(rng, first), narrator.atm(home.city), -Decimal(cash).quantize(CENT),
-            "cash", bank)  # fmt: skip
+        posted = _random_day(rng, first)
+        text = narrator.as_kind("atm", narrator.atm(home.city), bank, posted, city=home.city)
+        add(posted, text, -Decimal(cash).quantize(CENT), "cash", bank)
 
-    # Occasional events.
+    # Occasional events. (Random draws stay in their original order: day, text, amount.)
     if rng.random() < P_REFUND:
         merchant = str(rng.choice(home.merchants["shopping"]))
-        add(_random_day(rng, first), narrator.refund(merchant), money(rng.uniform(50, 1500)),
-            "refund", merchant)  # fmt: skip
+        posted = _random_day(rng, first)
+        text = narrator.as_kind("refund", narrator.refund(merchant), merchant, posted)
+        add(posted, text, money(rng.uniform(50, 1500)), "refund", merchant)
     if rng.random() < P_FAMILY_TRANSFER:
         relative = fake.name().upper()
         gift = rupees(round(rng.uniform(500, 15_000), -2))
-        text = (
-            narrator.upi_credit(relative) if rng.random() < 0.7 else narrator.imps_credit(relative)
-        )
-        add(_random_day(rng, first), text, gift, "transfer_in", relative)
+        if rng.random() < 0.7:
+            text, kind = narrator.upi_credit(relative), "upi_credit"
+        else:
+            text, kind = narrator.imps_credit(relative), "transfer_in"
+        posted = _random_day(rng, first)
+        text = narrator.as_kind(kind, text, relative, posted)
+        add(posted, text, gift, "transfer_in", relative)
 
     # Self-employed: advance tax on the Indian due dates, and GST on the 20th if registered.
     if home.tax_share:
@@ -407,7 +426,7 @@ def _interest_credits(
         days = (q_end - q_start).days + 1
         amount = money(float(total) / days * rate * days / 365)
         if amount >= 1:  # banks don't credit interest below a rupee
-            text = narrator.interest(q_start, q_end)
+            text = narrator.as_kind("interest", narrator.interest(q_start, q_end), "", q_end)
             credits.append(
                 Draft(q_end, text, amount, "interest", (), narrator.own_bank.name.upper())
             )
@@ -423,10 +442,13 @@ def generate_statement(
     months: int = 6,
     start: date = date(2025, 1, 1),
     hard_cases: Sequence[str] = (),
+    dialect: Dialect | None = None,
 ) -> Statement:
     """Build one statement covering ``months`` whole months, beginning with ``start``'s month.
 
     ``hard_cases`` lists which tricky situations to inject (see ``hard_cases.py``).
+    ``dialect`` rewrites the narrations (see ``dialect.py``); None keeps today's formats.
+    Labels, amounts and balances are the same either way.
     """
     if customer_type not in _INCOME_BUILDERS:
         raise ValueError(f"customer_type must be one of {CUSTOMER_TYPES}, got {customer_type!r}")
@@ -441,6 +463,10 @@ def generate_statement(
     bank = random_bank(rng)
     holder = fake.name().upper()
     narrator = Narrator.random(rng, bank, holder)
+    if dialect is not None:  # its own stream, so rng draws exactly what it draws without one
+        narrator = dataclasses.replace(
+            narrator, dialect=dialect, drng=np.random.default_rng([seed, 2])
+        )
     # Same quirks and same counterparty accounts, but drawing from the hard-case stream.
     hc_narrator = dataclasses.replace(narrator, rng=hc_rng)
 
@@ -537,4 +563,5 @@ def generate_statement(
         customer_id=f"{int(rng.integers(10**8, 10**9))}",
         address=fake.address().replace("\n", ", "),
         declined_debits=n_declined,
+        narration_formats=dict(narrator.dialect_log),  # shared with hc_narrator
     )

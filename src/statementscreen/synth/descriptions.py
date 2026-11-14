@@ -13,6 +13,11 @@ statement gets one ``Narrator`` whose quirks are drawn from the statement's seed
 
 Only names get typos; IFSC codes, reference numbers and channel keywords stay exact.
 All counterparty banks, IFSC codes and UPI handles are fictional (see ``banks.py``).
+
+Narration dialects (``dialect.py``): every call site still builds today's text first, so
+``rng`` draws exactly as it does without a dialect, then passes it through ``as_kind``.
+With no dialect, ``as_kind`` returns that text unchanged. With one, it returns the
+dialect's text, drawn entirely from ``drng``, a separate stream.
 """
 
 import re
@@ -22,6 +27,7 @@ from datetime import date
 import numpy as np
 
 from statementscreen.synth.banks import FictionalBank, random_bank, random_ifsc
+from statementscreen.synth.dialect import NAME_SLOTS, Dialect, Format
 
 _LTD_STYLES = ("PVT LTD", "PRIVATE LIMITED", "P LTD", "PVT. LTD.")
 _TECHNICAL_RETURN_REASONS = ("MANDATE NOT REGISTERED", "PAYMENT STOPPED", "A/C BLOCKED")
@@ -84,6 +90,13 @@ class Narrator:
     ltd_style: str
     card4: str
     _accounts: dict[str, tuple[FictionalBank, str, str]] = field(default_factory=dict)
+    # Narration dialect (None = today's formats). drng is its own random stream.
+    dialect: Dialect | None = None
+    drng: np.random.Generator | None = None
+    # Each dialect text written -> (kind, line number in the dialect file).
+    dialect_log: dict[str, tuple[str, int]] = field(default_factory=dict)
+    _dialect_formats: dict[str, Format] = field(default_factory=dict)  # kind -> chosen format
+    _dialect_accounts: dict[str, tuple[FictionalBank, str, str]] = field(default_factory=dict)
 
     @classmethod
     def random(cls, rng: np.random.Generator, own_bank: FictionalBank, holder: str) -> "Narrator":
@@ -104,9 +117,12 @@ class Narrator:
 
     def name(self, name: str) -> str:
         """Display a counterparty name with this statement's quirks applied."""
+        return self._messy(name, self.rng)
+
+    def _messy(self, name: str, rng: np.random.Generator) -> str:
         name = name.replace(" PVT LTD", f" {self.ltd_style}")
-        if self.rng.random() < self.typo_rate:
-            name = typo(self.rng, name)
+        if rng.random() < self.typo_rate:
+            name = typo(rng, name)
         return name.title() if self.case == "title_names" else name.upper()
 
     def _finish(self, text: str) -> str:
@@ -133,6 +149,66 @@ class Narrator:
     def _credit_parts(self, remitter: str, d: date) -> tuple[FictionalBank, str, str]:
         bank, _, ifsc = self._account(remitter)
         return bank, ifsc, self._utr(bank, d)
+
+    # ------------------------------------------------------------------ dialects
+
+    def as_kind(self, kind: str, text: str, who: str, d: date, umrn: str = "",
+                city: str = "") -> str:  # fmt: skip
+        """``text`` (today's narration, already built) in this statement's dialect.
+
+        kind: the dialect kind of the event (dialect.KINDS); who: its counterparty; d: the
+        posting date. No dialect, or no format for this kind: ``text`` unchanged.
+        """
+        if self.dialect is None:
+            return text
+        if kind not in self._dialect_formats:
+            formats = self.dialect.for_kind(kind)
+            if not formats:
+                return text
+            # One format per kind per statement, like a bank's house style.
+            self._dialect_formats[kind] = formats[int(self.drng.integers(len(formats)))]
+        fmt = self._dialect_formats[kind]
+        values = {f: self._dialect_value(f, kind, who, d, umrn, city) for f in fmt.fields}
+        out = self._finish(fmt.render(values))
+        self.dialect_log[out] = (kind, fmt.line)
+        return out
+
+    def _dialect_account(self, name: str) -> tuple[FictionalBank, str, str]:
+        """The counterparty's account as today's narration used it; never draws from rng."""
+        if name in self._accounts:
+            return self._accounts[name]
+        if name not in self._dialect_accounts:
+            bank = random_bank(self.drng)
+            slug = re.sub(r"[^a-z]", "", name.lower())[:10] or "pay"
+            vpa = f"{slug}{_digits(self.drng, 2)}@{bank.upi_handle}"
+            self._dialect_accounts[name] = (bank, vpa, random_ifsc(self.drng, bank))
+        return self._dialect_accounts[name]
+
+    def _dialect_value(self, field_name: str, kind: str, who: str, d: date, umrn: str,
+                       city: str) -> str:  # fmt: skip
+        rng = self.drng
+        if field_name in NAME_SLOTS:
+            return self._messy(who, rng)
+        if field_name == "ref":
+            return _digits(rng, 12)
+        if field_name == "utr":
+            bank = self._dialect_account(who)[0]
+            return f"{bank.code}N{d:%y}{d.timetuple().tm_yday:03d}{_digits(rng, 6)}"
+        if field_name == "ifsc":
+            return self._dialect_account(who)[2]
+        if field_name == "vpa":
+            return self._dialect_account(who)[1]
+        if field_name == "month":
+            return pay_month_label(d) if kind == "salary" else f"{d:%b%y}".upper()
+        if field_name == "city":
+            if not city:
+                raise ValueError(f"{kind}: format needs {{city}} but the event has none")
+            return city.upper()
+        if field_name == "umrn":
+            if not umrn:
+                raise ValueError(f"{kind}: format needs {{umrn}} but the event has none")
+            return umrn
+        raise ValueError(f"unknown placeholder {field_name!r}")  # dialect.py refuses these
 
     # ------------------------------------------------------------------ credits
 

@@ -11,6 +11,11 @@ Options:
     --out             output folder (refused if not empty, unless --overwrite)
     --overwrite       replace a previous batch in --out (only this tool's files are removed)
     --dry-run         print the plan summary and stop; writes nothing
+    --narration-dialect
+                      "default" (today's formats; output byte-identical to before) or the
+                      name of a file in synth/dialects/, e.g. karan_v1. Changes narrations
+                      only: labels, amounts and balances are the same. Also writes
+                      narration_formats.parquet (which dialect line wrote each narration).
 """
 
 import argparse
@@ -29,11 +34,13 @@ from statementscreen.batch import (
     parse_mix,
     plan_batch,
 )
+from statementscreen.synth.dialect import DEFAULT as DEFAULT_DIALECT
+from statementscreen.synth.dialect import available_dialects, load_dialect
 from statementscreen.synth.hard_cases import HARD_CASES
 
 # Everything a batch writes. --overwrite removes these and nothing else.
-OUTPUT_NAMES = ("pdfs", "labels", "_parts", "transactions.parquet", "manifest.csv",
-                "run_summary.json")  # fmt: skip
+OUTPUT_NAMES = ("pdfs", "labels", "_parts", "_formats", "transactions.parquet", "manifest.csv",
+                "narration_formats.parquet", "run_summary.json")  # fmt: skip
 
 
 class OutputFolderError(Exception):
@@ -101,6 +108,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--out", type=Path, default=Path("data/synthetic"), help="output folder")
     p.add_argument("--overwrite", action="store_true", help="replace a previous batch in --out")
     p.add_argument("--dry-run", action="store_true", help="print the plan and write nothing")
+    p.add_argument("--narration-dialect", default=DEFAULT_DIALECT,
+                   help=f"narration formats: {', '.join(available_dialects())}")  # fmt: skip
     return p
 
 
@@ -110,10 +119,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         kwargs = {"mix": parse_mix(args.mix)} if args.mix is not None else {}
         config = BatchConfig(seed=args.seed, hard_case_rate=args.hard_case_rate, **kwargs)
         plans = plan_batch(config, args.n)
-    except ValueError as e:
+        dialect = load_dialect(args.narration_dialect)
+    except ValueError as e:  # includes DialectError
         print(f"error: {e}", file=sys.stderr)
         return 2
     print(plan_summary(plans))
+    print(f"  narrations:     {args.narration_dialect}")
     if args.dry_run:
         return 0
     try:
@@ -131,7 +142,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     from statementscreen.verify import verify_batch
 
     started = time.perf_counter()
-    rows = write_batch(plans, args.out, progress)
+    rows = write_batch(plans, args.out, progress, dialect)
     write_seconds = time.perf_counter() - started
 
     # Check the batch from its files alone, then record what the run produced and cost.
@@ -141,6 +152,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     summary = build_run_summary(
         config, plans, rows, report, write_seconds, verify_seconds, args.out
     )
+    summary["narration_dialect"] = args.narration_dialect
     text = json.dumps(summary, indent=2, sort_keys=True) + "\n"
     (args.out / "run_summary.json").write_text(text, encoding="utf-8")
 

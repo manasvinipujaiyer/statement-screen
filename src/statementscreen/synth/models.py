@@ -99,6 +99,9 @@ class Statement:
     address: str = ""
     account_type: str = "Savings Account"
     declined_debits: int = 0  # debits dropped because they would have overdrawn the account
+    # Narration dialect only: each dialect text -> (kind, line in the dialect file). Empty
+    # without a dialect. Ground truth for evaluation; never printed on the PDF.
+    narration_formats: dict[str, tuple[str, int]] = field(default_factory=dict)
 
     @property
     def closing_balance(self) -> Decimal:

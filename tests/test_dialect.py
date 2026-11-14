@@ -1,11 +1,14 @@
 """Narration dialects: loading the files, and keeping the default output byte-identical."""
 
 import json
+from functools import cache
 from pathlib import Path
 
+import polars as pl
 import pytest
 
-from statementscreen.batch_hash import fingerprint
+from statementscreen.batch import BatchConfig, plan_batch
+from statementscreen.batch_hash import fingerprint, fingerprint_one
 from statementscreen.synth.dialect import (
     KINDS,
     DialectError,
@@ -13,6 +16,7 @@ from statementscreen.synth.dialect import (
     load_dialect,
     parse_dialect,
 )
+from statementscreen.synth.generator import generate_statement
 
 FIXTURE = Path(__file__).parent / "data" / "default_batch_sha256.json"
 KARAN = Path(__file__).parents[1] / "src/statementscreen/synth/dialects/karan_v1.txt"
@@ -77,6 +81,89 @@ def test_bad_lines_are_refused_with_their_line_number(line: str, message: str) -
     with pytest.raises(DialectError, match=message) as e:
         parse_dialect(f"interest | CR | INT\n{line}\n", "test")
     assert "test line 2" in str(e.value)
+
+
+# ---------------------------------------------------------------- karan_v1 statements
+
+# 30 statements with every applicable hard case: enough for each kind to appear (EMI
+# returns only come from technical bounces, self-transfers only from shortfall bounces).
+PLANS = plan_batch(BatchConfig(seed=42, hard_case_rate=1.0), 30)
+
+
+@cache
+def _pair(number: int):
+    p = PLANS[number]
+    args = (p.seed, p.customer_type, p.months, p.start)
+    default = generate_statement(*args, hard_cases=p.hard_cases)
+    karan = generate_statement(*args, hard_cases=p.hard_cases, dialect=load_dialect("karan_v1"))
+    return default, karan
+
+
+def _truth(t) -> tuple:
+    """Everything about a transaction except its narration."""
+    return (t.posted, t.amount, t.balance, t.category, t.hard_cases, t.canonical_counterparty)
+
+
+def test_karan_changes_narrations_but_not_labels_amounts_or_balances() -> None:
+    changed = total = 0
+    for i in range(len(PLANS)):
+        default, karan = _pair(i)
+        assert len(default.transactions) == len(karan.transactions)
+        for a, b in zip(default.transactions, karan.transactions, strict=True):
+            assert _truth(a) == _truth(b)
+            changed += a.description != b.description
+            total += 1
+        assert default.income == karan.income
+        assert default.hard_case_details == karan.hard_case_details
+        assert default.opening_balance == karan.opening_balance
+        assert default.declined_debits == karan.declined_debits
+        assert default.narration_formats == {}
+    assert changed / total > 0.95  # only advance tax and GST payments keep today's text
+
+
+def test_every_kind_appears_and_every_dialect_narration_is_logged() -> None:
+    kinds: set[str] = set()
+    for i in range(len(PLANS)):
+        _, karan = _pair(i)
+        for t in karan.transactions:
+            if t.description in karan.narration_formats:
+                kinds.add(karan.narration_formats[t.description][0])
+            else:  # the only events without a kind
+                assert t.description.startswith(("TAX/ADVANCE TAX", "GST PMT/")), t.description
+    assert kinds == set(KINDS)
+
+
+def test_bonus_and_bounce_charges_use_the_dialect() -> None:
+    for i in range(len(PLANS)):
+        _, karan = _pair(i)
+        for t in karan.transactions:
+            if t.category == "bonus":
+                assert karan.narration_formats[t.description][0] == "salary"
+            if t.category in ("bounce_charge", "bounce_gst"):
+                assert karan.narration_formats[t.description][0] == "emi_return_charge"
+
+
+def test_karan_batch_files(tmp_path) -> None:
+    """Same labels and manifest as the recorded default batch; transactions differ only in
+    their narrations; narration_formats.parquet names the line behind every narration."""
+    recorded = json.loads(FIXTURE.read_text(encoding="utf-8"))["self_employed"]["sha256"]
+    folder = tmp_path / "karan"
+    now = fingerprint_one("self_employed", folder, dialect=load_dialect("karan_v1"))["sha256"]
+    same = {k for k in recorded if k.startswith("labels/") or k == "manifest.csv"}
+    assert {k: now[k] for k in same} == {k: recorded[k] for k in same}
+    assert all(now[k] != recorded[k] for k in recorded if k.startswith("pdfs/"))
+
+    karan = pl.read_parquet(folder / "transactions.parquet")
+    formats = pl.read_parquet(folder / "narration_formats.parquet")
+    assert formats.select("statement_id", "row").equals(karan.select("statement_id", "row"))
+    assert set(formats["dialect"]) == {"karan_v1"}
+    assert (
+        formats["kind"].null_count()
+        == karan.filter(
+            pl.col("description").str.starts_with("TAX/ADVANCE TAX")
+            | pl.col("description").str.starts_with("GST PMT/")
+        ).height
+    )
 
 
 def test_placeholders_are_kept_in_order() -> None:
