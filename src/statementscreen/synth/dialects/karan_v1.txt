@@ -1,0 +1,26 @@
+salary | CR | NEFT CR-{ifsc}-{employer}-SALARY {month}-{utr}
+salary | CR | SAL CREDIT {employer} {month} REF {ref}
+salary | CR | IMPS/{utr}/{employer}/SALARY FOR {month}
+emi | DR | NACH DR/{umrn}/{lender}/EMI {month}
+emi | DR | ACH D- {lender} LOAN EMI-{umrn}
+emi_return | CR | NACH RTN/{umrn}/{lender}/INSUFF FUNDS
+emi_return | CR | ACH D RETURN-{lender}-{umrn}-FUNDS INSUFFICIENT
+emi_return_charge | DR | NACH RTN CHGS {umrn} {month}
+emi_return_charge | DR | MANDATE BOUNCE CHARGES INCL GST-{ref}
+rent | DR | IMPS/{utr}/{payee}/RENT {month}
+rent | DR | NEFT DR-{ifsc}-{payee}-HOUSE RENT {month}-{ref}
+upi_spend | DR | UPI/DR/{ref}/{merchant}/{vpa}/PAYMENT
+upi_spend | DR | UPI-{merchant}-{vpa}-{ref}-UPI
+upi_credit | CR | UPI/CR/{ref}/{sender}/{vpa}
+atm | DR | ATM WDL {city} {ref}
+bill | DR | BBPS DR {biller} BILL {month} {ref}
+bill | DR | BILLPAY/{biller}/{ref}
+card | DR | POS {merchant} {city} {ref}
+card | DR | ECOM PUR/{merchant}/{ref}
+interest | CR | INT.PD {month}
+refund | CR | UPI/REV/{ref}/{merchant}/REVERSAL
+refund | CR | REFUND/{merchant}/{ref}
+gig_credit | CR | IMPS/{utr}/{sender}/WEEKLY PAYOUT
+business_credit | CR | NEFT CR-{ifsc}-{sender}-INV {ref}-{utr}
+transfer_in | CR | IMPS/{utr}/{sender}/FUND TRANSFER
+transfer_out | DR | NEFT DR-{ifsc}-{payee}-{ref}
