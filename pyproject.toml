@@ -10,11 +10,14 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "faker>=40.44.0",
+    "mlflow>=3.18.0",
     "numpy>=2.5.4",
     "pdfplumber>=0.11.10",
     "polars>=2.1.0",
     "pypdf>=6.21.4",
+    "rapidfuzz>=3.14.6",
     "reportlab>=5.1.0",
+    "scikit-learn>=1.9.1",
 ]
 
 [build-system]

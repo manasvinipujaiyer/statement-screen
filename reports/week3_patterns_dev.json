@@ -1,0 +1,1184 @@
+{
+  "batch": "week1_n2000",
+  "breakdown": {
+    "by_customer_type": {
+      "gig": {
+        "employer": {
+          "exact_match_rate": null,
+          "fuzzy_match_rate": null,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 0
+        },
+        "grouping": {
+          "employer_recall": null,
+          "f1": 0.9935592127045627,
+          "pairs_both": 463630,
+          "pairs_predicted": 464838,
+          "pairs_truth": 468433,
+          "precision": 0.9974012451649822,
+          "recall": 0.9897466660120017,
+          "true_salary_rows": 0
+        },
+        "has_salary": {
+          "f1": null,
+          "fn": 0,
+          "fp": 0,
+          "precision": null,
+          "recall": null,
+          "tp": 0
+        },
+        "statements": 63,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 38
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 294
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 398
+          },
+          "is_salary": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "precision": null,
+            "recall": null,
+            "tp": 0
+          }
+        }
+      },
+      "salaried": {
+        "employer": {
+          "exact_match_rate": 0.9567567567567568,
+          "fuzzy_match_rate": 0.9783783783783784,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 185
+        },
+        "grouping": {
+          "employer_recall": 0.9447890818858561,
+          "f1": 0.9952458243446483,
+          "pairs_both": 2246966,
+          "pairs_predicted": 2247647,
+          "pairs_truth": 2267752,
+          "precision": 0.999697016479901,
+          "recall": 0.990834094733463,
+          "true_salary_rows": 1612
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 185
+        },
+        "statements": 185,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 116
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 903
+          },
+          "is_rent": {
+            "f1": 0.9969736273238219,
+            "fn": 7,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9939655172413793,
+            "tp": 1153
+          },
+          "is_salary": {
+            "f1": 0.9987577639751554,
+            "fn": 4,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9975186104218362,
+            "tp": 1608
+          }
+        }
+      },
+      "self_employed": {
+        "employer": {
+          "exact_match_rate": null,
+          "fuzzy_match_rate": null,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 0
+        },
+        "grouping": {
+          "employer_recall": null,
+          "f1": 0.9960637491331529,
+          "pairs_both": 862517,
+          "pairs_predicted": 863008,
+          "pairs_truth": 868843,
+          "precision": 0.9994310597352516,
+          "recall": 0.9927190528093107,
+          "true_salary_rows": 0
+        },
+        "has_salary": {
+          "f1": null,
+          "fn": 0,
+          "fp": 0,
+          "precision": null,
+          "recall": null,
+          "tp": 0
+        },
+        "statements": 52,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 26
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 265
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 333
+          },
+          "is_salary": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "precision": null,
+            "recall": null,
+            "tp": 0
+          }
+        }
+      }
+    },
+    "by_hard_case": {
+      "bonus_month": {
+        "employer": {
+          "exact_match_rate": 0.8888888888888888,
+          "fuzzy_match_rate": 0.9259259259259259,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 27
+        },
+        "grouping": {
+          "employer_recall": 0.9434782608695652,
+          "f1": 0.9956196492394648,
+          "pairs_both": 359349,
+          "pairs_predicted": 359423,
+          "pairs_truth": 362437,
+          "precision": 0.9997941144556692,
+          "recall": 0.9914798985754766,
+          "true_salary_rows": 230
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 27
+        },
+        "statements": 27,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 28
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 137
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 89
+          },
+          "is_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 230
+          }
+        }
+      },
+      "emi_bounce": {
+        "employer": {
+          "exact_match_rate": 0.9555555555555556,
+          "fuzzy_match_rate": 1.0,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 45
+        },
+        "grouping": {
+          "employer_recall": 0.9291139240506329,
+          "f1": 0.9940862546637946,
+          "pairs_both": 832083,
+          "pairs_predicted": 832696,
+          "pairs_truth": 841370,
+          "precision": 0.9992638369825242,
+          "recall": 0.9889620499898975,
+          "true_salary_rows": 395
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 45
+        },
+        "statements": 74,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 180
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 598
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 445
+          },
+          "is_salary": {
+            "f1": 0.9987325728770595,
+            "fn": 1,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9974683544303797,
+            "tp": 394
+          }
+        }
+      },
+      "employer_rename": {
+        "employer": {
+          "exact_match_rate": 0.9655172413793104,
+          "fuzzy_match_rate": 0.9655172413793104,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 29
+        },
+        "grouping": {
+          "employer_recall": 0.6521739130434783,
+          "f1": 0.9950627568588248,
+          "pairs_both": 358342,
+          "pairs_predicted": 358405,
+          "pairs_truth": 361835,
+          "precision": 0.9998242212022712,
+          "recall": 0.9903464286207802,
+          "true_salary_rows": 253
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 29
+        },
+        "statements": 29,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 18
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 137
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 214
+          },
+          "is_salary": {
+            "f1": 0.998019801980198,
+            "fn": 1,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9960474308300395,
+            "tp": 252
+          }
+        }
+      },
+      "missed_salary": {
+        "employer": {
+          "exact_match_rate": 0.9714285714285714,
+          "fuzzy_match_rate": 0.9714285714285714,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 35
+        },
+        "grouping": {
+          "employer_recall": 0.9672727272727273,
+          "f1": 0.9950435928283441,
+          "pairs_both": 452009,
+          "pairs_predicted": 452385,
+          "pairs_truth": 456136,
+          "precision": 0.9991688495418726,
+          "recall": 0.9909522598523247,
+          "true_salary_rows": 275
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 35
+        },
+        "statements": 35,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 20
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 154
+          },
+          "is_rent": {
+            "f1": 0.9809264305177112,
+            "fn": 7,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9625668449197861,
+            "tp": 180
+          },
+          "is_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 275
+          }
+        }
+      },
+      "none": {
+        "employer": {
+          "exact_match_rate": 0.9661016949152542,
+          "fuzzy_match_rate": 1.0,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 59
+        },
+        "grouping": {
+          "employer_recall": 1.0,
+          "f1": 0.9956069527082629,
+          "pairs_both": 1780311,
+          "pairs_predicted": 1781767,
+          "pairs_truth": 1794566,
+          "precision": 0.9991828336701712,
+          "recall": 0.9920565752388043,
+          "true_salary_rows": 536
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 59
+        },
+        "statements": 145,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "precision": null,
+            "recall": null,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 596
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 962
+          },
+          "is_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 536
+          }
+        }
+      },
+      "salary_date_shift": {
+        "employer": {
+          "exact_match_rate": 0.9777777777777777,
+          "fuzzy_match_rate": 0.9777777777777777,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 45
+        },
+        "grouping": {
+          "employer_recall": 0.9450261780104712,
+          "f1": 0.9954585651645234,
+          "pairs_both": 540315,
+          "pairs_predicted": 540384,
+          "pairs_truth": 545176,
+          "precision": 0.9998723130218511,
+          "recall": 0.9910836133652252,
+          "true_salary_rows": 382
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 45
+        },
+        "statements": 45,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 22
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 206
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 266
+          },
+          "is_salary": {
+            "f1": 0.9947368421052631,
+            "fn": 4,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9895287958115183,
+            "tp": 378
+          }
+        }
+      }
+    },
+    "by_layout": {
+      "columns": {
+        "employer": {
+          "exact_match_rate": 0.956989247311828,
+          "fuzzy_match_rate": 0.978494623655914,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 93
+        },
+        "grouping": {
+          "employer_recall": 0.9488428745432399,
+          "f1": 0.9948535503570538,
+          "pairs_both": 1779600,
+          "pairs_predicted": 1781136,
+          "pairs_truth": 1796476,
+          "precision": 0.9991376290187836,
+          "recall": 0.9906060531841226,
+          "true_salary_rows": 821
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 93
+        },
+        "statements": 152,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 82
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 697
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 890
+          },
+          "is_salary": {
+            "f1": 0.9987804878048782,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.997563946406821,
+            "tp": 819
+          }
+        }
+      },
+      "drcr": {
+        "employer": {
+          "exact_match_rate": 0.9565217391304348,
+          "fuzzy_match_rate": 0.9782608695652174,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 92
+        },
+        "grouping": {
+          "employer_recall": 0.9405815423514539,
+          "f1": 0.9955916177733048,
+          "pairs_both": 1793513,
+          "pairs_predicted": 1794357,
+          "pairs_truth": 1808552,
+          "precision": 0.9995296365216063,
+          "recall": 0.9916845078272563,
+          "true_salary_rows": 791
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 92
+        },
+        "statements": 148,
+        "transactions": {
+          "is_bounce": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 98
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 765
+          },
+          "is_rent": {
+            "f1": 0.9964912280701755,
+            "fn": 7,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.993006993006993,
+            "tp": 994
+          },
+          "is_salary": {
+            "f1": 0.9987341772151899,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9974715549936789,
+            "tp": 789
+          }
+        }
+      }
+    }
+  },
+  "config": {
+    "amount_tolerance": 0.05,
+    "bounce_charge_styles": [
+      "ach_rtn_chrg",
+      "nach_rtn_chrgs"
+    ],
+    "bounce_link_days": 7,
+    "bounce_return_styles": [
+      "nach_rtn",
+      "ach_rtn"
+    ],
+    "bounce_tax_style": "gst_on_charge",
+    "day_tolerance": 3,
+    "emi_channels": [
+      "NACH"
+    ],
+    "emi_core_band": 0.02,
+    "emi_max_per_month": 1.2,
+    "emi_min_months": 3,
+    "emi_min_on_time": 0.6,
+    "fuzz_weight": 0.5,
+    "group_grid": [
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+    ],
+    "group_threshold": 0.45,
+    "holder_match": 90.0,
+    "lender_match": 85.0,
+    "linkage": "average",
+    "min_prefix": 4,
+    "ngram_max": 4,
+    "ngram_min": 2,
+    "prefix_join_min": 6,
+    "rename_median_band": 0.1,
+    "rent_channels": [
+      "NEFT",
+      "IMPS",
+      "UPI",
+      "OTHER"
+    ],
+    "rent_max_per_month": 1.2,
+    "rent_min_amount_paise": 150000,
+    "rent_min_coverage": 0.6,
+    "rent_min_months": 3,
+    "rent_min_near_median": 0.8,
+    "rent_min_on_time": 0.6,
+    "salary_channels": [
+      "NEFT",
+      "RTGS",
+      "IMPS",
+      "OTHER"
+    ],
+    "salary_core_band": 0.1,
+    "salary_max_per_month": 1.5,
+    "salary_min_core_share": 0.5,
+    "salary_min_coverage": 0.6,
+    "salary_min_months": 3,
+    "salary_min_on_time": 0.6
+  },
+  "example_counts": {
+    "is_bounce": {
+      "false_flag_amount_paise": null,
+      "false_flags": 0,
+      "false_flags_by_true_category": {},
+      "misses": 0,
+      "misses_by_true_category": {},
+      "true_amount_paise": {
+        "median": 50000.0,
+        "min": 9000,
+        "p01": 9000.0,
+        "p10": 9000.0
+      }
+    },
+    "is_emi": {
+      "false_flag_amount_paise": null,
+      "false_flags": 0,
+      "false_flags_by_true_category": {},
+      "misses": 0,
+      "misses_by_true_category": {},
+      "true_amount_paise": {
+        "median": 1072600.0,
+        "min": 144000,
+        "p01": 151000.0,
+        "p10": 450700.0
+      }
+    },
+    "is_rent": {
+      "false_flag_amount_paise": null,
+      "false_flags": 0,
+      "false_flags_by_true_category": {},
+      "misses": 7,
+      "misses_by_true_category": {
+        "rent": 7
+      },
+      "true_amount_paise": {
+        "median": 1261000.0,
+        "min": 206900,
+        "p01": 216700.0,
+        "p10": 502300.0
+      }
+    },
+    "is_salary": {
+      "false_flag_amount_paise": null,
+      "false_flags": 0,
+      "false_flags_by_true_category": {},
+      "misses": 4,
+      "misses_by_true_category": {
+        "salary": 4
+      },
+      "true_amount_paise": {
+        "median": 5819400.0,
+        "min": 1800000,
+        "p01": 1800000.0,
+        "p10": 2491000.0
+      }
+    }
+  },
+  "false_flags": [],
+  "false_salary_on_non_salaried": {
+    "gig": {
+      "flagged_has_salary": 0,
+      "rate": 0.0,
+      "salary_rows_flagged": 0,
+      "statement_ids": [],
+      "statements": 63
+    },
+    "self_employed": {
+      "flagged_has_salary": 0,
+      "rate": 0.0,
+      "salary_rows_flagged": 0,
+      "statement_ids": [],
+      "statements": 52
+    }
+  },
+  "misses": [
+    {
+      "amount_paise": -2956600,
+      "flag": "is_rent",
+      "group": "D000 'auto yashodhara'",
+      "narration": "NEFT DR-VSTK0040488-YASHODHARA DUGAL-NETBANK-TRGMN240624086",
+      "row": 5,
+      "statement_id": "stmt_0126",
+      "truth": {
+        "category": "rent",
+        "counterparty": "YASHODHARA DUGAL"
+      },
+      "why_not": "not rent: core in 4 of 7 months (57%, needs 60%)"
+    },
+    {
+      "amount_paise": -2956600,
+      "flag": "is_rent",
+      "group": "D000 'auto yashodhara'",
+      "narration": "NEFT DR-VSTK0040488-YASHODHARA DUGAL-NETBANK-TRGMN240936681",
+      "row": 80,
+      "statement_id": "stmt_0126",
+      "truth": {
+        "category": "rent",
+        "counterparty": "YASHODHARA DUGAL"
+      },
+      "why_not": "not rent: core in 4 of 7 months (57%, needs 60%)"
+    },
+    {
+      "amount_paise": -2956600,
+      "flag": "is_rent",
+      "group": "D000 'auto yashodhara'",
+      "narration": "NEFT DR-VSTK0040488-YASHODHARA DUGAL-NETBANK-TRGMN241233297",
+      "row": 152,
+      "statement_id": "stmt_0126",
+      "truth": {
+        "category": "rent",
+        "counterparty": "YASHODHARA DUGAL"
+      },
+      "why_not": "not rent: core in 4 of 7 months (57%, needs 60%)"
+    },
+    {
+      "amount_paise": -2956600,
+      "flag": "is_rent",
+      "group": "D000 'auto yashodhara'",
+      "narration": "NEFT DR-VSTK0040488-YASHODHARA DUGAL-NETBANK-TRGMN241544492",
+      "row": 223,
+      "statement_id": "stmt_0126",
+      "truth": {
+        "category": "rent",
+        "counterparty": "YASHODHARA DUGAL"
+      },
+      "why_not": "not rent: core in 4 of 7 months (57%, needs 60%)"
+    },
+    {
+      "amount_paise": -2956600,
+      "flag": "is_rent",
+      "group": "D000 'auto yashodhara'",
+      "narration": "NEFT DR-VSTK0040488-YASHODHARA DUGAL-NETBANK-TRGMN241847692",
+      "row": 301,
+      "statement_id": "stmt_0126",
+      "truth": {
+        "category": "rent",
+        "counterparty": "YASHODHARA DUGAL"
+      },
+      "why_not": "not rent: core in 4 of 7 months (57%, needs 60%)"
+    },
+    {
+      "amount_paise": -2956600,
+      "flag": "is_rent",
+      "group": "D000 'auto yashodhara'",
+      "narration": "NEFT DR-VSTK0040488-YASHODHARA DUGAL-NETBANK-TRGMN242152525",
+      "row": 369,
+      "statement_id": "stmt_0126",
+      "truth": {
+        "category": "rent",
+        "counterparty": "YASHODHARA DUGAL"
+      },
+      "why_not": "not rent: core in 4 of 7 months (57%, needs 60%)"
+    },
+    {
+      "amount_paise": -2956600,
+      "flag": "is_rent",
+      "group": "D000 'auto yashodhara'",
+      "narration": "NEFT DR-VSTK0040488-YASHODHARA DUGAL-NETBANK-TRGMN242468946",
+      "row": 440,
+      "statement_id": "stmt_0126",
+      "truth": {
+        "category": "rent",
+        "counterparty": "YASHODHARA DUGAL"
+      },
+      "why_not": "not rent: core in 4 of 7 months (57%, needs 60%)"
+    },
+    {
+      "amount_paise": 14362400,
+      "flag": "is_salary",
+      "group": "C001 'yosamo consultancy'",
+      "narration": "NEFT CR-TRGM0265480-YOSAMO CONSULTANCY P LTD-ABEER MA",
+      "row": 118,
+      "statement_id": "stmt_0391",
+      "truth": {
+        "category": "salary",
+        "counterparty": "YOSAMO CONSULTANCY PVT LTD"
+      },
+      "why_not": "not counted as salary: an extra credit in its month, 6 days off the usual day 30"
+    },
+    {
+      "amount_paise": 8291000,
+      "flag": "is_salary",
+      "group": "C000 'mopune systems'",
+      "narration": "NEFT/CR/TRGMN25181961691/Mopune Systems Pvt. Ltd./TRGM05901",
+      "row": 42,
+      "statement_id": "stmt_1183",
+      "truth": {
+        "category": "salary",
+        "counterparty": "MOPUNE SYSTEMS PVT LTD"
+      },
+      "why_not": "not counted as salary: an extra credit in its month, 6 days off the usual day 30"
+    },
+    {
+      "amount_paise": 8438100,
+      "flag": "is_salary",
+      "group": "C000 'shamimo infotech'",
+      "narration": "NEFT/CR/VSTKN24244511406/SHAMIMO INFOTECH/VSTK0473233",
+      "row": 23,
+      "statement_id": "stmt_1523",
+      "truth": {
+        "category": "salary",
+        "counterparty": "SHAMIMO INFOTECH PVT LTD"
+      },
+      "why_not": "not counted as salary: an extra credit in its month, 10 days off the usual day 31"
+    },
+    {
+      "amount_paise": 6626700,
+      "flag": "is_salary",
+      "group": "C000 'yovipu engineering'",
+      "narration": "NEFT/CR/PRVHN24366107196/YOVIPU ENGINEERING P LTD/P",
+      "row": 20,
+      "statement_id": "stmt_1794",
+      "truth": {
+        "category": "salary",
+        "counterparty": "YOVIPU ENGINEERING PVT LTD"
+      },
+      "why_not": "not counted as salary: an extra credit in its month, 8 days off the usual day 30"
+    }
+  ],
+  "overall": {
+    "employer": {
+      "exact_match_rate": 0.9567567567567568,
+      "fuzzy_match_rate": 0.9783783783783784,
+      "fuzzy_threshold": 90.0,
+      "statements_with_true_employer": 185
+    },
+    "grouping": {
+      "employer_recall": 0.9447890818858561,
+      "f1": 0.9952238841721931,
+      "pairs_both": 3573113,
+      "pairs_predicted": 3575493,
+      "pairs_truth": 3605028,
+      "precision": 0.9993343575277591,
+      "recall": 0.9911470867910042,
+      "true_salary_rows": 1612
+    },
+    "has_salary": {
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "tp": 185
+    },
+    "statements": 300,
+    "transactions": {
+      "is_bounce": {
+        "f1": 1.0,
+        "fn": 0,
+        "fp": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "tp": 180
+      },
+      "is_emi": {
+        "f1": 1.0,
+        "fn": 0,
+        "fp": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "tp": 1462
+      },
+      "is_rent": {
+        "f1": 0.9981456953642384,
+        "fn": 7,
+        "fp": 0,
+        "precision": 1.0,
+        "recall": 0.9962982548915917,
+        "tp": 1884
+      },
+      "is_salary": {
+        "f1": 0.9987577639751554,
+        "fn": 4,
+        "fp": 0,
+        "precision": 1.0,
+        "recall": 0.9975186104218362,
+        "tp": 1608
+      }
+    }
+  },
+  "patterns_run": {
+    "config": {
+      "amount_tolerance": 0.05,
+      "bounce_charge_styles": [
+        "ach_rtn_chrg",
+        "nach_rtn_chrgs"
+      ],
+      "bounce_link_days": 7,
+      "bounce_return_styles": [
+        "nach_rtn",
+        "ach_rtn"
+      ],
+      "bounce_tax_style": "gst_on_charge",
+      "day_tolerance": 3,
+      "emi_channels": [
+        "NACH"
+      ],
+      "emi_core_band": 0.02,
+      "emi_max_per_month": 1.2,
+      "emi_min_months": 3,
+      "emi_min_on_time": 0.6,
+      "fuzz_weight": 0.5,
+      "group_grid": [
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5
+      ],
+      "group_threshold": 0.45,
+      "holder_match": 90.0,
+      "lender_match": 85.0,
+      "linkage": "average",
+      "min_prefix": 4,
+      "ngram_max": 4,
+      "ngram_min": 2,
+      "prefix_join_min": 6,
+      "rename_median_band": 0.1,
+      "rent_channels": [
+        "NEFT",
+        "IMPS",
+        "UPI",
+        "OTHER"
+      ],
+      "rent_max_per_month": 1.2,
+      "rent_min_amount_paise": 150000,
+      "rent_min_coverage": 0.6,
+      "rent_min_months": 3,
+      "rent_min_near_median": 0.8,
+      "rent_min_on_time": 0.6,
+      "salary_channels": [
+        "NEFT",
+        "RTGS",
+        "IMPS",
+        "OTHER"
+      ],
+      "salary_core_band": 0.1,
+      "salary_max_per_month": 1.5,
+      "salary_min_core_share": 0.5,
+      "salary_min_coverage": 0.6,
+      "salary_min_months": 3,
+      "salary_min_on_time": 0.6
+    },
+    "flagged_rows": {
+      "is_bounce": 180,
+      "is_emi": 1462,
+      "is_rent": 1884,
+      "is_salary": 1608
+    },
+    "groups": 9148,
+    "peak_memory_mb": 363.2,
+    "platform": "darwin",
+    "python": "3.12.16",
+    "rows": 176576,
+    "seconds_per_statement": {
+      "max": 0.0405,
+      "mean": 0.0136,
+      "median": 0.0127,
+      "p95": 0.0205
+    },
+    "seconds_total": 4.4,
+    "split": "dev",
+    "statements": 300,
+    "statements_with_salary": 185,
+    "statements_without_rows": [],
+    "style_examples": "not shown outside train",
+    "styles": {
+      "columns": {
+        "known": 89072
+      },
+      "drcr": {
+        "known": 87504
+      }
+    }
+  },
+  "rows": 176576,
+  "rows_without_truth": 0,
+  "scoring_run": {
+    "peak_memory_mb": 283.1,
+    "seconds_per_statement": 0.0008,
+    "seconds_total": 0.2
+  },
+  "split": "dev",
+  "statement_errors": [
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "shakapu technol",
+      "salary_reason": "monthly NEFT credit in 6 of 6 months, amount always INR 63,679, paid on day 30-31; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0624",
+      "true_employer": "SHAKAPU TECHNOLOGIES PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "natara technolo",
+      "salary_reason": "monthly NEFT credit in 11 of 11 months, amount always INR 32,918, usually on day 2 (10 of 11 within 3 days)",
+      "statement_id": "stmt_0678",
+      "true_employer": "NATARA TECHNOLOGIES PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "employer_rename"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "tamimi digital",
+      "salary_reason": "monthly NEFT credit in 12 of 12 months, amount always INR 69,496, paid on day 2-3",
+      "statement_id": "stmt_0878",
+      "true_employer": "TAMIMI RETAIL LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month",
+        "missed_salary"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "punara tehc",
+      "salary_reason": "monthly NEFT credit in 8 of 9 months, amount always INR 1,99,042, paid on day 5-6; name changed: 'punara tehc' -> 'punara technologies'",
+      "statement_id": "stmt_0995",
+      "true_employer": "PUNARA TECHNOLOGIES PVT LTD"
+    }
+  ],
+  "statements": 300
+}
