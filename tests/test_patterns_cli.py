@@ -97,15 +97,20 @@ def test_a_parse_of_another_batch_is_refused(world, alone, tmp_path) -> None:
     assert _run(alone, tmp_path / "p", other) == 2
 
 
-def test_score_patterns_end_to_end(world, alone, tmp_path) -> None:
+def test_score_patterns_end_to_end(world, alone, tmp_path, monkeypatch) -> None:
     from statementscreen import score_patterns
 
+    monkeypatch.chdir(tmp_path)  # so a stray default mlruns/ would show up here
     out = tmp_path / "patterns"
     assert _run(alone, out, world["splits"]) == 0
     report_path = tmp_path / "report.json"
+    tracking = tmp_path / "tracking"
     argv = [str(out), str(world["batch"]), "--split", "train", "--out", str(report_path),
-            "--splits-dir", str(world["splits"])]  # fmt: skip
+            "--splits-dir", str(world["splits"]), "--tracking-dir", str(tracking)]  # fmt: skip
     assert score_patterns.main(argv) == 0
+    assert not (tmp_path / "mlruns").exists()  # tests never write to mlruns/
+    assert (tracking / "mlflow.db").exists()  # the run went to the temp folder
+    assert any((tracking / "artifacts").rglob("report.json"))
     report = json.loads(report_path.read_text())
     assert report["rows_without_truth"] == 0
     assert set(report["overall"]["transactions"]) == {"is_salary", "is_emi", "is_bounce",

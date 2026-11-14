@@ -5,7 +5,8 @@
 Reads the patterns output for the split (data/patterns/<split>/) plus the batch's
 transactions.parquet, labels and manifest. Joins on statement_id and row. The split is
 loaded with load_split, which checks the manifest's hash and refuses "test" unless
-STATEMENTSCREEN_OPEN_TEST=1. Writes reports/week3_patterns_<split>.json.
+STATEMENTSCREEN_OPEN_TEST=1. Writes reports/week3_patterns_<split>.json, then logs a local
+MLflow run to mlruns/ (see statementscreen.tracking; --tracking-dir, --no-mlflow).
 """
 
 import argparse
@@ -16,6 +17,7 @@ from pathlib import Path
 
 from statementscreen.pattern_scoring import FLAGS, build_report
 from statementscreen.splits import SPLITS_DIR, SplitError, load_split
+from statementscreen.tracking import DEFAULT_DIR, EXPERIMENT, TrackingRefused, log_run
 
 
 def _pct(x: float | None) -> str:
@@ -32,6 +34,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument("--split", required=True, help="train or dev (test is closed)")
     p.add_argument("--out", type=Path, help="default: reports/week3_patterns_<split>.json")
     p.add_argument("--splits-dir", type=Path, default=SPLITS_DIR)
+    p.add_argument("--tracking-dir", type=Path, default=DEFAULT_DIR,
+                   help="local MLflow folder (default mlruns/, git-ignored)")  # fmt: skip
+    p.add_argument("--no-mlflow", action="store_true", help="don't log an MLflow run")
     args = p.parse_args(argv)
     out = args.out or Path(f"reports/week3_patterns_{args.split}.json")
     patterns_dir = args.patterns / args.split
@@ -66,6 +71,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     for kind, fs in report["false_salary_on_non_salaried"].items():
         print(f"  false salary on {kind}: {fs['flagged_has_salary']} of {fs['statements']} "
               f"statements, {fs['salary_rows_flagged']} rows")  # fmt: skip
+
+    if args.no_mlflow:
+        return 0
+    sweeps = [out.parent / "week3_grouping_sweep.json", out.parent / "week3_rules_sweep.json"]
+    try:
+        run_id, other_warnings = log_run(report, out, args.tracking_dir, sweeps)
+    except TrackingRefused as e:
+        print(f"MLflow: {e}", file=sys.stderr)
+        return 3  # the report is written; only tracking was refused
+    print(f"  MLflow run {run_id} logged to {args.tracking_dir}/ "
+          f"(experiment '{EXPERIMENT}')")  # fmt: skip
+    for w in other_warnings:
+        print(f"  MLflow setup warning (not about the store, logged as a tag): {w}")
     return 0
 
 
