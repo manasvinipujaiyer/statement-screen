@@ -108,6 +108,23 @@ def test_unregistered_names_and_mixed_options_are_refused(world, tmp_path) -> No
         _patterns(world, world["parsed_shift"], tmp_path / "p", "--split", "dev", "--eval", "x")
 
 
+def test_score_patterns_on_an_evaluation_batch(world, tmp_path) -> None:
+    from statementscreen import score_patterns
+
+    out = tmp_path / "patterns"
+    assert _patterns(world, world["parsed_shift"], out, "--eval", "shift") == 0
+    report_path = tmp_path / "rules.json"
+    argv = [str(out), str(world["shift"]), "--eval", "shift", "--out", str(report_path),
+            "--splits-dir", str(world["splits"]), "--no-mlflow"]  # fmt: skip
+    assert score_patterns.main(argv) == 0
+    report = json.loads(report_path.read_text())
+    assert report["split"] == "shift" and report["statements"] == 3
+    assert report["rows_without_truth"] == 0
+    wrong = [str(out), str(world["reference"]), "--eval", "shift", "--out", str(report_path),
+             "--splits-dir", str(world["splits"]), "--no-mlflow"]  # fmt: skip
+    assert score_patterns.main(wrong) == 2  # the reference batch's truth is refused
+
+
 def test_scoring_checks_the_manifest(world) -> None:
     assert eb.load_eval("shift", world["shift"] / "manifest.csv", world["splits"]) == [
         "stmt_0001", "stmt_0002", "stmt_0003"]  # fmt: skip

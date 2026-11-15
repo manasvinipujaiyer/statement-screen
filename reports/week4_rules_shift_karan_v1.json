@@ -1,0 +1,2229 @@
+{
+  "batch": "week4_shift_n300",
+  "breakdown": {
+    "by_customer_type": {
+      "gig": {
+        "employer": {
+          "exact_match_rate": null,
+          "fuzzy_match_rate": null,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 0
+        },
+        "grouping": {
+          "employer_recall": null,
+          "f1": 0.9918812721305562,
+          "pairs_both": 429007,
+          "pairs_predicted": 431182,
+          "pairs_truth": 433855,
+          "precision": 0.9949557263522132,
+          "recall": 0.9888257597584447,
+          "true_salary_rows": 0
+        },
+        "has_salary": {
+          "f1": null,
+          "fn": 0,
+          "fp": 0,
+          "precision": null,
+          "recall": null,
+          "tp": 0
+        },
+        "statements": 56,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 28,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 277
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 423
+          },
+          "is_salary": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "precision": null,
+            "recall": null,
+            "tp": 0
+          }
+        }
+      },
+      "salaried": {
+        "employer": {
+          "exact_match_rate": 0.6108108108108108,
+          "fuzzy_match_rate": 0.6648648648648648,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 185
+        },
+        "grouping": {
+          "employer_recall": 0.9513805522208884,
+          "f1": 0.9937085543658919,
+          "pairs_both": 2295271,
+          "pairs_predicted": 2303315,
+          "pairs_truth": 2316291,
+          "precision": 0.996507642246067,
+          "recall": 0.9909251471425654,
+          "true_salary_rows": 1666
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 185
+        },
+        "statements": 185,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 100,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 987
+          },
+          "is_rent": {
+            "f1": 0.9933411672542107,
+            "fn": 17,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9867704280155642,
+            "tp": 1268
+          },
+          "is_salary": {
+            "f1": 0.9990999099909992,
+            "fn": 1,
+            "fp": 2,
+            "precision": 0.9988002399520096,
+            "recall": 0.9993997599039616,
+            "tp": 1665
+          }
+        }
+      },
+      "self_employed": {
+        "employer": {
+          "exact_match_rate": null,
+          "fuzzy_match_rate": null,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 0
+        },
+        "grouping": {
+          "employer_recall": null,
+          "f1": 0.9946398402968881,
+          "pairs_both": 862212,
+          "pairs_predicted": 864444,
+          "pairs_truth": 869273,
+          "precision": 0.997417993531102,
+          "recall": 0.991877120306279,
+          "true_salary_rows": 0
+        },
+        "has_salary": {
+          "f1": null,
+          "fn": 0,
+          "fp": 0,
+          "precision": null,
+          "recall": null,
+          "tp": 0
+        },
+        "statements": 59,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 44,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 363
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 355
+          },
+          "is_salary": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "precision": null,
+            "recall": null,
+            "tp": 0
+          }
+        }
+      }
+    },
+    "by_hard_case": {
+      "bonus_month": {
+        "employer": {
+          "exact_match_rate": 0.5106382978723404,
+          "fuzzy_match_rate": 0.574468085106383,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 47
+        },
+        "grouping": {
+          "employer_recall": 0.9757709251101322,
+          "f1": 0.9939320239468067,
+          "pairs_both": 648155,
+          "pairs_predicted": 650170,
+          "pairs_truth": 654054,
+          "precision": 0.9969008105572389,
+          "recall": 0.9909808670232122,
+          "true_salary_rows": 454
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 47
+        },
+        "statements": 47,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 18,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 330
+          },
+          "is_rent": {
+            "f1": 0.9970760233918129,
+            "fn": 2,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9941690962099126,
+            "tp": 341
+          },
+          "is_salary": {
+            "f1": 0.9966996699669967,
+            "fn": 1,
+            "fp": 2,
+            "precision": 0.9956043956043956,
+            "recall": 0.9977973568281938,
+            "tp": 453
+          }
+        }
+      },
+      "emi_bounce": {
+        "employer": {
+          "exact_match_rate": 0.65,
+          "fuzzy_match_rate": 0.675,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 40
+        },
+        "grouping": {
+          "employer_recall": 0.9508196721311475,
+          "f1": 0.9932097596112245,
+          "pairs_both": 849391,
+          "pairs_predicted": 852514,
+          "pairs_truth": 857882,
+          "precision": 0.996336717050981,
+          "recall": 0.9901023683909909,
+          "true_salary_rows": 366
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 40
+        },
+        "statements": 68,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 172,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 577
+          },
+          "is_rent": {
+            "f1": 0.9903121636167923,
+            "fn": 9,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9808102345415778,
+            "tp": 460
+          },
+          "is_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 366
+          }
+        }
+      },
+      "employer_rename": {
+        "employer": {
+          "exact_match_rate": 0.5555555555555556,
+          "fuzzy_match_rate": 0.6388888888888888,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 36
+        },
+        "grouping": {
+          "employer_recall": 0.7537993920972644,
+          "f1": 0.9933247989307286,
+          "pairs_both": 448880,
+          "pairs_predicted": 450476,
+          "pairs_truth": 453317,
+          "precision": 0.9964570809543682,
+          "recall": 0.9902121473494265,
+          "true_salary_rows": 329
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 36
+        },
+        "statements": 36,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 24,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 202
+          },
+          "is_rent": {
+            "f1": 0.9980506822612086,
+            "fn": 1,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9961089494163424,
+            "tp": 256
+          },
+          "is_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 329
+          }
+        }
+      },
+      "missed_salary": {
+        "employer": {
+          "exact_match_rate": 0.59375,
+          "fuzzy_match_rate": 0.625,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 32
+        },
+        "grouping": {
+          "employer_recall": 0.9395161290322581,
+          "f1": 0.9941289120310071,
+          "pairs_both": 347288,
+          "pairs_predicted": 348248,
+          "pairs_truth": 350430,
+          "precision": 0.9972433438239415,
+          "recall": 0.9910338726707189,
+          "true_salary_rows": 248
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 32
+        },
+        "statements": 32,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 18,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 175
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 206
+          },
+          "is_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 248
+          }
+        }
+      },
+      "none": {
+        "employer": {
+          "exact_match_rate": 0.6666666666666666,
+          "fuzzy_match_rate": 0.7017543859649122,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 57
+        },
+        "grouping": {
+          "employer_recall": 1.0,
+          "f1": 0.9939886226722994,
+          "pairs_both": 1629371,
+          "pairs_predicted": 1634841,
+          "pairs_truth": 1643609,
+          "precision": 0.9966541088705263,
+          "recall": 0.9913373557823059,
+          "true_salary_rows": 510
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 57
+        },
+        "statements": 144,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "precision": null,
+            "recall": null,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 596
+          },
+          "is_rent": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 952
+          },
+          "is_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 510
+          }
+        }
+      },
+      "salary_date_shift": {
+        "employer": {
+          "exact_match_rate": 0.5833333333333334,
+          "fuzzy_match_rate": 0.6944444444444444,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 36
+        },
+        "grouping": {
+          "employer_recall": 0.9371069182389937,
+          "f1": 0.992240204734417,
+          "pairs_both": 373954,
+          "pairs_predicted": 375679,
+          "pairs_truth": 378078,
+          "precision": 0.9954083140127609,
+          "recall": 0.9890921979062521,
+          "true_salary_rows": 318
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 36
+        },
+        "statements": 36,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 12,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 214
+          },
+          "is_rent": {
+            "f1": 0.9876543209876543,
+            "fn": 7,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.975609756097561,
+            "tp": 280
+          },
+          "is_salary": {
+            "f1": 0.9952904238618524,
+            "fn": 1,
+            "fp": 2,
+            "precision": 0.9937304075235109,
+            "recall": 0.9968553459119497,
+            "tp": 317
+          }
+        }
+      }
+    },
+    "by_layout": {
+      "columns": {
+        "employer": {
+          "exact_match_rate": 0.5411764705882353,
+          "fuzzy_match_rate": 0.5882352941176471,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 85
+        },
+        "grouping": {
+          "employer_recall": 0.9369369369369369,
+          "f1": 0.9936041681367642,
+          "pairs_both": 1710812,
+          "pairs_predicted": 1716817,
+          "pairs_truth": 1726832,
+          "precision": 0.9965022480555586,
+          "recall": 0.9907228960315769,
+          "true_salary_rows": 777
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 85
+        },
+        "statements": 138,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 80,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 736
+          },
+          "is_rent": {
+            "f1": 0.992047713717694,
+            "fn": 16,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9842209072978304,
+            "tp": 998
+          },
+          "is_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 777
+          }
+        }
+      },
+      "drcr": {
+        "employer": {
+          "exact_match_rate": 0.67,
+          "fuzzy_match_rate": 0.73,
+          "fuzzy_threshold": 90.0,
+          "statements_with_true_employer": 100
+        },
+        "grouping": {
+          "employer_recall": 0.9640044994375703,
+          "f1": 0.9938127713618341,
+          "pairs_both": 1875678,
+          "pairs_predicted": 1882124,
+          "pairs_truth": 1892587,
+          "precision": 0.9965751459521264,
+          "recall": 0.9910656683153799,
+          "true_salary_rows": 889
+        },
+        "has_salary": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "tp": 100
+        },
+        "statements": 162,
+        "transactions": {
+          "is_bounce": {
+            "f1": null,
+            "fn": 92,
+            "fp": 0,
+            "precision": null,
+            "recall": 0.0,
+            "tp": 0
+          },
+          "is_emi": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 891
+          },
+          "is_rent": {
+            "f1": 0.9995231282784931,
+            "fn": 1,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 0.9990467111534795,
+            "tp": 1048
+          },
+          "is_salary": {
+            "f1": 0.9983136593591906,
+            "fn": 1,
+            "fp": 2,
+            "precision": 0.9977528089887641,
+            "recall": 0.9988751406074241,
+            "tp": 888
+          }
+        }
+      }
+    }
+  },
+  "config": {
+    "amount_tolerance": 0.05,
+    "bounce_charge_styles": [
+      "ach_rtn_chrg",
+      "nach_rtn_chrgs"
+    ],
+    "bounce_link_days": 7,
+    "bounce_return_styles": [
+      "nach_rtn",
+      "ach_rtn"
+    ],
+    "bounce_tax_style": "gst_on_charge",
+    "day_tolerance": 3,
+    "emi_channels": [
+      "NACH"
+    ],
+    "emi_core_band": 0.02,
+    "emi_max_per_month": 1.2,
+    "emi_min_months": 3,
+    "emi_min_on_time": 0.6,
+    "fuzz_weight": 0.5,
+    "group_grid": [
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+    ],
+    "group_threshold": 0.45,
+    "holder_match": 90.0,
+    "lender_match": 85.0,
+    "linkage": "average",
+    "min_prefix": 4,
+    "ngram_max": 4,
+    "ngram_min": 2,
+    "prefix_join_min": 6,
+    "rename_median_band": 0.1,
+    "rent_channels": [
+      "NEFT",
+      "IMPS",
+      "UPI",
+      "OTHER"
+    ],
+    "rent_max_per_month": 1.2,
+    "rent_min_amount_paise": 150000,
+    "rent_min_coverage": 0.6,
+    "rent_min_months": 3,
+    "rent_min_near_median": 0.8,
+    "rent_min_on_time": 0.6,
+    "salary_channels": [
+      "NEFT",
+      "RTGS",
+      "IMPS",
+      "OTHER"
+    ],
+    "salary_core_band": 0.1,
+    "salary_max_per_month": 1.5,
+    "salary_min_core_share": 0.5,
+    "salary_min_coverage": 0.6,
+    "salary_min_months": 3,
+    "salary_min_on_time": 0.6
+  },
+  "example_counts": {
+    "is_bounce": {
+      "false_flag_amount_paise": null,
+      "false_flags": 0,
+      "false_flags_by_true_category": {},
+      "misses": 172,
+      "misses_by_true_category": {
+        "bounce_charge": 68,
+        "bounce_gst": 68,
+        "loan_payment": 18,
+        "loan_reversal": 18
+      },
+      "true_amount_paise": {
+        "median": 50000.0,
+        "min": 9000,
+        "p01": 9000.0,
+        "p10": 9000.0
+      }
+    },
+    "is_emi": {
+      "false_flag_amount_paise": null,
+      "false_flags": 0,
+      "false_flags_by_true_category": {},
+      "misses": 0,
+      "misses_by_true_category": {},
+      "true_amount_paise": {
+        "median": 954800.0,
+        "min": 209300,
+        "p01": 225800.0,
+        "p10": 434700.0
+      }
+    },
+    "is_rent": {
+      "false_flag_amount_paise": null,
+      "false_flags": 0,
+      "false_flags_by_true_category": {},
+      "misses": 17,
+      "misses_by_true_category": {
+        "rent": 17
+      },
+      "true_amount_paise": {
+        "median": 1263100.0,
+        "min": 244800,
+        "p01": 305700.0,
+        "p10": 522400.0
+      }
+    },
+    "is_salary": {
+      "false_flag_amount_paise": {
+        "max": 3931800,
+        "median": 3844300.0,
+        "min": 3756800,
+        "p90": 3931800.0
+      },
+      "false_flags": 2,
+      "false_flags_by_true_category": {
+        "bonus": 2
+      },
+      "misses": 1,
+      "misses_by_true_category": {
+        "salary": 1
+      },
+      "true_amount_paise": {
+        "median": 5282500.0,
+        "min": 1800000,
+        "p01": 1800000.0,
+        "p10": 2502900.0
+      }
+    }
+  },
+  "false_flags": [
+    {
+      "amount_paise": 3931800,
+      "flag": "is_salary",
+      "narration": "IMPS/PRVHN25017749586/LUTIKA SYSTEMS PVT. LTD./SALARY FOR JA",
+      "reason": "salary: monthly IMPS credit in 10 of 11 months, amount within 8% of median INR 42,671, usually on day 30 (10 of 12 within 3 days)",
+      "row": 262,
+      "statement_id": "stmt_0112",
+      "truth": {
+        "category": "bonus",
+        "counterparty": "LUTIKA SYSTEMS PVT LTD"
+      }
+    },
+    {
+      "amount_paise": 3756800,
+      "flag": "is_salary",
+      "narration": "IMPS/PRVHN25077051025/RAMISA SOLUTIONS P LTD/SALARY FOR MAR25",
+      "reason": "salary: monthly IMPS credit in 9 of 10 months, amount within 3% of median INR 38,367, usually on day 31 (9 of 11 within 3 days)",
+      "row": 41,
+      "statement_id": "stmt_0173",
+      "truth": {
+        "category": "bonus",
+        "counterparty": "RAMISA SOLUTIONS PVT LTD"
+      }
+    }
+  ],
+  "false_salary_on_non_salaried": {
+    "gig": {
+      "flagged_has_salary": 0,
+      "rate": 0.0,
+      "salary_rows_flagged": 0,
+      "statement_ids": [],
+      "statements": 56
+    },
+    "self_employed": {
+      "flagged_has_salary": 0,
+      "rate": 0.0,
+      "salary_rows_flagged": 0,
+      "statement_ids": [],
+      "statements": 59
+    }
+  },
+  "misses": [
+    {
+      "amount_paise": -885200,
+      "flag": "is_bounce",
+      "group": "D017 'kramika capital loan emi'",
+      "narration": "ACH D- KRAMIKA CAPITAL LTD LOAN EMI-PRVH7612929774755074",
+      "row": 626,
+      "statement_id": "stmt_0006",
+      "truth": {
+        "category": "loan_payment",
+        "counterparty": "KRAMIKA CAPITAL LTD"
+      },
+      "why_not": "style 'ach_dash' is not a bounce style"
+    },
+    {
+      "amount_paise": 885200,
+      "flag": "is_bounce",
+      "group": "C030 'kramika capital'",
+      "narration": "NACH RTN/PRVH7612929774755074/KRAMIKA CAPITAL LTD/INSUFF FUN",
+      "row": 627,
+      "statement_id": "stmt_0006",
+      "truth": {
+        "category": "loan_reversal",
+        "counterparty": "KRAMIKA CAPITAL LTD"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D018 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-900796737424",
+      "row": 628,
+      "statement_id": "stmt_0006",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D018 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-721330270580",
+      "row": 629,
+      "statement_id": "stmt_0006",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -3114400,
+      "flag": "is_bounce",
+      "group": "D020 'kramika capital loan emi'",
+      "narration": "ACH D- KRAMIKA CAPITAL LTD LOAN EMI-PRVH7387696675700656",
+      "row": 14,
+      "statement_id": "stmt_0012",
+      "truth": {
+        "category": "loan_payment",
+        "counterparty": "KRAMIKA CAPITAL LTD"
+      },
+      "why_not": "style 'ach_dash' is not a bounce style"
+    },
+    {
+      "amount_paise": 3114400,
+      "flag": "is_bounce",
+      "group": "C001 'kramika capital'",
+      "narration": "ACH D RETURN-KRAMIKA CAPITAL LTD-PRVH7387696675700656-FUNDS IN",
+      "row": 15,
+      "statement_id": "stmt_0012",
+      "truth": {
+        "category": "loan_reversal",
+        "counterparty": "KRAMIKA CAPITAL LTD"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D011 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-925916024817",
+      "row": 16,
+      "statement_id": "stmt_0012",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D011 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-401688423813",
+      "row": 17,
+      "statement_id": "stmt_0012",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D016 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-815015519876",
+      "row": 6,
+      "statement_id": "stmt_0014",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "TARANGAM BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D016 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-643637909272",
+      "row": 7,
+      "statement_id": "stmt_0014",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "TARANGAM BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D014 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-893681223",
+      "row": 13,
+      "statement_id": "stmt_0017",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D014 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-080075481",
+      "row": 14,
+      "statement_id": "stmt_0017",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D006 'rtn chgs'",
+      "narration": "NACH RTN CHGS PRVH7796461806862776 APR24",
+      "row": 15,
+      "statement_id": "stmt_0022",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "PRAVAHINI BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D006 'rtn chgs'",
+      "narration": "NACH RTN CHGS PRVH7796461806862776 APR24",
+      "row": 16,
+      "statement_id": "stmt_0022",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "PRAVAHINI BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -1717900,
+      "flag": "is_bounce",
+      "group": "D009 'nivesha home loans'",
+      "narration": "NACH DR/KSVB7277421492082434/NIVESHA HOME LOANS LTD/EMI DEC24",
+      "row": 524,
+      "statement_id": "stmt_0025",
+      "truth": {
+        "category": "loan_payment",
+        "counterparty": "NIVESHA HOME LOANS LTD"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": 1717900,
+      "flag": "is_bounce",
+      "group": "C001 'nivesha home loans'",
+      "narration": "NACH RTN/KSVB7277421492082434/NIVESHA HOME LOANS LTD/INSUFF FU",
+      "row": 525,
+      "statement_id": "stmt_0025",
+      "truth": {
+        "category": "loan_reversal",
+        "counterparty": "NIVESHA HOME LOANS LTD"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D010 'rtn chgs'",
+      "narration": "NACH RTN CHGS KSVB7277421492082434 DEC24",
+      "row": 526,
+      "statement_id": "stmt_0025",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D010 'rtn chgs'",
+      "narration": "NACH RTN CHGS KSVB7277421492082434 DEC24",
+      "row": 527,
+      "statement_id": "stmt_0025",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D014 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-439267113274",
+      "row": 310,
+      "statement_id": "stmt_0026",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "TARANGAM BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D014 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-271497570175",
+      "row": 311,
+      "statement_id": "stmt_0026",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "TARANGAM BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -1440700,
+      "flag": "is_bounce",
+      "group": "D007 'nivesha home loans'",
+      "narration": "NACH DR/VSTK7253665685815163/NIVESHA HOME LOANS LTD/EMI",
+      "row": 169,
+      "statement_id": "stmt_0030",
+      "truth": {
+        "category": "loan_payment",
+        "counterparty": "NIVESHA HOME LOANS LTD"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": 1440700,
+      "flag": "is_bounce",
+      "group": "C002 'nivesha home loans'",
+      "narration": "NACH RTN/VSTK7253665685815163/NIVESHA HOME LOANS LTD/INS",
+      "row": 170,
+      "statement_id": "stmt_0030",
+      "truth": {
+        "category": "loan_reversal",
+        "counterparty": "NIVESHA HOME LOANS LTD"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D012 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-207863406112",
+      "row": 171,
+      "statement_id": "stmt_0030",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "VISTARIKA BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D012 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-511408507134",
+      "row": 172,
+      "statement_id": "stmt_0030",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "VISTARIKA BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D014 'rtn chgs'",
+      "narration": "NACH RTN CHGS KSVB7541343610365143 FEB25",
+      "row": 34,
+      "statement_id": "stmt_0031",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "TARANGAM BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D014 'rtn chgs'",
+      "narration": "NACH RTN CHGS KSVB7541343610365143 FEB25",
+      "row": 35,
+      "statement_id": "stmt_0031",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "TARANGAM BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D013 'rtn chgs'",
+      "narration": "NACH RTN CHGS VSTK7233156128041258 MAY24",
+      "row": 22,
+      "statement_id": "stmt_0036",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "PRAVAHINI BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D013 'rtn chgs'",
+      "narration": "NACH RTN CHGS VSTK7233156128041258 MAY24",
+      "row": 23,
+      "statement_id": "stmt_0036",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "PRAVAHINI BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D009 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-673577329596",
+      "row": 78,
+      "statement_id": "stmt_0038",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "TARANGAM BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D009 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-827097571362",
+      "row": 79,
+      "statement_id": "stmt_0038",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "TARANGAM BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -50000,
+      "flag": "is_bounce",
+      "group": "D011 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-979275411350",
+      "row": 88,
+      "statement_id": "stmt_0044",
+      "truth": {
+        "category": "bounce_charge",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -9000,
+      "flag": "is_bounce",
+      "group": "D011 'mandate bounce charges incl gst'",
+      "narration": "MANDATE BOUNCE CHARGES INCL GST-974302134118",
+      "row": 89,
+      "statement_id": "stmt_0044",
+      "truth": {
+        "category": "bounce_gst",
+        "counterparty": "KESARVAN BANK"
+      },
+      "why_not": "style 'unknown' is not a bounce style"
+    },
+    {
+      "amount_paise": -1116700,
+      "flag": "is_rent",
+      "group": "D013 'lakshmi vohra'",
+      "narration": "NEFT DR-KSVB0864730-LAKSHMI VOHRA-HOUSE RENT D",
+      "row": 425,
+      "statement_id": "stmt_0070",
+      "truth": {
+        "category": "rent",
+        "counterparty": "LAKSHMI VOHRA"
+      },
+      "why_not": "not rent: core in 1 of 10 months (needs 3)"
+    },
+    {
+      "amount_paise": -822600,
+      "flag": "is_rent",
+      "group": "D001 'viraj mody'",
+      "narration": "NEFT DR-TRGM0020241-VIRAJ MODY-HOUSE RENT D",
+      "row": 509,
+      "statement_id": "stmt_0078",
+      "truth": {
+        "category": "rent",
+        "counterparty": "VIRAJ MODY"
+      },
+      "why_not": "not rent: core in 1 of 9 months (needs 3)"
+    },
+    {
+      "amount_paise": -1029400,
+      "flag": "is_rent",
+      "group": "D000 'venkataraman kirana store'",
+      "narration": "IMPS/PRVHN24183226346/BISHAKHA VENKATARAMAN/RENT JUL24",
+      "row": 0,
+      "statement_id": "stmt_0083",
+      "truth": {
+        "category": "rent",
+        "counterparty": "BISHAKHA VENKATARAMAN"
+      },
+      "why_not": "not rent: core in 3 of 9 months (33%, needs 60%)"
+    },
+    {
+      "amount_paise": -1029400,
+      "flag": "is_rent",
+      "group": "D000 'venkataraman kirana store'",
+      "narration": "IMPS/PRVHN24214002990/BISHAKHA VENKATARAMAN/RENT AUG24",
+      "row": 27,
+      "statement_id": "stmt_0083",
+      "truth": {
+        "category": "rent",
+        "counterparty": "BISHAKHA VENKATARAMAN"
+      },
+      "why_not": "not rent: core in 3 of 9 months (33%, needs 60%)"
+    },
+    {
+      "amount_paise": -1029400,
+      "flag": "is_rent",
+      "group": "D000 'venkataraman kirana store'",
+      "narration": "IMPS/PRVHN24245104926/BISHAKHA VENKATARAMAN/RENT SEP24",
+      "row": 57,
+      "statement_id": "stmt_0083",
+      "truth": {
+        "category": "rent",
+        "counterparty": "BISHAKHA VENKATARAMAN"
+      },
+      "why_not": "not rent: core in 3 of 9 months (33%, needs 60%)"
+    },
+    {
+      "amount_paise": -1029400,
+      "flag": "is_rent",
+      "group": "D000 'venkataraman kirana store'",
+      "narration": "IMPS/PRVHN24275872058/BISHAKHA VENKATARAMAN/RENT OCT24",
+      "row": 126,
+      "statement_id": "stmt_0083",
+      "truth": {
+        "category": "rent",
+        "counterparty": "BISHAKHA VENKATARAMAN"
+      },
+      "why_not": "not rent: core in 3 of 9 months (33%, needs 60%)"
+    },
+    {
+      "amount_paise": -1029400,
+      "flag": "is_rent",
+      "group": "D000 'venkataraman kirana store'",
+      "narration": "IMPS/PRVHN24306547927/BISHAKHA VENKATARAMAN/RENT NOV24",
+      "row": 196,
+      "statement_id": "stmt_0083",
+      "truth": {
+        "category": "rent",
+        "counterparty": "BISHAKHA VENKATARAMAN"
+      },
+      "why_not": "not rent: core in 3 of 9 months (33%, needs 60%)"
+    },
+    {
+      "amount_paise": -1029400,
+      "flag": "is_rent",
+      "group": "D000 'venkataraman kirana store'",
+      "narration": "IMPS/PRVHN24336060002/BISHAKHA VENKATARAMAN/RENT DEC24",
+      "row": 252,
+      "statement_id": "stmt_0083",
+      "truth": {
+        "category": "rent",
+        "counterparty": "BISHAKHA VENKATARAMAN"
+      },
+      "why_not": "not rent: core in 3 of 9 months (33%, needs 60%)"
+    },
+    {
+      "amount_paise": -1029400,
+      "flag": "is_rent",
+      "group": "D000 'venkataraman kirana store'",
+      "narration": "IMPS/PRVHN25001896572/BISHAKHA VENKATARAMAN/RENT JAN25",
+      "row": 312,
+      "statement_id": "stmt_0083",
+      "truth": {
+        "category": "rent",
+        "counterparty": "BISHAKHA VENKATARAMAN"
+      },
+      "why_not": "not rent: core in 3 of 9 months (33%, needs 60%)"
+    },
+    {
+      "amount_paise": -1029400,
+      "flag": "is_rent",
+      "group": "D000 'venkataraman kirana store'",
+      "narration": "IMPS/PRVHN25032222009/BISHAKHA VENKATARAMAN/RENT FEB25",
+      "row": 381,
+      "statement_id": "stmt_0083",
+      "truth": {
+        "category": "rent",
+        "counterparty": "BISHAKHA VENKATARAMAN"
+      },
+      "why_not": "not rent: core in 3 of 9 months (33%, needs 60%)"
+    },
+    {
+      "amount_paise": -1029400,
+      "flag": "is_rent",
+      "group": "D000 'venkataraman kirana store'",
+      "narration": "IMPS/PRVHN25060731206/BISHAKHA VENKATARAMAN/RENT MAR25",
+      "row": 437,
+      "statement_id": "stmt_0083",
+      "truth": {
+        "category": "rent",
+        "counterparty": "BISHAKHA VENKATARAMAN"
+      },
+      "why_not": "not rent: core in 3 of 9 months (33%, needs 60%)"
+    },
+    {
+      "amount_paise": -1464600,
+      "flag": "is_rent",
+      "group": "D000 'auto gaurika'",
+      "narration": "NEFT DR-TRGM0018250-Gaurika Choudhry-HOUSE RENT APR25",
+      "row": 0,
+      "statement_id": "stmt_0157",
+      "truth": {
+        "category": "rent",
+        "counterparty": "GAURIKA CHOUDHRY"
+      },
+      "why_not": "not rent: core in 2 of 6 months (needs 3)"
+    },
+    {
+      "amount_paise": -1464600,
+      "flag": "is_rent",
+      "group": "D000 'auto gaurika'",
+      "narration": "NEFT DR-TRGM0018250-Gaurika Choudhry-HOUSE RENT MAY25",
+      "row": 56,
+      "statement_id": "stmt_0157",
+      "truth": {
+        "category": "rent",
+        "counterparty": "GAURIKA CHOUDHRY"
+      },
+      "why_not": "not rent: core in 2 of 6 months (needs 3)"
+    },
+    {
+      "amount_paise": -1464600,
+      "flag": "is_rent",
+      "group": "D000 'auto gaurika'",
+      "narration": "NEFT DR-TRGM0018250-Gaurika Coudhry-HOUSE RENT JUN25-1",
+      "row": 124,
+      "statement_id": "stmt_0157",
+      "truth": {
+        "category": "rent",
+        "counterparty": "GAURIKA CHOUDHRY"
+      },
+      "why_not": "not rent: core in 2 of 6 months (needs 3)"
+    },
+    {
+      "amount_paise": -1464600,
+      "flag": "is_rent",
+      "group": "D000 'auto gaurika'",
+      "narration": "NEFT DR-TRGM0018250-Gaurika Choudhry-HOUSE RENT JUL25",
+      "row": 180,
+      "statement_id": "stmt_0157",
+      "truth": {
+        "category": "rent",
+        "counterparty": "GAURIKA CHOUDHRY"
+      },
+      "why_not": "not rent: core in 2 of 6 months (needs 3)"
+    },
+    {
+      "amount_paise": -1464600,
+      "flag": "is_rent",
+      "group": "D000 'auto gaurika'",
+      "narration": "NEFT DR-TRGM0018250-Gaurika Choudhry-HOUSE RENT AUG25",
+      "row": 244,
+      "statement_id": "stmt_0157",
+      "truth": {
+        "category": "rent",
+        "counterparty": "GAURIKA CHOUDHRY"
+      },
+      "why_not": "not rent: core in 2 of 6 months (needs 3)"
+    },
+    {
+      "amount_paise": -1464600,
+      "flag": "is_rent",
+      "group": "D000 'auto gaurika'",
+      "narration": "NEFT DR-TRGM0018250-Gaurika Choudhry-HOUSE RENT SEP25",
+      "row": 321,
+      "statement_id": "stmt_0157",
+      "truth": {
+        "category": "rent",
+        "counterparty": "GAURIKA CHOUDHRY"
+      },
+      "why_not": "not rent: core in 2 of 6 months (needs 3)"
+    },
+    {
+      "amount_paise": 4541700,
+      "flag": "is_salary",
+      "group": "C004 'mipuri retail'",
+      "narration": "NEFT CR-PRVH0931203-MIPURI RETAIL PVT. LT",
+      "row": 66,
+      "statement_id": "stmt_0009",
+      "truth": {
+        "category": "salary",
+        "counterparty": "MIPURI RETAIL PVT LTD"
+      },
+      "why_not": "not counted as salary: an extra credit in its month, 7 days off the usual day 31"
+    }
+  ],
+  "overall": {
+    "employer": {
+      "exact_match_rate": 0.6108108108108108,
+      "fuzzy_match_rate": 0.6648648648648648,
+      "fuzzy_threshold": 90.0,
+      "statements_with_true_employer": 185
+    },
+    "grouping": {
+      "employer_recall": 0.9513805522208884,
+      "f1": 0.993713253425986,
+      "pairs_both": 3586490,
+      "pairs_predicted": 3598941,
+      "pairs_truth": 3619419,
+      "precision": 0.9965403711814114,
+      "recall": 0.9909021309773751,
+      "true_salary_rows": 1666
+    },
+    "has_salary": {
+      "f1": 1.0,
+      "fn": 0,
+      "fp": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "tp": 185
+    },
+    "statements": 300,
+    "transactions": {
+      "is_bounce": {
+        "f1": null,
+        "fn": 172,
+        "fp": 0,
+        "precision": null,
+        "recall": 0.0,
+        "tp": 0
+      },
+      "is_emi": {
+        "f1": 1.0,
+        "fn": 0,
+        "fp": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "tp": 1627
+      },
+      "is_rent": {
+        "f1": 0.9958627403261134,
+        "fn": 17,
+        "fp": 0,
+        "precision": 1.0,
+        "recall": 0.9917595734367426,
+        "tp": 2046
+      },
+      "is_salary": {
+        "f1": 0.9990999099909992,
+        "fn": 1,
+        "fp": 2,
+        "precision": 0.9988002399520096,
+        "recall": 0.9993997599039616,
+        "tp": 1665
+      }
+    }
+  },
+  "patterns_run": {
+    "config": {
+      "amount_tolerance": 0.05,
+      "bounce_charge_styles": [
+        "ach_rtn_chrg",
+        "nach_rtn_chrgs"
+      ],
+      "bounce_link_days": 7,
+      "bounce_return_styles": [
+        "nach_rtn",
+        "ach_rtn"
+      ],
+      "bounce_tax_style": "gst_on_charge",
+      "day_tolerance": 3,
+      "emi_channels": [
+        "NACH"
+      ],
+      "emi_core_band": 0.02,
+      "emi_max_per_month": 1.2,
+      "emi_min_months": 3,
+      "emi_min_on_time": 0.6,
+      "fuzz_weight": 0.5,
+      "group_grid": [
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5
+      ],
+      "group_threshold": 0.45,
+      "holder_match": 90.0,
+      "lender_match": 85.0,
+      "linkage": "average",
+      "min_prefix": 4,
+      "ngram_max": 4,
+      "ngram_min": 2,
+      "prefix_join_min": 6,
+      "rename_median_band": 0.1,
+      "rent_channels": [
+        "NEFT",
+        "IMPS",
+        "UPI",
+        "OTHER"
+      ],
+      "rent_max_per_month": 1.2,
+      "rent_min_amount_paise": 150000,
+      "rent_min_coverage": 0.6,
+      "rent_min_months": 3,
+      "rent_min_near_median": 0.8,
+      "rent_min_on_time": 0.6,
+      "salary_channels": [
+        "NEFT",
+        "RTGS",
+        "IMPS",
+        "OTHER"
+      ],
+      "salary_core_band": 0.1,
+      "salary_max_per_month": 1.5,
+      "salary_min_core_share": 0.5,
+      "salary_min_coverage": 0.6,
+      "salary_min_months": 3,
+      "salary_min_on_time": 0.6
+    },
+    "evaluation_batch": true,
+    "flagged_rows": {
+      "is_bounce": 0,
+      "is_emi": 1627,
+      "is_rent": 2046,
+      "is_salary": 1667
+    },
+    "groups": 9140,
+    "peak_memory_mb": 438.0,
+    "platform": "darwin",
+    "python": "3.12.16",
+    "rows": 177841,
+    "seconds_per_statement": {
+      "max": 0.0525,
+      "mean": 0.0162,
+      "median": 0.0153,
+      "p95": 0.0248
+    },
+    "seconds_total": 5.1,
+    "split": "shift_karan_v1",
+    "statements": 300,
+    "statements_with_salary": 185,
+    "statements_without_rows": [],
+    "style_examples": "not shown outside train",
+    "styles": {
+      "columns": {
+        "known": 17948,
+        "unknown": 8438,
+        "variant": 57054
+      },
+      "drcr": {
+        "known": 20793,
+        "unknown": 9655,
+        "variant": 63953
+      }
+    }
+  },
+  "rows": 177841,
+  "rows_without_truth": 0,
+  "scoring_run": {
+    "peak_memory_mb": 275.1,
+    "seconds_per_statement": 0.0007,
+    "seconds_total": 0.2
+  },
+  "split": "shift_karan_v1",
+  "statement_errors": [
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit tiluke technologies",
+      "salary_reason": "monthly OTHER credit in 7 of 7 months, amount always INR 47,883, paid on day 30-31; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0002",
+      "true_employer": "TILUKE TECHNOLOGIES PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit yomiyo foods",
+      "salary_reason": "monthly OTHER credit in 11 of 11 months, amount always INR 71,265, paid on day 4-5",
+      "statement_id": "stmt_0007",
+      "true_employer": "YOMIYO FOODS LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "employer_rename"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit monata india",
+      "salary_reason": "monthly OTHER credit in 8 of 8 months, amount always INR 1,43,592, paid on day 30-31",
+      "statement_id": "stmt_0008",
+      "true_employer": "MONATA SOLUTIONS LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit raneti automotive",
+      "salary_reason": "monthly OTHER credit in 6 of 6 months, amount always INR 27,899, paid on day 2-3; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0028",
+      "true_employer": "RANETI AUTOMOTIVE PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift",
+        "emi_bounce"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit navija infotech",
+      "salary_reason": "monthly OTHER credit in 11 of 12 months, amount always INR 66,129, usually on day 31 (11 of 12 within 3 days)",
+      "statement_id": "stmt_0031",
+      "true_employer": "NAVIJA INFOTECH PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month",
+        "missed_salary"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit neyora engineering",
+      "salary_reason": "monthly OTHER credit in 7 of 8 months, amount always INR 73,514, paid on day 29-31; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0043",
+      "true_employer": "NEYORA ENGINEERING PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift",
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit satoyo solutions",
+      "salary_reason": "monthly OTHER credit in 11 of 12 months, amount always INR 42,419, usually on day 31 (11 of 12 within 3 days); 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0047",
+      "true_employer": "SATOYO SOLUTIONS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month",
+        "missed_salary"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit pusasa engineering",
+      "salary_reason": "monthly OTHER credit in 9 of 10 months, amount always INR 1,22,168, paid on day 28-31; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0054",
+      "true_employer": "PUSASA ENGINEERING PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "employer_rename"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit rajalu digital",
+      "salary_reason": "monthly OTHER credit in 12 of 12 months, amount always INR 92,534, paid on day 4-5",
+      "statement_id": "stmt_0055",
+      "true_employer": "RAJALU RETAIL PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "employer_rename",
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit katika retail",
+      "salary_reason": "monthly OTHER credit in 7 of 7 months, amount always INR 34,714, paid on day 5; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0057",
+      "true_employer": "KATIKA RETAIL LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit tomosha foods",
+      "salary_reason": "monthly OTHER credit in 10 of 11 months, amount always INR 86,570, usually on day 31 (10 of 11 within 3 days)",
+      "statement_id": "stmt_0062",
+      "true_employer": "TOMOSHA FOODS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "employer_rename"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit rimipu digital",
+      "salary_reason": "monthly OTHER credit in 11 of 11 months, amount always INR 55,023, paid on day 28-31",
+      "statement_id": "stmt_0066",
+      "true_employer": "RIMIPU RETAIL PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift",
+        "missed_salary"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit lusasa solutions",
+      "salary_reason": "monthly OTHER credit in 8 of 10 months, amount always INR 31,637, usually on day 30 (8 of 9 within 3 days)",
+      "statement_id": "stmt_0071",
+      "true_employer": "LUSASA SOLUTIONS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "employer_rename"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit vivana global",
+      "salary_reason": "monthly OTHER credit in 6 of 6 months, amount always INR 1,12,285, paid on day 2-3",
+      "statement_id": "stmt_0073",
+      "true_employer": "VIVANA LOGISTICS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "emi_bounce"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit samosa systems",
+      "salary_reason": "monthly OTHER credit in 9 of 9 months, amount always INR 39,680, paid on day 28-31",
+      "statement_id": "stmt_0083",
+      "true_employer": "SAMOSA SYSTEMS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "emi_bounce"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit tipusha pharma",
+      "salary_reason": "monthly OTHER credit in 12 of 12 months, amount always INR 1,17,171, paid on day 29-31",
+      "statement_id": "stmt_0091",
+      "true_employer": "TIPUSHA PHARMA PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit shakemi technologies r",
+      "salary_reason": "monthly OTHER credit in 7 of 7 months, amount always INR 82,886, paid on day 3-4",
+      "statement_id": "stmt_0093",
+      "true_employer": "SHAKEMI TECHNOLOGIES PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "emi_bounce"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit tirasha systems",
+      "salary_reason": "monthly OTHER credit in 10 of 10 months, amount always INR 1,64,460, paid on day 28-31",
+      "statement_id": "stmt_0099",
+      "true_employer": "TIRASHA SYSTEMS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift",
+        "missed_salary"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "tamori pharma pv",
+      "salary_reason": "monthly IMPS credit in 5 of 6 months, amount always INR 58,173, usually on day 6 (4 of 5 within 3 days)",
+      "statement_id": "stmt_0107",
+      "true_employer": "TAMORI PHARMA PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit vamoto pharma",
+      "salary_reason": "monthly OTHER credit in 12 of 12 months, amount always INR 48,290, paid on day 7-8; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0128",
+      "true_employer": "VAMOTO PHARMA LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit kepuri retail",
+      "salary_reason": "monthly OTHER credit in 9 of 9 months, amount always INR 2,50,000, paid on day 28-31",
+      "statement_id": "stmt_0130",
+      "true_employer": "KEPURI RETAIL LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit yotisha textiles",
+      "salary_reason": "monthly OTHER credit in 12 of 12 months, amount always INR 1,03,734, paid on day 28-31; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0147",
+      "true_employer": "YOTISHA TEXTILES PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit shatadra retail",
+      "salary_reason": "monthly OTHER credit in 11 of 11 months, amount always INR 22,248, paid on day 3-4; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0154",
+      "true_employer": "SHATADRA RETAIL PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit shamita infotech",
+      "salary_reason": "monthly OTHER credit in 10 of 10 months, amount always INR 32,403, paid on day 5-6",
+      "statement_id": "stmt_0161",
+      "true_employer": "SHAMITA INFOTECH PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit totavi technologies",
+      "salary_reason": "monthly OTHER credit in 6 of 6 months, amount always INR 23,392, paid on day 3-4; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0168",
+      "true_employer": "TOTAVI TECHNOLOGIES PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit wali and sons",
+      "salary_reason": "monthly OTHER credit in 6 of 6 months, amount always INR 1,11,864, usually on day 3 (5 of 6 within 3 days)",
+      "statement_id": "stmt_0172",
+      "true_employer": "WALI & SONS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit kakato technologies",
+      "salary_reason": "monthly OTHER credit in 12 of 12 months, amount always INR 80,144, paid on day 3-4",
+      "statement_id": "stmt_0176",
+      "true_employer": "KAKATO TECHNOLOGIES LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit natavi automotive r",
+      "salary_reason": "monthly OTHER credit in 10 of 10 months, amount always INR 39,906, paid on day 29-31",
+      "statement_id": "stmt_0180",
+      "true_employer": "NATAVI AUTOMOTIVE PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "ratita pharma p lt",
+      "salary_reason": "monthly IMPS credit in 11 of 11 months, amount always INR 45,083, paid on day 29-31",
+      "statement_id": "stmt_0181",
+      "true_employer": "RATITA PHARMA PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit viluva foods",
+      "salary_reason": "monthly OTHER credit in 7 of 7 months, amount always INR 2,01,482, paid on day 2-3",
+      "statement_id": "stmt_0188",
+      "true_employer": "VILUVA FOODS LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit dranari textiles limit",
+      "salary_reason": "monthly OTHER credit in 11 of 11 months, amount always INR 49,227, paid on day 4-5",
+      "statement_id": "stmt_0189",
+      "true_employer": "DRANARI TEXTILES PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit moludra engineering r",
+      "salary_reason": "monthly OTHER credit in 12 of 12 months, amount always INR 39,170, paid on day 7-8",
+      "statement_id": "stmt_0190",
+      "true_employer": "MOLUDRA ENGINEERING PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month",
+        "emi_bounce"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit nevasa pharma",
+      "salary_reason": "monthly OTHER credit in 11 of 11 months, amount always INR 1,82,565, paid on day 1-2; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0191",
+      "true_employer": "NEVASA PHARMA PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift",
+        "employer_rename"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit saluva global re",
+      "salary_reason": "monthly OTHER credit in 7 of 7 months, amount always INR 56,454, usually on day 6 (6 of 7 within 3 days)",
+      "statement_id": "stmt_0192",
+      "true_employer": "SALUVA RETAIL PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month",
+        "emi_bounce"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit nevapu consultancy",
+      "salary_reason": "monthly OTHER credit in 12 of 12 months, amount always INR 34,246, paid on day 28-31; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0193",
+      "true_employer": "NEVAPU CONSULTANCY PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "missed_salary"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit yorisa systems",
+      "salary_reason": "monthly OTHER credit in 5 of 6 months, amount always INR 1,44,864, paid on day 2-3",
+      "statement_id": "stmt_0205",
+      "true_employer": "YORISA SYSTEMS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "missed_salary"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit yotasha engineering",
+      "salary_reason": "monthly OTHER credit in 11 of 12 months, amount always INR 73,690, paid on day 29-31",
+      "statement_id": "stmt_0220",
+      "true_employer": "YOTASHA ENGINEERING LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "missed_salary",
+        "emi_bounce"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit katimo infotech",
+      "salary_reason": "monthly OTHER credit in 7 of 8 months, amount always INR 53,175, paid on day 3-4",
+      "statement_id": "stmt_0221",
+      "true_employer": "KATIMO INFOTECH PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit mokami solutions",
+      "salary_reason": "monthly OTHER credit in 8 of 8 months, amount always INR 44,266, paid on day 28-31; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0222",
+      "true_employer": "MOKAMI SOLUTIONS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit shadrara consultancy limit",
+      "salary_reason": "monthly OTHER credit in 9 of 9 months, amount always INR 66,089, paid on day 28-31",
+      "statement_id": "stmt_0225",
+      "true_employer": "SHADRARA CONSULTANCY PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit yomodra automotive",
+      "salary_reason": "monthly OTHER credit in 11 of 11 months, amount always INR 72,013, usually on day 6 (10 of 11 within 3 days)",
+      "statement_id": "stmt_0227",
+      "true_employer": "YOMODRA AUTOMOTIVE PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "employer_rename",
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit tak and sons",
+      "salary_reason": "monthly OTHER credit in 10 of 10 months, amount always INR 55,212, paid on day 1-2; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0234",
+      "true_employer": "TAK & SONS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "emi_bounce"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit motari systems",
+      "salary_reason": "monthly OTHER credit in 12 of 12 months, amount always INR 87,442, paid on day 28-31",
+      "statement_id": "stmt_0239",
+      "true_employer": "MOTARI SYSTEMS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit titati foods r",
+      "salary_reason": "monthly OTHER credit in 12 of 12 months, amount always INR 85,059, paid on day 1-2; 1 other credit(s) from this payer not counted (bonus, an extra credit in a month, or a different amount)",
+      "statement_id": "stmt_0241",
+      "true_employer": "TITATI FOODS PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift",
+        "missed_salary"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit pumine consultancy",
+      "salary_reason": "monthly OTHER credit in 5 of 7 months, amount always INR 23,697, usually on day 30 (5 of 6 within 3 days)",
+      "statement_id": "stmt_0242",
+      "true_employer": "PUMINE CONSULTANCY PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "salary_date_shift",
+        "missed_salary"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit moluva textiles",
+      "salary_reason": "monthly OTHER credit in 8 of 9 months, amount always INR 52,349, usually on day 1 (7 of 8 within 3 days)",
+      "statement_id": "stmt_0244",
+      "true_employer": "MOLUVA TEXTILES PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "employer_rename",
+        "bonus_month"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit riyone technologies",
+      "salary_reason": "monthly OTHER credit in 9 of 9 months, amount always INR 49,417, paid on day 4-5; name changed: 'credit riyone technologies' -> 'credit riyone india r'",
+      "statement_id": "stmt_0251",
+      "true_employer": "RIYONE TECHNOLOGIES PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "employer_rename"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit vanapu consultancy",
+      "salary_reason": "monthly OTHER credit in 10 of 10 months, amount always INR 58,071, paid on day 6-7; name changed: 'credit vanapu consultancy' -> 'credit vanapu global'",
+      "statement_id": "stmt_0255",
+      "true_employer": "VANAPU CONSULTANCY LLP"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit shatosa consultancy",
+      "salary_reason": "monthly OTHER credit in 6 of 6 months, amount always INR 73,842, paid on day 2-3",
+      "statement_id": "stmt_0264",
+      "true_employer": "SHATOSA CONSULTANCY PVT LTD"
+    },
+    {
+      "customer_type": "salaried",
+      "hard_cases": [
+        "emi_bounce"
+      ],
+      "kind": "employer mismatch",
+      "predicted_employer": "credit kamiri consultancy",
+      "salary_reason": "monthly OTHER credit in 7 of 7 months, amount always INR 25,689, paid on day 4-5",
+      "statement_id": "stmt_0265",
+      "true_employer": "KAMIRI CONSULTANCY PVT LTD"
+    }
+  ],
+  "statements": 300
+}
