@@ -1,12 +1,16 @@
-"""Score pattern detection on a split against the ground truth.
+"""Score pattern detection on a split, or a whole evaluation batch, against the truth.
 
     uv run python -m statementscreen.score_patterns data/patterns/ data/week1_n2000/ --split dev
+    uv run python -m statementscreen.score_patterns data/patterns/ data/week4_shift_n300/ \\
+        --eval shift_karan_v1
 
-Reads the patterns output for the split (data/patterns/<split>/) plus the batch's
-transactions.parquet, labels and manifest. Joins on statement_id and row. The split is
+Reads the patterns output (data/patterns/<split or name>/) plus the batch's
+transactions.parquet, labels and manifest. Joins on statement_id and row. A split is
 loaded with load_split, which checks the manifest's hash and refuses "test" unless
-STATEMENTSCREEN_OPEN_TEST=1. Writes reports/week3_patterns_<split>.json, then logs a local
-MLflow run to mlruns/ (see statementscreen.tracking; --tracking-dir, --no-mlflow).
+STATEMENTSCREEN_OPEN_TEST=1; an evaluation batch with load_eval, which checks the
+manifest's hash against its registration. Writes reports/week3_patterns_<split>.json or
+reports/week4_rules_<name>.json, then logs a local MLflow run to mlruns/ (see
+statementscreen.tracking; --tracking-dir, --no-mlflow).
 """
 
 import argparse
@@ -16,6 +20,7 @@ import time
 from collections.abc import Sequence
 from pathlib import Path
 
+from statementscreen.eval_batches import load_eval
 from statementscreen.pattern_scoring import FLAGS, build_report
 from statementscreen.splits import SPLITS_DIR, SplitError, load_split
 from statementscreen.summary import peak_memory_bytes
@@ -33,18 +38,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     p.add_argument("patterns", type=Path, help="root folder written by statementscreen.patterns")
     p.add_argument("batch", type=Path, help="generated batch folder (truth, labels, manifest)")
-    p.add_argument("--split", required=True, help="train or dev (test is closed)")
-    p.add_argument("--out", type=Path, help="default: reports/week3_patterns_<split>.json")
+    which = p.add_mutually_exclusive_group(required=True)
+    which.add_argument("--split", help="train or dev (test is closed)")
+    which.add_argument("--eval", dest="eval_name", help="a registered evaluation batch")
+    p.add_argument("--out", type=Path, help="default: reports/week3_patterns_<split>.json, "
+                   "or reports/week4_rules_<name>.json for --eval")  # fmt: skip
     p.add_argument("--splits-dir", type=Path, default=SPLITS_DIR)
     p.add_argument("--tracking-dir", type=Path, default=DEFAULT_DIR,
                    help="local MLflow folder (default mlruns/, git-ignored)")  # fmt: skip
     p.add_argument("--no-mlflow", action="store_true", help="don't log an MLflow run")
     args = p.parse_args(argv)
-    out = args.out or Path(f"reports/week3_patterns_{args.split}.json")
-    patterns_dir = args.patterns / args.split
+    name = args.eval_name or args.split
+    default = f"week4_rules_{name}" if args.eval_name else f"week3_patterns_{name}"
+    out = args.out or Path(f"reports/{default}.json")
+    patterns_dir = args.patterns / name
     try:
         started = time.perf_counter()
-        ids = load_split(args.split, args.batch / "manifest.csv", args.splits_dir)
+        if args.eval_name:
+            ids = load_eval(args.eval_name, args.batch / "manifest.csv", args.splits_dir)
+        else:
+            ids = load_split(args.split, args.batch / "manifest.csv", args.splits_dir)
         report = build_report(patterns_dir, args.batch, ids)
         seconds = time.perf_counter() - started
     except (SplitError, ValueError, FileNotFoundError) as e:
@@ -57,7 +70,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # peak_memory_bytes handles ru_maxrss: bytes on macOS, kilobytes on Linux
         "peak_memory_mb": round(peak_memory_bytes() / 1024**2, 1),
     }
-    report = {"split": args.split, "batch": args.batch.name, "patterns_run": run,
+    report = {"split": name, "batch": args.batch.name, "patterns_run": run,
               "scoring_run": scoring_run, "config": run["config"], **report}  # fmt: skip
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=2, sort_keys=True, default=str) + "\n",
@@ -65,7 +78,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     o = report["overall"]
     g = o["grouping"]
-    print(f"Wrote {out}: {report['statements']} {args.split} statements, {report['rows']} rows "
+    print(f"Wrote {out}: {report['statements']} {name} statements, {report['rows']} rows "
           f"({report['rows_without_truth']} without truth) in {scoring_run['seconds_total']} s "
           f"({scoring_run['seconds_per_statement']} s per statement, peak memory "
           f"{scoring_run['peak_memory_mb']} MB)")  # fmt: skip

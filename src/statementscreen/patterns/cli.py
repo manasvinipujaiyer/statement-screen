@@ -1,11 +1,15 @@
-"""Run pattern detection over one split of a parse.
+"""Run pattern detection over one split of a parse, or over a whole evaluation batch.
 
     uv run python -m statementscreen.patterns data/parsed_2000/ --split dev --out data/patterns/
+    uv run python -m statementscreen.patterns data/parsed_shift_n300/ --eval shift_karan_v1 \\
+        --out data/patterns/
 
-Reads ONLY the parser output (rows.parquet, statements.parquet) and splits/split_v1.*:
+Reads ONLY the parser output (rows.parquet, statements.parquet) and splits/*.json:
 never transactions.parquet, labels, the manifest or generator code. The split must match
 the parsed folder's statements (load_split_for_parsed); "test" is refused unless
-STATEMENTSCREEN_OPEN_TEST=1.
+STATEMENTSCREEN_OPEN_TEST=1. An evaluation batch must be registered first
+(statementscreen.eval_batches); load_eval_for_parsed refuses a parse of the reference
+batch and any parse that isn't the registered one. Outputs go to <out>/<split or name>/.
 
 Statements are processed one at a time (rows are loaded in chunks of CHUNK statements, not
 the whole split). Outputs in <out>/<split>/:
@@ -35,6 +39,7 @@ from pathlib import Path
 
 import polars as pl
 
+from statementscreen.eval_batches import load_eval_for_parsed
 from statementscreen.generate import OutputFolderError, prepare_output_folder
 from statementscreen.patterns.clean import SCHEMA as CLEAN_SCHEMA
 from statementscreen.patterns.clean import clean_statement
@@ -94,11 +99,19 @@ def _seconds(values: list[float]) -> dict:
             "max": round(ordered[-1], 4)}  # fmt: skip
 
 
-def run(parsed: Path, split: str, out_root: Path, splits_dir: Path = SPLITS_DIR,
-        overwrite: bool = False, cfg: PatternConfig = DEFAULT) -> dict:  # fmt: skip
+def run(parsed: Path, split: str | None, out_root: Path, splits_dir: Path = SPLITS_DIR,
+        overwrite: bool = False, cfg: PatternConfig = DEFAULT,
+        eval_name: str | None = None) -> dict:  # fmt: skip
+    """One split (split="train"/"dev") or one registered evaluation batch (eval_name)."""
+    if (split is None) == (eval_name is None):
+        raise SplitError("give exactly one of a split or an evaluation batch")
     columns = ["statement_id", "layout", "period_start", "period_end"]
     statements = pl.read_parquet(parsed / "statements.parquet", columns=columns)
-    ids = load_split_for_parsed(split, statements["statement_id"].to_list(), splits_dir)
+    if eval_name is not None:
+        ids = load_eval_for_parsed(eval_name, parsed, splits_dir)
+        split = eval_name  # the output folder and the run's name
+    else:
+        ids = load_split_for_parsed(split, statements["statement_id"].to_list(), splits_dir)
     meta = {r["statement_id"]: r for r in statements.iter_rows(named=True)}
     out = out_root / split
     prepare_output_folder(out, overwrite, allowed=OUTPUT_NAMES)
@@ -153,6 +166,7 @@ def run(parsed: Path, split: str, out_root: Path, splits_dir: Path = SPLITS_DIR,
 
     summary = {
         "split": split,
+        "evaluation_batch": eval_name is not None,
         "statements": len(ids),
         "statements_without_rows": without_rows,
         "rows": n_rows,
@@ -179,18 +193,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         description="Clean, group and describe one split's statements.",
     )
     p.add_argument("parsed", type=Path, help="folder written by statementscreen.parse")
-    p.add_argument("--split", required=True, help="train or dev (test is closed)")
+    which = p.add_mutually_exclusive_group(required=True)
+    which.add_argument("--split", help="train or dev (test is closed)")
+    which.add_argument("--eval", dest="eval_name",
+                       help="a registered evaluation batch, e.g. shift_karan_v1")  # fmt: skip
     p.add_argument("--out", type=Path, default=Path("data/patterns"), help="output root")
     p.add_argument("--splits-dir", type=Path, default=SPLITS_DIR)
     p.add_argument("--overwrite", action="store_true", help="replace a previous run's outputs")
     args = p.parse_args(argv)
     try:
-        s = run(args.parsed, args.split, args.out, args.splits_dir, args.overwrite)
+        s = run(args.parsed, args.split, args.out, args.splits_dir, args.overwrite,
+                eval_name=args.eval_name)  # fmt: skip
     except (SplitError, OutputFolderError, FileNotFoundError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
     sps = s["seconds_per_statement"]
-    print(f"Wrote {args.out / args.split}: {s['statements']} statements, {s['rows']} rows, "
+    print(f"Wrote {args.out / s['split']}: {s['statements']} statements, {s['rows']} rows, "
           f"{s['groups']} groups in {s['seconds_total']} s ({sps['mean']} s per statement, "
           f"peak memory {s['peak_memory_mb']} MB)")  # fmt: skip
     print(f"  narration styles: {s['styles']}")

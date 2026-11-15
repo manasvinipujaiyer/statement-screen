@@ -1,0 +1,466 @@
+{
+  "batch": "week4_shift_n300",
+  "dialect": "karan_v1",
+  "dialect_narrations": 177425,
+  "fully_recognised_share": 0.2159,
+  "lines": [
+    {
+      "direction": "CR",
+      "example": "NEFT CR-PRVH0931203-MIPURI RETAIL PVT. LT",
+      "format": "NEFT CR-{ifsc}-{employer}-SALARY {month}-{utr}",
+      "fully_recognised": 476,
+      "fully_recognised_share": 1.0,
+      "group": "known_opening",
+      "kind": "salary",
+      "line": 1,
+      "narrations": 476,
+      "opening_match": 476,
+      "opening_match_share": 1.0,
+      "styles_matched": {
+        "neft_cr_dash": 476
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "SAL CREDIT Tiluke Technologies Pvt Ltd APR25 REF 590320343455",
+      "format": "SAL CREDIT {employer} {month} REF {ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "salary",
+      "line": 2,
+      "narrations": 559,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 559
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "IMPS/TRGMN25059008793/TAKAKA SOLUTIONS PVT. LTD./SALARY F",
+      "format": "IMPS/{utr}/{employer}/SALARY FOR {month}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "salary",
+      "line": 3,
+      "narrations": 678,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 678
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "NACH DR/KSVB7608680494238093/KRAMIKA CAPITAL LTD/EMI APR24",
+      "format": "NACH DR/{umrn}/{lender}/EMI {month}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "emi",
+      "line": 4,
+      "narrations": 790,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 790
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "ACH D- KRAMIKA CAPITAL LTD LOAN EMI-PRVH7612929774755074",
+      "format": "ACH D- {lender} LOAN EMI-{umrn}",
+      "fully_recognised": 837,
+      "fully_recognised_share": 1.0,
+      "group": "known_opening",
+      "kind": "emi",
+      "line": 5,
+      "narrations": 837,
+      "opening_match": 837,
+      "opening_match_share": 1.0,
+      "styles_matched": {
+        "ach_dash": 837
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "NACH RTN/PRVH7612929774755074/KRAMIKA CAPITAL LTD/INSUFF FUN",
+      "format": "NACH RTN/{umrn}/{lender}/INSUFF FUNDS",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "emi_return",
+      "line": 6,
+      "narrations": 12,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 12
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "ACH D RETURN-KRAMIKA CAPITAL LTD-PRVH7387696675700656-FUNDS INSUFFICIENT",
+      "format": "ACH D RETURN-{lender}-{umrn}-FUNDS INSUFFICIENT",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "emi_return",
+      "line": 7,
+      "narrations": 6,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 6
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "NACH RTN CHGS PRVH7796461806862776 APR24",
+      "format": "NACH RTN CHGS {umrn} {month}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "emi_return_charge",
+      "line": 8,
+      "narrations": 68,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 68
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "MANDATE BOUNCE CHARGES INCL GST-900796737424",
+      "format": "MANDATE BOUNCE CHARGES INCL GST-{ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "emi_return_charge",
+      "line": 9,
+      "narrations": 68,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 68
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "IMPS/TRGMN25121649834/Girindra Butala/RENT MAY25",
+      "format": "IMPS/{utr}/{payee}/RENT {month}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "rent",
+      "line": 10,
+      "narrations": 1029,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 1029
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "NEFT DR-KSVB0540984-VYANJANA IYENGAR-HOUSE RENT APR24-608789914374",
+      "format": "NEFT DR-{ifsc}-{payee}-HOUSE RENT {month}-{ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "known_opening",
+      "kind": "rent",
+      "line": 11,
+      "narrations": 1034,
+      "opening_match": 1034,
+      "opening_match_share": 1.0,
+      "styles_matched": {
+        "neft_dr_dash?": 1034
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "UPI/DR/486035316375/Kayota Fashions/kayotafash98@vistarika/PAYMENT",
+      "format": "UPI/DR/{ref}/{merchant}/{vpa}/PAYMENT",
+      "fully_recognised": 4934,
+      "fully_recognised_share": 0.0611,
+      "group": "known_opening",
+      "kind": "upi_spend",
+      "line": 12,
+      "narrations": 80746,
+      "opening_match": 80746,
+      "opening_match_share": 1.0,
+      "styles_matched": {
+        "upi_slash": 4934,
+        "upi_slash?": 75812
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "UPI-YODRAVI CAFE-yodravicaf15@kesarvan-867821200512-UPI",
+      "format": "UPI-{merchant}-{vpa}-{ref}-UPI",
+      "fully_recognised": 29013,
+      "fully_recognised_share": 0.4002,
+      "group": "known_opening",
+      "kind": "upi_spend",
+      "line": 13,
+      "narrations": 72493,
+      "opening_match": 72493,
+      "opening_match_share": 1.0,
+      "styles_matched": {
+        "upi_dash": 29013,
+        "upi_dash?": 43480
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "UPI/CR/136517983649/Xalak Tella/xalaktella77@vistarika",
+      "format": "UPI/CR/{ref}/{sender}/{vpa}",
+      "fully_recognised": 20,
+      "fully_recognised_share": 0.0297,
+      "group": "known_opening",
+      "kind": "upi_credit",
+      "line": 14,
+      "narrations": 673,
+      "opening_match": 673,
+      "opening_match_share": 1.0,
+      "styles_matched": {
+        "upi_slash": 20,
+        "upi_slash?": 653
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "ATM WDL SURENDRANAGAR DUDHREJ 007746377910",
+      "format": "ATM WDL {city} {ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "atm",
+      "line": 15,
+      "narrations": 2466,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 2466
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "BBPS DR VIDYUTA POWER DISTRIBUTION LTD BILL APR24 631626915660",
+      "format": "BBPS DR {biller} BILL {month} {ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "bill",
+      "line": 16,
+      "narrations": 2923,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 2923
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "BILLPAY/Vidyuta Power Distribution Ltd/875347745262",
+      "format": "BILLPAY/{biller}/{ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "bill",
+      "line": 17,
+      "narrations": 2786,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 2786
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "POS STREAMVERSE UJJAIN 718542345055",
+      "format": "POS {merchant} {city} {ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "card",
+      "line": 18,
+      "narrations": 1105,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 1105
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "ECOM PUR/Surtaal Music/249918289722",
+      "format": "ECOM PUR/{merchant}/{ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "card",
+      "line": 19,
+      "narrations": 1263,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 1263
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "INT.PD JUN24",
+      "format": "INT.PD {month}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "interest",
+      "line": 20,
+      "narrations": 894,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 894
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "UPI/REV/099441038917/BAZAARIO ONLINE/REVERSAL",
+      "format": "UPI/REV/{ref}/{merchant}/REVERSAL",
+      "fully_recognised": 372,
+      "fully_recognised_share": 1.0,
+      "group": "known_opening",
+      "kind": "refund",
+      "line": 21,
+      "narrations": 372,
+      "opening_match": 372,
+      "opening_match_share": 1.0,
+      "styles_matched": {
+        "upi_rev_slash": 372
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "REFUND/Bazaario Online/878322575329",
+      "format": "REFUND/{merchant}/{ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "refund",
+      "line": 22,
+      "narrations": 342,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 342
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "IMPS/TRGMN24093161421/PARCELVYA LOGISTICS PVT LTD/WEEKLY PAYOUT",
+      "format": "IMPS/{utr}/{sender}/WEEKLY PAYOUT",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "gig_credit",
+      "line": 23,
+      "narrations": 2793,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 2793
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "NEFT CR-KSVB0448937-CHARITA SANDAL-INV 573393067400-KSVBN240",
+      "format": "NEFT CR-{ifsc}-{sender}-INV {ref}-{utr}",
+      "fully_recognised": 2651,
+      "fully_recognised_share": 1.0,
+      "group": "known_opening",
+      "kind": "business_credit",
+      "line": 24,
+      "narrations": 2651,
+      "opening_match": 2651,
+      "opening_match_share": 1.0,
+      "styles_matched": {
+        "neft_cr_dash": 2651
+      }
+    },
+    {
+      "direction": "CR",
+      "example": "IMPS/TRGMN25164784290/Jeevika Reddy/FUND TRANSFER",
+      "format": "IMPS/{utr}/{sender}/FUND TRANSFER",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "new_opening",
+      "kind": "transfer_in",
+      "line": 25,
+      "narrations": 311,
+      "opening_match": 0,
+      "opening_match_share": 0.0,
+      "styles_matched": {
+        "unknown": 311
+      }
+    },
+    {
+      "direction": "DR",
+      "example": "NEFT DR-VSTK0423625-Gautam Sarin-048650202762",
+      "format": "NEFT DR-{ifsc}-{payee}-{ref}",
+      "fully_recognised": 0,
+      "fully_recognised_share": 0.0,
+      "group": "known_opening",
+      "kind": "transfer_out",
+      "line": 26,
+      "narrations": 50,
+      "opening_match": 50,
+      "opening_match_share": 1.0,
+      "styles_matched": {
+        "neft_dr_dash?": 50
+      }
+    }
+  ],
+  "lines_by_group": {
+    "known_opening": [
+      1,
+      5,
+      11,
+      12,
+      13,
+      14,
+      21,
+      24,
+      26
+    ],
+    "new_opening": [
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      23,
+      25
+    ]
+  },
+  "lines_never_generated": [],
+  "narrations_by_group": {
+    "known_opening": 159332,
+    "new_opening": 18093
+  },
+  "opening_match_share": 0.898,
+  "rows_keeping_default_narration": 416
+}

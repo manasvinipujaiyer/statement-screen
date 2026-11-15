@@ -1,0 +1,61 @@
+{
+  "mixed": {
+    "plans": [
+      "stmt_0001 salaried columns salary_date_shift|employer_rename|bonus_month|missed_salary|emi_bounce",
+      "stmt_0002 salaried drcr salary_date_shift|employer_rename|bonus_month|missed_salary|emi_bounce",
+      "stmt_0003 gig drcr emi_bounce",
+      "stmt_0004 salaried drcr salary_date_shift|employer_rename|bonus_month|missed_salary|emi_bounce",
+      "stmt_0005 salaried columns salary_date_shift|employer_rename|bonus_month|missed_salary|emi_bounce",
+      "stmt_0006 gig drcr emi_bounce"
+    ],
+    "settings": {
+      "hard_case_rate": 1.0,
+      "mix": null,
+      "n": 6,
+      "seed": 42
+    },
+    "sha256": {
+      "labels/stmt_0001.json": "b3c682a5abaa8098143ac2056eaeba76a7ea1fb219a8357e01283cfb461e00ec",
+      "labels/stmt_0002.json": "f176ec22c3226620f30e3c7f4138597bf4eb7d62acf31c4b08b296b1fc54aa57",
+      "labels/stmt_0003.json": "95592a7ddd00d2a90c1ffdeecbd006a4a48578299e61999c8b6bb452e282aae6",
+      "labels/stmt_0004.json": "517374fc7202c03fa2e33be9b29c60008e7feafb48b787fd5a1d63024a43607f",
+      "labels/stmt_0005.json": "2911c58c23c429b0bb8cefbd77ef306717d749d621e96d0d48b838167e316539",
+      "labels/stmt_0006.json": "23836f1f23d9e2f5645532f4885489c8443f9e7a712bca29780ee0de3ae355e6",
+      "manifest.csv": "aafa968b9cd0177ea56845bece1b4209e937d268ed1c3c399720bb9fbffc37ba",
+      "pdfs/stmt_0001.pdf": "d1ecafbce0dcf0f574ea45277d210dd6e23577279c42614b21868b377df3085e",
+      "pdfs/stmt_0002.pdf": "b3107ef08082267a4394e6a017bddbe7ee172aed65f7b1e5bd427cdfc005a727",
+      "pdfs/stmt_0003.pdf": "8af6e3a3fba64aa238f3c05b45881a59899dafaf4e63bc9a30f6191e16b76495",
+      "pdfs/stmt_0004.pdf": "eabe76ae9f5c872a0ccfb889af75a19ce62201d0ce9c1f366177823143a36e02",
+      "pdfs/stmt_0005.pdf": "23c7aa34592a0a57932255cf5bdd88358f1dfbda375157191395beef022c2e47",
+      "pdfs/stmt_0006.pdf": "1ef743dad74a7681849abbeba60deb60e300de29a54b92cbb2e1eaadcec88da2",
+      "transactions.parquet": "f7e5f50cf8814f03bbd96d2581a7165fb21f76c77ec8f2a1d50f653bb7feb2b8"
+    }
+  },
+  "self_employed": {
+    "plans": [
+      "stmt_0001 self_employed columns emi_bounce",
+      "stmt_0002 self_employed drcr emi_bounce",
+      "stmt_0003 self_employed drcr emi_bounce"
+    ],
+    "settings": {
+      "hard_case_rate": 1.0,
+      "mix": {
+        "gig": 0.0,
+        "salaried": 0.0,
+        "self_employed": 1.0
+      },
+      "n": 3,
+      "seed": 42
+    },
+    "sha256": {
+      "labels/stmt_0001.json": "0157e9a2737b14925a23d27f8bc62921f5e1be1857b50ff9078037a7f6295230",
+      "labels/stmt_0002.json": "7f39d41c556268d7b60df05d72dfb066fa7a7a8cc59bb1f3ba2a031b551fc0be",
+      "labels/stmt_0003.json": "92a1d222577683e3a73ee51aaaaeead78341b72c96359d87b29b3b70a86855af",
+      "manifest.csv": "bd195fbdb8a20e2f70cea5bee67707ebbf57b86d49103d847558ddee3ee98579",
+      "pdfs/stmt_0001.pdf": "39f81ed6b99240db6e42b0c7ad6a332501caea2d826d2d6a979681014ba5b5ee",
+      "pdfs/stmt_0002.pdf": "60cf4afd50428a6444d5faef32c172ae16b2fee537ca0fc0eab93fd60c59b848",
+      "pdfs/stmt_0003.pdf": "4c654b23ac42c7b3730344683a72afb54f5f5df43e06db3d8c9d076dc2a645aa",
+      "transactions.parquet": "0438cd0a22a70748c686ac42758ac8bc89bf8ae6edbe10f014703c5f3b867bfb"
+    }
+  }
+}

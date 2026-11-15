@@ -1,4 +1,4 @@
-"""Log a pattern-scoring run to MLflow, LOCALLY only.
+"""Log pattern-scoring and classifier runs to MLflow, LOCALLY only.
 
 Everything lives in one local folder (default mlruns/, which is git-ignored); nothing is
 sent anywhere:
@@ -90,11 +90,10 @@ def params(report: dict) -> dict[str, str]:
     return p
 
 
-def log_run(report: dict, report_path: Path, tracking_dir: Path = DEFAULT_DIR,
-            extra_artifacts: Iterable[Path] = (),
-            experiment: str = EXPERIMENT) -> tuple[str, list[str]]:  # fmt: skip
-    """Log one run; returns (run id, other warnings seen). Raises TrackingRefused if MLflow
-    warns about the store first."""
+def _open_store(tracking_dir: Path, experiment: str):
+    """Point MLflow at the local store and select the experiment. Returns (mlflow, other
+    warnings seen); raises TrackingRefused, before anything is logged, if MLflow warns
+    about the store or refuses it."""
     collect = _Collect()
     mlflow_logger = logging.getLogger("mlflow")
     mlflow_logger.addHandler(collect)
@@ -114,19 +113,44 @@ def log_run(report: dict, report_path: Path, tracking_dir: Path = DEFAULT_DIR,
             except MlflowException as e:
                 raise TrackingRefused(f"MLflow refused the local store: {e}") from e
         messages = list(dict.fromkeys([str(w.message) for w in caught] + collect.messages))
-        worrying = [m for m in messages if about_the_store(m)]
-        if worrying:
-            raise TrackingRefused("MLflow warned about the local store, so nothing was "
-                                  "logged:\n  " + "\n  ".join(worrying))  # fmt: skip
-        with mlflow.start_run(run_name=f"{report['split']}") as run:
-            mlflow.log_params(params(report))
-            mlflow.log_metrics(headline_metrics(report))
-            mlflow.log_artifact(str(report_path))
-            for extra in extra_artifacts:
-                if extra.exists():
-                    mlflow.log_artifact(str(extra), artifact_path="sweeps")
-            if messages:  # not about the store, but never hidden
-                mlflow.set_tag("setup_warnings", " | ".join(messages)[:5000])
-            return run.info.run_id, messages
     finally:
         mlflow_logger.removeHandler(collect)
+    worrying = [m for m in messages if about_the_store(m)]
+    if worrying:
+        raise TrackingRefused("MLflow warned about the local store, so nothing was "
+                              "logged:\n  " + "\n  ".join(worrying))  # fmt: skip
+    return mlflow, messages
+
+
+def log_run(report: dict, report_path: Path, tracking_dir: Path = DEFAULT_DIR,
+            extra_artifacts: Iterable[Path] = (),
+            experiment: str = EXPERIMENT) -> tuple[str, list[str]]:  # fmt: skip
+    """Log one pattern-scoring run; returns (run id, other warnings seen). Raises
+    TrackingRefused if MLflow warns about the store first."""
+    mlflow, messages = _open_store(tracking_dir, experiment)
+    with mlflow.start_run(run_name=f"{report['split']}") as run:
+        mlflow.log_params(params(report))
+        mlflow.log_metrics(headline_metrics(report))
+        mlflow.log_artifact(str(report_path))
+        for extra in extra_artifacts:
+            if extra.exists():
+                mlflow.log_artifact(str(extra), artifact_path="sweeps")
+        if messages:  # not about the store, but never hidden
+            mlflow.set_tag("setup_warnings", " | ".join(messages)[:5000])
+        return run.info.run_id, messages
+
+
+def log_flat_run(run_name: str, run_params: dict[str, str], metrics: dict[str, float],
+                 artifacts: Iterable[Path], experiment: str,
+                 tracking_dir: Path = DEFAULT_DIR) -> tuple[str, list[str]]:  # fmt: skip
+    """Log a run from ready-made params, metrics and files, with the same store guard."""
+    mlflow, messages = _open_store(tracking_dir, experiment)
+    with mlflow.start_run(run_name=run_name) as run:
+        mlflow.log_params(run_params)
+        mlflow.log_metrics(metrics)
+        for path in artifacts:
+            if path.exists():
+                mlflow.log_artifact(str(path))
+        if messages:
+            mlflow.set_tag("setup_warnings", " | ".join(messages)[:5000])
+        return run.info.run_id, messages

@@ -107,6 +107,7 @@ def bonus_month(
     # Half the time the narration says BONUS; otherwise it looks exactly like salary.
     note = "BONUS" if rng.random() < 0.5 else None
     text = narrator.salary(income.employer, posted, note)
+    text = narrator.as_kind("salary", text, income.employer, posted)  # a dialect has no bonus
     bonus = Draft(posted, text, amount, "bonus", ("bonus_month",), income.employer)
     return [*drafts, bonus]
 
@@ -142,7 +143,9 @@ def employer_rename(
     for d in drafts:
         if d.category in _PAYROLL and d.posted >= cut:
             # New narration, same canonical counterparty: it's still the same employer.
-            d = _tag(d._replace(description=narrator.salary(new_name, d.posted)), "employer_rename")
+            text = narrator.salary(new_name, d.posted)
+            text = narrator.as_kind("salary", text, new_name, d.posted)
+            d = _tag(d._replace(description=text), "employer_rename")
         out.append(d)
     return out, new_name
 
@@ -211,6 +214,7 @@ def emi_bounce(
         left = Decimal(str(rng.uniform(low, cap))).quantize(Decimal("0.01"))
         moved = Decimal(int(before - left))  # whole rupees; leaves slightly more than `left`
         text = narrator.neft_debit(narrator.holder, emi.posted, "SELF TRANSFER")
+        text = narrator.as_kind("transfer_out", text, narrator.holder, emi.posted)
         lines = [Draft(emi.posted, text, -moved, "transfer_out", tags, narrator.holder)]
         head, tail = posted[:i], posted[i + 1 :]
         # A few days later most of it comes back (they'd parked it in another account),
@@ -219,22 +223,30 @@ def emi_bounce(
         if tail and back_on <= tail[-1].posted:
             back = Decimal(int(float(moved) * rng.uniform(0.9, 1.0)))
             text = narrator.imps_credit(narrator.holder, "SELF TRANSFER")
+            text = narrator.as_kind("transfer_in", text, narrator.holder, back_on)
             k = bisect_right([d.posted for d in tail], back_on)
             returned = Draft(back_on, text, back, "transfer_in", tags, narrator.holder)
             tail = tail[:k] + [returned] + tail[k:]
     else:
         i = ample[int(rng.integers(len(ample)))]
         emi, reason = posted[i], narrator.technical_return_reason()
-        reversal = Draft(emi.posted, narrator.nach_return(emi.counterparty, umrn, reason),
-                         -emi.amount, "loan_reversal", tags, emi.counterparty)  # fmt: skip
+        text = narrator.nach_return(emi.counterparty, umrn, reason)
+        text = narrator.as_kind("emi_return", text, emi.counterparty, emi.posted, umrn=umrn)
+        reversal = Draft(emi.posted, text, -emi.amount, "loan_reversal", tags, emi.counterparty)
         lines = [_tag(emi, "emi_bounce"), reversal]
         head, tail = posted[:i], posted[i + 1 :]
 
     bank = narrator.own_bank.name.upper()
     charge_text = narrator.bounce_charge(emi.counterparty, reason)
+    gst_text = narrator.bounce_gst()
+    # A dialect's charge formats narrate both the charge and the GST on it.
+    charge_text, gst_text = (
+        narrator.as_kind("emi_return_charge", t, emi.counterparty, emi.posted, umrn=umrn)
+        for t in (charge_text, gst_text)
+    )
     lines += [
         Draft(emi.posted, charge_text, -BOUNCE_CHARGE, "bounce_charge", tags, bank),
-        Draft(emi.posted, narrator.bounce_gst(), -BOUNCE_GST, "bounce_gst", tags, bank),
+        Draft(emi.posted, gst_text, -BOUNCE_GST, "bounce_gst", tags, bank),
     ]
     details["emi_bounce"] = f"{emi.posted.isoformat()} {-emi.amount} {reason}"
     return head + lines + tail
