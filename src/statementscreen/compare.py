@@ -76,6 +76,17 @@ class EvalSet:
 # ---------------------------------------------------------------- metrics (pure)
 
 
+def scores(tp: int, fp: int, fn: int) -> dict:
+    """pattern_scoring.prf, except that F1 is always 2tp / (2tp + fp + fn) when that is
+    defined: a method that flags nothing while positives exist has F1 0, not "undefined"
+    (its precision stays undefined). The bootstrap uses the same definition. Added after
+    the first shift scoring (Week 4 decision), so the report's re-run is post-hoc."""
+    out = prf(tp, fp, fn)
+    if out["f1"] is None and 2 * tp + fp + fn > 0:
+        out["f1"] = 2 * tp / (2 * tp + fp + fn)
+    return out
+
+
 def counts(frame: pl.DataFrame, label: str, method: str) -> tuple[int, int, int]:
     """(tp, fp, fn) of one method's predictions (r_ or m_<label>) against t_<label>."""
     t, p = frame[f"t_{label}"], frame[f"{method[0]}_{label}"]
@@ -84,7 +95,7 @@ def counts(frame: pl.DataFrame, label: str, method: str) -> tuple[int, int, int]
 
 def label_table(frame: pl.DataFrame) -> dict:
     """Per label, rules and model P/R/F1 (and counts) over the rows of frame."""
-    return {label: {m: prf(*counts(frame, label, m)) for m in METHODS} for label in LABELS}
+    return {label: {m: scores(*counts(frame, label, m)) for m in METHODS} for label in LABELS}
 
 
 def per_statement(frame: pl.DataFrame, label: str, method: str,
@@ -174,12 +185,12 @@ def score_set(frame: pl.DataFrame, statements: pl.DataFrame, by_format_group: bo
     ids = sorted(statements["statement_id"])
     labels = {}
     for label in LABELS:
-        table = {m: prf(*counts(frame, label, m)) for m in METHODS}
+        table = {m: scores(*counts(frame, label, m)) for m in METHODS}
         truth = frame[f"t_{label}"].to_numpy()
         pr_auc = average_precision_score(truth, frame[f"s_{label}"]) if truth.any() else None
         table["model"]["pr_auc"] = None if pr_auc is None else float(pr_auc)
         labels[label] = _with_intervals(table, frame, label, ids, n, seed)
-    hs = {m: prf(*counts(statements, "has_salary", m)) for m in METHODS}
+    hs = {m: scores(*counts(statements, "has_salary", m)) for m in METHODS}
     hs = _with_intervals(hs, statements, "has_salary", ids, n, seed)
     return {"statements": statements.height, "rows": frame.height, "labels": labels,
             "has_salary": hs, "false_salary": false_salary(statements),

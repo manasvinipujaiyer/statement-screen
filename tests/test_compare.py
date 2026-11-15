@@ -39,6 +39,14 @@ def test_precision_recall_f1_on_a_hand_example() -> None:
     assert table["model"]["f1"] == pytest.approx(0.8)
 
 
+def test_flagging_nothing_while_positives_exist_is_f1_zero() -> None:
+    nothing = cp.scores(0, 0, 172)  # the rules on the shift batch's bounces
+    assert nothing["f1"] == 0.0 and nothing["precision"] is None and nothing["recall"] == 0.0
+    assert cp.scores(0, 0, 0)["f1"] is None  # no positives and no flags: truly undefined
+    assert cp.scores(0, 3, 0)["f1"] == 0.0  # only false flags
+    assert cp.scores(2, 1, 1)["f1"] == pytest.approx(2 / 3)  # unchanged where prf defines it
+
+
 def test_per_statement_counts_follow_the_given_order() -> None:
     frame = _frame([True, True, False], [True, False, True], [True, True, True],
                    statement=["stmt_0002", "stmt_0001", "stmt_0002"])  # fmt: skip
