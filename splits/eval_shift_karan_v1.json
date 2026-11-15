@@ -1,0 +1,9 @@
+{
+  "batch": "week4_shift_n300",
+  "manifest_sha256": "5c7691353ed3971b23068254a3156c44bf960052d92206b742ed5f4865eac21e",
+  "name": "shift_karan_v1",
+  "parsed_rows_sha256": "306a3abd18c8ecc17ceda1003ba74937df7b3940003d018f201b15c91b2719de",
+  "reference_manifest_sha256": "4bb5f314b131bcf01927e12a7ca1f71dfaf7c331757c1e0890dfd1eee42f0fb0",
+  "statement_ids_sha256": "c7ff2ef82f692f2d25da962c77972fa16f5b161ef14a93924bb1a9ee1bcb43c0",
+  "statements": 300
+}
