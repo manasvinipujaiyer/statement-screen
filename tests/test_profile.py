@@ -1,6 +1,6 @@
 """The income profile on hand-written statements, run through the real Week 3 patterns."""
 
-from datetime import date
+from datetime import date, timedelta
 
 import polars as pl
 import pytest
@@ -89,6 +89,24 @@ def test_a_bonus_is_never_income() -> None:
     p = profile([salary(m) for m in range(1, 13)] + [bonus])
     assert value(p, "estimated_monthly_income_paise") == SALARY
     assert value(p, "typical_monthly_salary_paise") == SALARY
+
+
+def test_weekly_payouts_that_skip_a_week_are_gig_income() -> None:
+    """Every 4th week skipped: gaps 7, 7, 14 (mean about 9.3 days), as dev's stmt_0777."""
+    first = date(2025, 1, 3)
+    payouts = []
+    for week in range(52):
+        if week % 4 == 3:
+            continue
+        d = first + timedelta(days=7 * week)
+        text = f"IMPS/P2A/{412398765000 + week}/PARCELVYA LOGISTICS/KSVB/PAYOUT"
+        payouts.append((d, text, 400_000 + 10_000 * (week % 5)))
+    p = profile(payouts)
+    assert value(p, "customer_type") == "gig"
+    regular = value(p, "other_regular_income")
+    assert regular[0]["kind"] == "weekly payouts"
+    total = sum(amount for _, _, amount in payouts)
+    assert value(p, "estimated_monthly_income_paise") == (2 * total + 12) // 24
 
 
 # ---------------------------------------------------------------- EMIs and bounces

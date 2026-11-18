@@ -23,6 +23,7 @@ import sys
 import time
 from collections import Counter
 from collections.abc import Sequence
+from dataclasses import replace
 from pathlib import Path
 
 import polars as pl
@@ -127,9 +128,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument("--parsed", type=Path, required=True, help="the parse the patterns came from")
     p.add_argument("--out", type=Path, default=Path("data/profiles"))
     p.add_argument("--overwrite", action="store_true")
+    variant_a = "variant (a): don't count one-off credits for self-employed (default counts them)"
+    p.add_argument("--no-one-off-credits", action="store_true", help=variant_a)
     args = p.parse_args(argv)
+    cfg = replace(DEFAULT, count_one_off_credits_for_self_employed=not args.no_one_off_credits)
     try:
-        s = run(args.patterns, args.set, args.parsed, args.out, overwrite=args.overwrite)
+        s = run(args.patterns, args.set, args.parsed, args.out, cfg, overwrite=args.overwrite)
     except (ValueError, OutputFolderError, FileNotFoundError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
