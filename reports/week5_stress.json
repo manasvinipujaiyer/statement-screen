@@ -16,6 +16,245 @@
     },
     "profile_json_sha256": "3e2a3756fd9f229d57978b1947b50340fe255cc043b2d7d419f3663d66d28379"
   },
+  "layout_holdout": {
+    "directions": {
+      "columns_to_drcr": {
+        "dev_layout": "drcr",
+        "dev_rows": 87504,
+        "dev_statements": 148,
+        "labels": {
+          "is_bounce": {
+            "both_layouts": {
+              "f1": 0.8808290155440415,
+              "fn": 13,
+              "fp": 10,
+              "precision": 0.8947368421052632,
+              "recall": 0.8673469387755102,
+              "tp": 85
+            },
+            "holdout": {
+              "best_iteration": 38,
+              "f1": 0.7812500000000001,
+              "fn": 23,
+              "fp": 19,
+              "precision": 0.7978723404255319,
+              "recall": 0.7653061224489796,
+              "tp": 75,
+              "train_positives": 374,
+              "train_sampled_negatives": 37414
+            },
+            "setting": {
+              "learning_rate": 0.1,
+              "min_child_samples": 100,
+              "num_leaves": 15
+            },
+            "threshold": 0.9919143465800291
+          },
+          "is_emi": {
+            "both_layouts": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 765
+            },
+            "holdout": {
+              "best_iteration": 297,
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 765,
+              "train_positives": 3117,
+              "train_sampled_negatives": 37148
+            },
+            "setting": {
+              "learning_rate": 0.05,
+              "min_child_samples": 20,
+              "num_leaves": 15
+            },
+            "threshold": 0.24610256562418587
+          },
+          "is_rent": {
+            "both_layouts": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1001
+            },
+            "holdout": {
+              "best_iteration": 104,
+              "f1": 0.9697265625000001,
+              "fn": 8,
+              "fp": 54,
+              "precision": 0.9484240687679083,
+              "recall": 0.9920079920079921,
+              "tp": 993,
+              "train_positives": 4159,
+              "train_sampled_negatives": 37034
+            },
+            "setting": {
+              "learning_rate": 0.05,
+              "min_child_samples": 20,
+              "num_leaves": 15
+            },
+            "threshold": 0.001525598244935096
+          },
+          "is_salary": {
+            "both_layouts": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 791
+            },
+            "holdout": {
+              "best_iteration": 157,
+              "f1": 0.9993682880606444,
+              "fn": 0,
+              "fp": 1,
+              "precision": 0.9987373737373737,
+              "recall": 1.0,
+              "tp": 791,
+              "train_positives": 3477,
+              "train_sampled_negatives": 37100
+            },
+            "setting": {
+              "learning_rate": 0.1,
+              "min_child_samples": 20,
+              "num_leaves": 15
+            },
+            "threshold": 0.8510999262750432
+          }
+        },
+        "train_layout": "columns"
+      },
+      "drcr_to_columns": {
+        "dev_layout": "columns",
+        "dev_rows": 89072,
+        "dev_statements": 152,
+        "labels": {
+          "is_bounce": {
+            "both_layouts": {
+              "f1": 0.9685534591194969,
+              "fn": 5,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9390243902439024,
+              "tp": 77
+            },
+            "holdout": {
+              "best_iteration": 48,
+              "f1": 0.8786127167630058,
+              "fn": 6,
+              "fp": 15,
+              "precision": 0.8351648351648352,
+              "recall": 0.926829268292683,
+              "tp": 76,
+              "train_positives": 346,
+              "train_sampled_negatives": 36812
+            },
+            "setting": {
+              "learning_rate": 0.1,
+              "min_child_samples": 100,
+              "num_leaves": 15
+            },
+            "threshold": 0.9919143465800291
+          },
+          "is_emi": {
+            "both_layouts": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 697
+            },
+            "holdout": {
+              "best_iteration": 296,
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 697,
+              "train_positives": 2950,
+              "train_sampled_negatives": 36563
+            },
+            "setting": {
+              "learning_rate": 0.05,
+              "min_child_samples": 20,
+              "num_leaves": 15
+            },
+            "threshold": 0.24610256562418587
+          },
+          "is_rent": {
+            "both_layouts": {
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 890
+            },
+            "holdout": {
+              "best_iteration": 996,
+              "f1": 1.0,
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 890,
+              "train_positives": 4157,
+              "train_sampled_negatives": 36434
+            },
+            "setting": {
+              "learning_rate": 0.05,
+              "min_child_samples": 20,
+              "num_leaves": 15
+            },
+            "threshold": 0.001525598244935096
+          },
+          "is_salary": {
+            "both_layouts": {
+              "f1": 0.9987819732034104,
+              "fn": 1,
+              "fp": 1,
+              "precision": 0.9987819732034104,
+              "recall": 0.9987819732034104,
+              "tp": 820
+            },
+            "holdout": {
+              "best_iteration": 162,
+              "f1": 0.9945421467556095,
+              "fn": 1,
+              "fp": 8,
+              "precision": 0.9903381642512077,
+              "recall": 0.9987819732034104,
+              "tp": 820,
+              "train_positives": 3427,
+              "train_sampled_negatives": 36507
+            },
+            "setting": {
+              "learning_rate": 0.1,
+              "min_child_samples": 20,
+              "num_leaves": 15
+            },
+            "threshold": 0.8510999262750432
+          }
+        },
+        "train_layout": "drcr"
+      }
+    },
+    "note": "measurement only: frozen settings and thresholds, nothing retuned",
+    "peak_memory_mb": 1500.5,
+    "seconds_total": 19.6
+  },
   "peak_memory_mb": 376.6,
   "perturbations": {
     "cut_20_chars": {
