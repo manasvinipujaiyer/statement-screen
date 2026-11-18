@@ -125,6 +125,22 @@ LAYOUTS: dict[str, Layout] = {
 LAYOUT_NAMES = tuple(LAYOUTS)
 
 
+@dataclass(frozen=True)
+class Printed:
+    """Text exactly as a page printed it, for redrawing a statement read back from its PDF
+    (the Week 6 tamper generator). With it, the renderer draws these lines as given instead
+    of wrapping or deriving them; without it (the default), nothing changes.
+
+    narration_lines  per transaction, its printed narration line(s)
+    refs             per transaction, its printed Chq./Ref.No. (columns layout)
+    address_lines    the printed address lines
+    """
+
+    narration_lines: tuple[tuple[str, ...], ...]
+    refs: tuple[str, ...] | None = None
+    address_lines: tuple[str, ...] | None = None
+
+
 def _reference(t: Transaction) -> str:
     """The Chq./Ref.No. column: the first long number in the narration (UTR/RRN), or zeros."""
     m = re.search(r"\d{10,}", t.description)
@@ -190,8 +206,8 @@ def _totals(s: Statement) -> list[tuple[str, str]]:
 
 
 class _Renderer:
-    def __init__(self, s: Statement, lay: Layout, c: Canvas) -> None:
-        self.s, self.lay, self.c = s, lay, c
+    def __init__(self, s: Statement, lay: Layout, c: Canvas, printed: Printed | None = None):
+        self.s, self.lay, self.c, self.printed = s, lay, c, printed
         self.left, self.right = MARGIN, PAGE_W - MARGIN
         self.narr = next(col for col in lay.columns if col.key == "narration")
         self.top_first = PAGE_H - (262 if lay.summary == "box" else 196)
@@ -201,6 +217,8 @@ class _Renderer:
 
     def rows(self) -> list[list[str]]:
         """The narration lines for every transaction (1 line in drcr, up to 3 in columns)."""
+        if self.printed is not None:
+            return [list(lines) for lines in self.printed.narration_lines]
         lay = self.lay
         out = []
         for t in self.s.transactions:
@@ -239,6 +257,11 @@ class _Renderer:
                 "center": self.c.drawCentredString}[align]  # fmt: skip
         draw(x, y, s)
 
+    def address_lines(self, width: float, size: float, max_lines: int) -> list[str]:
+        if self.printed is not None and self.printed.address_lines is not None:
+            return list(self.printed.address_lines)
+        return _wrap(self.s.address, width, self.lay.font, size, max_lines)
+
     def details(self) -> list[tuple[str, str]]:
         s, fmt = self.s, self.lay.date_fmt
         return [
@@ -257,7 +280,7 @@ class _Renderer:
         self.text(self.left, top - 14, s.bank_name, bold=True, size=15)
         self.text(self.left, top - 28, "Statement of Account", size=9)
         self.text(self.left, top - 52, s.account_holder, bold=True, size=8.5)
-        for i, line in enumerate(_wrap(s.address, 230, self.lay.font, 8, 3)):
+        for i, line in enumerate(self.address_lines(230, 8, 3)):
             self.text(self.left, top - 64 - i * 10, line, size=8)
         x_label, x_value = self.right - 210, self.right - 130
         for i, (label, value) in enumerate(self.details()):
@@ -281,7 +304,7 @@ class _Renderer:
         self.text(mid, top - 14, s.bank_name.upper(), bold=True, size=15, align="center")
         self.text(mid, top - 28, "ACCOUNT STATEMENT", size=9.5, align="center")
         left = [("Name", s.account_holder)] + [
-            ("Address", line) for line in _wrap(s.address, 200, self.lay.font, 8.5, 2)
+            ("Address", line) for line in self.address_lines(200, 8.5, 2)
         ]
         rows = left + self.details()
         half = (len(rows) + 1) // 2
@@ -324,6 +347,8 @@ class _Renderer:
                         self.text(x, y - k * lay.line_h, line)
                 else:
                     value = _cell(t, col.key, lay)
+                    if col.key == "ref" and self.printed is not None and self.printed.refs:
+                        value = self.printed.refs[i]
                     if col.width:
                         value = _fit(value, col.width, lay.font, lay.size)
                     self.text(x, y, value, align=col.align)
@@ -355,8 +380,11 @@ class _Renderer:
             self.c.showPage()  # finish this page and start a new one
 
 
-def render_statement(s: Statement, path: str | Path, layout: str = "columns") -> Path:
-    """Write the statement to ``path`` as an A4 PDF in the named layout and return the path."""
+def render_statement(s: Statement, path: str | Path, layout: str = "columns",
+                     printed: Printed | None = None) -> Path:  # fmt: skip
+    """Write the statement to ``path`` as an A4 PDF in the named layout and return the path.
+
+    ``printed``: text exactly as printed, drawn as given (see Printed); None = as before."""
     if layout not in LAYOUTS:
         raise ValueError(f"layout must be one of {LAYOUT_NAMES}, got {layout!r}")
     path = Path(path)
@@ -366,6 +394,6 @@ def render_statement(s: Statement, path: str | Path, layout: str = "columns") ->
     c = Canvas(str(path), pagesize=A4, invariant=True)
     c.setTitle(f"{s.bank_name} statement {s.period_start:%Y-%m}")
     c.setCreator("StatementScreen synthetic generator")
-    _Renderer(s, LAYOUTS[layout], c).draw()
+    _Renderer(s, LAYOUTS[layout], c, printed).draw()
     c.save()
     return path
