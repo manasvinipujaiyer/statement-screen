@@ -1,0 +1,299 @@
+{
+  "baseline": {
+    "byte_identical_twice": true,
+    "metrics": {
+      "bounce_count_exact": 1.0,
+      "customer_type_accuracy": 1.0,
+      "emi_count_exact": 1.0,
+      "employer_exact": 0.9567567567567568,
+      "employer_fuzzy": 0.9783783783783784,
+      "has_salary_precision": 1.0,
+      "has_salary_recall": 1.0,
+      "income_median_ape": 0.0,
+      "income_within_10pct": 0.99,
+      "income_within_5pct": 0.94,
+      "without_estimate": 0.0
+    },
+    "profile_json_sha256": "3e2a3756fd9f229d57978b1947b50340fe255cc043b2d7d419f3663d66d28379"
+  },
+  "peak_memory_mb": 376.6,
+  "perturbations": {
+    "cut_20_chars": {
+      "change_vs_baseline": {
+        "bounce_count_exact": 0.0,
+        "customer_type_accuracy": -0.27,
+        "emi_count_exact": -0.32666666666666666,
+        "employer_exact": -0.9567567567567568,
+        "employer_fuzzy": -0.9783783783783784,
+        "has_salary_precision": 0.0,
+        "has_salary_recall": -0.05405405405405406,
+        "income_median_ape": 0.0,
+        "income_within_10pct": -0.19999999999999996,
+        "income_within_5pct": -0.2566666666666666,
+        "without_estimate": 0.0
+      },
+      "deterministic": true,
+      "expected": {
+        "expected": "no particular warning; see the change in the metrics"
+      },
+      "metrics": {
+        "bounce_count_exact": 1.0,
+        "customer_type_accuracy": 0.73,
+        "emi_count_exact": 0.6733333333333333,
+        "employer_exact": 0.0,
+        "employer_fuzzy": 0.0,
+        "has_salary_precision": 1.0,
+        "has_salary_recall": 0.9459459459459459,
+        "income_median_ape": 0.0,
+        "income_within_10pct": 0.79,
+        "income_within_5pct": 0.6833333333333333,
+        "without_estimate": 0.0
+      },
+      "seconds": 7.2
+    },
+    "cut_3_months": {
+      "change_vs_baseline": {
+        "bounce_count_exact": -0.06000000000000005,
+        "customer_type_accuracy": -0.13666666666666671,
+        "emi_count_exact": -0.17333333333333334,
+        "employer_exact": -0.0972972972972973,
+        "employer_fuzzy": -0.0972972972972973,
+        "has_salary_precision": 0.0,
+        "has_salary_recall": -0.10270270270270265,
+        "income_median_ape": 0.012118465455042082,
+        "income_within_10pct": -0.2766666666666666,
+        "income_within_5pct": -0.34333333333333327,
+        "without_estimate": 0.13
+      },
+      "deterministic": true,
+      "expected": {
+        "expected": "every statement warns of a short history; none is 'normal' confidence",
+        "met": true,
+        "normal_confidence": 0,
+        "statements": 300,
+        "warned": 300
+      },
+      "metrics": {
+        "bounce_count_exact": 0.94,
+        "customer_type_accuracy": 0.8633333333333333,
+        "emi_count_exact": 0.8266666666666667,
+        "employer_exact": 0.8594594594594595,
+        "employer_fuzzy": 0.8810810810810811,
+        "has_salary_precision": 1.0,
+        "has_salary_recall": 0.8972972972972973,
+        "income_median_ape": 0.012118465455042082,
+        "income_within_10pct": 0.7133333333333334,
+        "income_within_5pct": 0.5966666666666667,
+        "without_estimate": 0.13
+      },
+      "seconds": 4.9
+    },
+    "drop_month": {
+      "change_vs_baseline": {
+        "bounce_count_exact": -0.023333333333333317,
+        "customer_type_accuracy": -0.010000000000000009,
+        "emi_count_exact": 0.0,
+        "employer_exact": -0.010810810810810811,
+        "employer_fuzzy": -0.010810810810810811,
+        "has_salary_precision": 0.0,
+        "has_salary_recall": -0.010810810810810811,
+        "income_median_ape": 0.11111105188470133,
+        "income_within_10pct": -0.5633333333333332,
+        "income_within_5pct": -0.8633333333333333,
+        "without_estimate": 0.0033333333333333335
+      },
+      "deterministic": true,
+      "expected": {
+        "expected": "a salaried statement still has a salary and shows a missed month",
+        "salaried_at_baseline": 185,
+        "shows_missed_month": 183,
+        "still_has_salary": 183
+      },
+      "metrics": {
+        "bounce_count_exact": 0.9766666666666667,
+        "customer_type_accuracy": 0.99,
+        "emi_count_exact": 1.0,
+        "employer_exact": 0.9459459459459459,
+        "employer_fuzzy": 0.9675675675675676,
+        "has_salary_precision": 1.0,
+        "has_salary_recall": 0.9891891891891892,
+        "income_median_ape": 0.11111105188470133,
+        "income_within_10pct": 0.4266666666666667,
+        "income_within_5pct": 0.07666666666666666,
+        "without_estimate": 0.0033333333333333335
+      },
+      "seconds": 8.5
+    },
+    "lower_case": {
+      "change_vs_baseline": {
+        "bounce_count_exact": 0.0,
+        "customer_type_accuracy": 0.0,
+        "emi_count_exact": 0.0,
+        "employer_exact": 0.0,
+        "employer_fuzzy": 0.0,
+        "has_salary_precision": 0.0,
+        "has_salary_recall": 0.0,
+        "income_median_ape": 0.0,
+        "income_within_10pct": 0.0,
+        "income_within_5pct": 0.0,
+        "without_estimate": 0.0
+      },
+      "deterministic": true,
+      "expected": {
+        "expected": "no particular warning; see the change in the metrics"
+      },
+      "metrics": {
+        "bounce_count_exact": 1.0,
+        "customer_type_accuracy": 1.0,
+        "emi_count_exact": 1.0,
+        "employer_exact": 0.9567567567567568,
+        "employer_fuzzy": 0.9783783783783784,
+        "has_salary_precision": 1.0,
+        "has_salary_recall": 1.0,
+        "income_median_ape": 0.0,
+        "income_within_10pct": 0.99,
+        "income_within_5pct": 0.94,
+        "without_estimate": 0.0
+      },
+      "seconds": 9.2
+    },
+    "scale_amounts": {
+      "change_vs_baseline": {
+        "bounce_count_exact": 0.0,
+        "customer_type_accuracy": 0.0,
+        "emi_count_exact": 0.0,
+        "employer_exact": 0.0,
+        "employer_fuzzy": 0.0,
+        "has_salary_precision": 0.0,
+        "has_salary_recall": 0.0,
+        "income_median_ape": 0.1,
+        "income_within_10pct": -0.30666666666666664,
+        "income_within_5pct": -0.9299999999999999,
+        "without_estimate": 0.0
+      },
+      "deterministic": true,
+      "expected": {
+        "estimated_both": 300,
+        "expected": "every income estimate is 1.1 times the baseline's (within 1%)",
+        "met": true,
+        "tracks_1_1": 300
+      },
+      "metrics": {
+        "bounce_count_exact": 1.0,
+        "customer_type_accuracy": 1.0,
+        "emi_count_exact": 1.0,
+        "employer_exact": 0.9567567567567568,
+        "employer_fuzzy": 0.9783783783783784,
+        "has_salary_precision": 1.0,
+        "has_salary_recall": 1.0,
+        "income_median_ape": 0.1,
+        "income_within_10pct": 0.6833333333333333,
+        "income_within_5pct": 0.01,
+        "without_estimate": 0.0
+      },
+      "seconds": 9.2
+    },
+    "shift_dates": {
+      "change_vs_baseline": {
+        "bounce_count_exact": 0.0,
+        "customer_type_accuracy": -0.06666666666666665,
+        "emi_count_exact": -0.10999999999999999,
+        "employer_exact": -0.11351351351351346,
+        "employer_fuzzy": -0.11351351351351346,
+        "has_salary_precision": 0.0,
+        "has_salary_recall": -0.10810810810810811,
+        "income_median_ape": 0.0,
+        "income_within_10pct": -0.07333333333333336,
+        "income_within_5pct": -0.11666666666666659,
+        "without_estimate": 0.0
+      },
+      "deterministic": true,
+      "expected": {
+        "expected": "no particular warning; see the change in the metrics"
+      },
+      "metrics": {
+        "bounce_count_exact": 1.0,
+        "customer_type_accuracy": 0.9333333333333333,
+        "emi_count_exact": 0.89,
+        "employer_exact": 0.8432432432432433,
+        "employer_fuzzy": 0.8648648648648649,
+        "has_salary_precision": 1.0,
+        "has_salary_recall": 0.8918918918918919,
+        "income_median_ape": 0.0,
+        "income_within_10pct": 0.9166666666666666,
+        "income_within_5pct": 0.8233333333333334,
+        "without_estimate": 0.0
+      },
+      "seconds": 9.6
+    },
+    "typos": {
+      "change_vs_baseline": {
+        "bounce_count_exact": 0.0,
+        "customer_type_accuracy": -0.0033333333333332993,
+        "emi_count_exact": -0.0033333333333332993,
+        "employer_exact": -0.027027027027026973,
+        "employer_fuzzy": -0.027027027027026973,
+        "has_salary_precision": 0.0,
+        "has_salary_recall": -0.00540540540540535,
+        "income_median_ape": 0.0,
+        "income_within_10pct": -0.0033333333333332993,
+        "income_within_5pct": -0.0033333333333332993,
+        "without_estimate": 0.0033333333333333335
+      },
+      "deterministic": true,
+      "expected": {
+        "expected": "no particular warning; see the change in the metrics"
+      },
+      "metrics": {
+        "bounce_count_exact": 1.0,
+        "customer_type_accuracy": 0.9966666666666667,
+        "emi_count_exact": 0.9966666666666667,
+        "employer_exact": 0.9297297297297298,
+        "employer_fuzzy": 0.9513513513513514,
+        "has_salary_precision": 1.0,
+        "has_salary_recall": 0.9945945945945946,
+        "income_median_ape": 0.0,
+        "income_within_10pct": 0.9866666666666667,
+        "income_within_5pct": 0.9366666666666666,
+        "without_estimate": 0.0033333333333333335
+      },
+      "seconds": 13.0
+    }
+  },
+  "profile_config_sha256": "5c0e90baa6c3b3e41152399efc513e6439eb0595a2761589615b0d19972f5906",
+  "robustness": {
+    "all_ok": true,
+    "cases": {
+      "debits_only": {
+        "ok": true,
+        "rows": 554,
+        "warnings": [
+          "only debits: no money came into the account",
+          "no recurring income found"
+        ]
+      },
+      "empty": {
+        "ok": true,
+        "rows": 0,
+        "warnings": [
+          "no transactions in the statement",
+          "no recurring income found"
+        ]
+      },
+      "single_month": {
+        "ok": true,
+        "rows": 62,
+        "warnings": [
+          "history shorter than 6 months (1 month)",
+          "no recurring income found"
+        ]
+      }
+    },
+    "made_from": "stmt_0002"
+  },
+  "seconds_total": 70.8,
+  "seed": 42,
+  "split": "dev",
+  "statements": 300,
+  "typo_rate": 0.3
+}
