@@ -130,6 +130,25 @@ def test_digits_are_replaced_by_one_symbol() -> None:
     assert ft.normalise(None) == ""
 
 
+def test_a_saved_vectoriser_is_reused_and_never_rewritten(tmp_path) -> None:
+    import json
+
+    import joblib
+
+    patterns = _patterns_folder(tmp_path / "patterns")
+    out = tmp_path / "features"
+    out.mkdir()
+    vec, meta = ft.fit_tfidf(patterns, SMALL)
+    joblib.dump(vec, out / "tfidf.joblib")
+    (out / "tfidf_run.json").write_text(json.dumps(meta))
+    before = (out / "tfidf.joblib").read_bytes(), (out / "tfidf_run.json").read_text()
+    argv = [str(patterns), "--sets", "dev", "--out", str(out), "--use-saved-tfidf"]
+    assert ft.main(argv) == 0
+    assert ((out / "tfidf.joblib").read_bytes(), (out / "tfidf_run.json").read_text()) == before
+    run = json.loads((out / "dev" / "features_run.json").read_text())
+    assert run["tfidf_vocabulary_sha256"] == meta["vocabulary_sha256"]
+
+
 def test_the_test_split_is_refused(tmp_path, monkeypatch) -> None:
     monkeypatch.delenv(OPEN_TEST_ENV, raising=False)
     assert ft.main([str(tmp_path), "--sets", "test", "--out", str(tmp_path / "f")]) == 2

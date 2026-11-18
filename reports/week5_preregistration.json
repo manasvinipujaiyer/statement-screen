@@ -1,0 +1,150 @@
+{
+  "commands": [
+    "STATEMENTSCREEN_OPEN_TEST=1 uv run python -m statementscreen.patterns data/parsed_2000/ --split test --out data/patterns/",
+    "STATEMENTSCREEN_OPEN_TEST=1 uv run python -m statementscreen.features data/patterns/ --sets test --out data/features/ --use-saved-tfidf",
+    "STATEMENTSCREEN_OPEN_TEST=1 uv run python -m statementscreen.profile data/patterns/ --set test --parsed data/parsed_2000/",
+    "uv run python -m statementscreen.profile data/patterns/ --set shift_karan_v1 --parsed data/parsed_shift_n300/",
+    "STATEMENTSCREEN_OPEN_TEST=1 uv run python -m statementscreen.score_once"
+  ],
+  "frozen_commit": "e884e29c1d37ccb4f745e39ebfb7f7bf55349ca2",
+  "hashes": {
+    "artefacts": {
+      "data/features/tfidf.joblib": "03c096c06b48aaf0d9523e2846c8a60d1d6ce01186fc288a7545c4479abcd031",
+      "data/features/tfidf_run.json": "7e976b5dd251a3ec8bf59bd38c7229937ab39b9f27d1d96b49ea1f4c2a40e39f",
+      "data/models/is_bounce.txt": "458f17390708303f938971437fd185c3f73fbf1ab63067c56896a51f68ac24d9",
+      "data/models/is_emi.txt": "a97478a98df965fa58bcaa4ed184f95b34072294bec1c14c410406804b17d6f9",
+      "data/models/is_rent.txt": "e52f5b34fc3fe534939ce2d73a8570ee57da0dbbf8597789c8f8431a2f9f4fbd",
+      "data/models/is_salary.txt": "45376320060074a27040131dfda7f4b0da5aed6796f14afc4756344520d685db",
+      "data/models/models.json": "356b10618321d8ff08e5a83e9247aecf8650dff720194bd33f752aeb9dd9531b",
+      "splits/eval_shift_karan_v1.json": "5e725d39ed982f6df0d4244ba9dac30635daeb241fce7bb994270aeaf9a30f8c",
+      "splits/split_v1.csv": "291d85111367b312b97268b74e06d7fbfd1770eda4b8e5731a60d740a0ceccc6",
+      "splits/split_v1.json": "d1b78b82a54a80a3775ea70df5388ce084859e90c08fccd14bd13ef93ffcd85c"
+    },
+    "code": {
+      "src/statementscreen/__init__.py": "415b8222a9c56314699ebff2bda248650efb4d9596d7f596c50ec3fc423f4ef6",
+      "src/statementscreen/batch.py": "156326c140926e22aba49855e63312c7d05de5758d752ee1f053e821068d63ef",
+      "src/statementscreen/batch_hash.py": "91985bfe9dca08acbc9060910e1a73c98dad5b2d93ac4e9dcd09246e254a36ab",
+      "src/statementscreen/compare.py": "ae8005982d7981d380460489ec03ec72c1080bbde70f5d1292895186a0f562ab",
+      "src/statementscreen/dialect_report.py": "d243a9813af521b3728abe783eb5ec6c4c69b2309ef32443b8568682bbf06beb",
+      "src/statementscreen/eval_batches.py": "68fca7dbbcdd3e4f9dbd6b3bed08a2f4c66d063fa489110f4776b16d1a3f66cb",
+      "src/statementscreen/features.py": "0413ea411d9a4fce440b6196039fe5b5380eb7d8204229c65660db7158816442",
+      "src/statementscreen/generate.py": "298457834fa291ae5346cc42065990cb5e83ae658a05131cb50c8e2817a4eb4d",
+      "src/statementscreen/holdout.py": "676e1630d67ceb1e1398734ab2fb3b121185646a98339d3d2be7e704a0278d82",
+      "src/statementscreen/parse.py": "d6dfa0bd5a6cc9bf36c16549c7fa92347713301ce95a1c4e3aa6da2560db7c18",
+      "src/statementscreen/parsing/__init__.py": "fa612e6807171fa5718bcea39b98d245d0f2ab8befd5864892a3ec70af780868",
+      "src/statementscreen/parsing/checks.py": "e80915eb28b05d367f1ab2ec1373809e48d9a912845b27c7bfe54271b6ba8f49",
+      "src/statementscreen/parsing/layouts.py": "d29f168548dc6f6352e47bb7e72cbac651d264433b386ee38e7a73d4aff881ce",
+      "src/statementscreen/parsing/models.py": "1563698bad5c84959dcf970dd1351f5ddf160cf6968b69c10b86df6bed8b001a",
+      "src/statementscreen/parsing/pdf.py": "dde83cf215df69a5659ba5eb3be1efc1f4f1abf09aeb6e0dbc33cfc960517c76",
+      "src/statementscreen/parsing/tables.py": "9f6cff4393a952ba0dce78facdbabbd3402b84cf3787f3c84adf08cb9e83644f",
+      "src/statementscreen/parsing/values.py": "1ab0f566b21f7a686c0a5ff8e412fa1441ac7c46d845a4a702411ca986a69045",
+      "src/statementscreen/parsing/words.py": "ae542e955f56fb2a28648328d0c16d53ba13960748b807fdbede6cb4ce664b78",
+      "src/statementscreen/pattern_scoring.py": "1b59bd77a2b92ba8cf13c654944a0cbd097e42969b93577ff2b856324feefe0d",
+      "src/statementscreen/patterns/__init__.py": "622bedd38159bbc22df53e560ba0dbc1c96ccf34c083c16af270c0df0f0fe6fd",
+      "src/statementscreen/patterns/__main__.py": "0cef4dd7fce2192a5cc01226f6720a6d9df299878176609660c0828d73771493",
+      "src/statementscreen/patterns/clean.py": "af378a604dad447d491b72fc419839225b8b37513ce7f1a752499ab38b9eafc9",
+      "src/statementscreen/patterns/cli.py": "4ed7beb039e64283f58b379d56cd8262e4e4fb20f5e3b23f2b16e9cfa53eec02",
+      "src/statementscreen/patterns/config.py": "4e0b918486f24b604130f7e9351e050006a9cf79106967f2a22aaae40fcdf2a0",
+      "src/statementscreen/patterns/features.py": "eadf717ee5b78726c76b0430a906e221944530fb9535371c355b320e74da9f20",
+      "src/statementscreen/patterns/group.py": "c63b939c22da88fa1a9d6558fee98f01120ed05d4697c67f3681303741c3ca48",
+      "src/statementscreen/patterns/rules.py": "903fae80418e20453c1a0cec0feb6e4fe940c37af7bcda4459f41258910ed9d8",
+      "src/statementscreen/preregister.py": "9b692bc2a3272bb13c8b58e67bc451d053071c7f21ae86a74cf22b25c96166bb",
+      "src/statementscreen/profile/__init__.py": "cc818613c9b588ed50b071f4f2f210a7aa99fca81e935f587c0e4088bfd5a2f9",
+      "src/statementscreen/profile/__main__.py": "6f93cf4b8e552dc39a49ac324d739c1a9fe4d77cbe3dc5b4fbccf290b2347922",
+      "src/statementscreen/profile/build.py": "bdcbbe7147c8bea135ca5eda55ab1ba5e521a6234ab684f0daa94f9298272cc5",
+      "src/statementscreen/profile/cli.py": "c239ae5a0fabb8e1dafcc769e8a1cc3c22151ba7323db6a3be75f45543decc5b",
+      "src/statementscreen/profile/config.py": "4a5c2b7d162fdf5a1a77f0fb6ae41da307d9462ec1810186bd8ceb3dc7ba1741",
+      "src/statementscreen/profile/pdf.py": "43ef0134495787107e1b5d7898495852796a3f7df1c8498d90a24ed5c3339c39",
+      "src/statementscreen/score.py": "b7000f56e061aca1d6c2c7f65b57f041ffae7f4f9af3ec5effd8521211b6d172",
+      "src/statementscreen/score_once.py": "03ed3813a372d8a41908c4faffad718e1841f64d8e642e85dcf3d79541f9b86e",
+      "src/statementscreen/score_patterns.py": "fd1d920f0e51607859d8c87085dc5f613d36bacc3f4d3b0d7af9934640e61985",
+      "src/statementscreen/score_profile.py": "466875977759b585b125842d58631f5c02763797e2aa261ee0686019357541cd",
+      "src/statementscreen/scoring.py": "a4aae8a54dd6960cfeb23abb07fa243c350449ded4153ec76332a8bf73321a3b",
+      "src/statementscreen/splits.py": "d1081cd2eed7184dbb97b39f40830db4625f097ad09b917499da2f7e8bfae317",
+      "src/statementscreen/stress.py": "90ab149e39c862bc5438373a11cd3a649d557471c96f50a6b07256896f61ad5b",
+      "src/statementscreen/summary.py": "77d1de18d777835f59a242d203ac64a6394eddbbe7e9d7db9be0b6b5a3444a3c",
+      "src/statementscreen/sweep_grouping.py": "25fb8b51ebe71eefeaba2402646c3963e2a2861eb707077a42076d877595e0eb",
+      "src/statementscreen/sweep_rules.py": "b8804f40555ee51bff9042a3c794dc6e67cfc416651bff77242ea23047793410",
+      "src/statementscreen/synth/__init__.py": "b8b549bcd6e0f6e7c96c563703a223140054d48d59ca25964afc159cdda60e89",
+      "src/statementscreen/synth/banks.py": "201eaa511fd6e30c7be84e043de117f2440aaa296086d9e55e8dc8478a350f6b",
+      "src/statementscreen/synth/descriptions.py": "651e9afd7f0945f20b8d3730fcda5165bec60672ad4769c623eef33bf2527b44",
+      "src/statementscreen/synth/dialect.py": "969f696a5b96685e2aac2deb0f416b0982aede959382435f06881e3a78204bee",
+      "src/statementscreen/synth/generator.py": "d35204566a9a9ea3a7c4d4cb3d5ae2cc2954e8b27bfbfe62823006a12c87463e",
+      "src/statementscreen/synth/hard_cases.py": "65d8787d523dd331a0889f89007354d083690ff77a41a92830deb5c87a805e8d",
+      "src/statementscreen/synth/labels.py": "94680a8f9e81882518a68d12dafa111c4d820567d8dabdade67e9f121989a8ee",
+      "src/statementscreen/synth/models.py": "6264e78b622f9a8cb871762b8479762ee701ce0cb34429712dd76428232760f9",
+      "src/statementscreen/synth/names.py": "ba1fb282c9546b36b912d2ba34639622a0a714fb395f5f4e393647d48bc68047",
+      "src/statementscreen/synth/render.py": "e8cbca8db9a9a7d60d8bad5e89f58d8326340830999bbe4cfe360b404c1de8af",
+      "src/statementscreen/synth/util.py": "715ebd4f1e63a8a350d0f2b8fcd55a39620ca2159d71e0fc0206cba6ff32be60",
+      "src/statementscreen/tracking.py": "fa9887e40556cae231a54d66a02898c1410008ca854f1cb114fdf90d385175eb",
+      "src/statementscreen/train.py": "4601fde0bb0c5091aded8853a879894e6c1093599a7cfee80cc5cf75d11f68ee",
+      "src/statementscreen/verify.py": "019250724770c26583b3eb6a2d70895b14b41722d7917a732e08e6751082053f",
+      "src/statementscreen/writer.py": "0a8eb1f50cee20aa07495b622161af1903cc325570f1ff084e09bd3d21e15d7d"
+    },
+    "configs": {
+      "PatternConfig": "ff76d755dae096d734205fde99a9aef18ffdc4e6c95e749eed05a8aa76b8f07b",
+      "ProfileConfig": "5c0e90baa6c3b3e41152399efc513e6439eb0595a2761589615b0d19972f5906"
+    }
+  },
+  "metrics": {
+    "comparison": "test next to dev for every metric; dev overstated a metric when the dev value is above the upper end of the test 95% interval",
+    "intervals": {
+      "income_interval_basis": "missing estimate counted as a 100% error",
+      "level": 0.95,
+      "method": "bootstrap over statements, paired across methods",
+      "resamples": 1000,
+      "seed": 42
+    },
+    "labels": {
+      "labels": [
+        "is_salary",
+        "is_emi",
+        "is_bounce",
+        "is_rent"
+      ],
+      "measures": [
+        "precision",
+        "recall",
+        "F1 (2tp/(2tp+fp+fn))",
+        "F1 95% interval",
+        "model minus rules F1 and its 95% interval",
+        "model PR-AUC"
+      ],
+      "methods": [
+        "rules (Week 3)",
+        "model (Week 4, frozen)"
+      ],
+      "statement_level": [
+        "has_salary precision and recall, rules and model",
+        "false salary flags on gig and self-employed statements"
+      ]
+    },
+    "profile": [
+      "income median APE, share within 5% and within 10%: over statements with an estimate, and with a missing estimate counted as a 100% error",
+      "share of statements without an income estimate",
+      "has_salary precision and recall",
+      "employer exact and fuzzy match rate",
+      "customer-type accuracy and confusion table",
+      "EMI count exact rate, total monthly EMI exact rate and mean absolute error",
+      "bounce count exact rate",
+      "breakdowns by layout, customer type and hard-case tag"
+    ]
+  },
+  "rules": [
+    "the test split and the shift batch are each scored once, after this file is committed and pushed",
+    "a re-run is reported next to the first result and labelled post-hoc",
+    "dev was used for development; test and shift were not looked at before scoring"
+  ],
+  "sets": {
+    "shift_karan_v1": {
+      "batch": "data/week4_shift_n300",
+      "kind": "registered evaluation batch data/week4_shift_n300 (300 statements); its label metrics repeat Week 4's frozen models, its profiles are new",
+      "parsed": "data/parsed_shift_n300"
+    },
+    "test": {
+      "batch": "data/week1_n2000",
+      "kind": "split_v1 test split of data/week1_n2000 (300 statements), never read before",
+      "parsed": "data/parsed_2000"
+    }
+  }
+}

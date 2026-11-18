@@ -1,0 +1,5627 @@
+{
+  "bootstrap": {
+    "level": 0.95,
+    "resamples": 1000,
+    "seed": 42,
+    "unit": "statement"
+  },
+  "first_result": true,
+  "notes": [
+    "dev was used for development and tuning",
+    "test and the shift batch were each scored once, after the pre-registration was committed",
+    "the shift batch's label metrics repeat Week 4's frozen models",
+    "all data is synthetic; real-statement checks are still to come"
+  ],
+  "preregistration": {
+    "file": "reports/week5_preregistration.json",
+    "frozen_commit": "e884e29c1d37ccb4f745e39ebfb7f7bf55349ca2",
+    "sha256": "66a01838ff88b20eaf9987aed19093cc0e1caa99f8ffda7e701125abbf15cf02"
+  },
+  "run": {
+    "peak_memory_mb": 880.7,
+    "seconds_total": 3.1
+  },
+  "scored_at_commit": "f97ae9554caf3948f753018f132f52085ddf9a7f",
+  "sets": {
+    "dev": {
+      "labels": {
+        "breakdown": {
+          "by_hard_case": {
+            "bonus_month": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.8846153846153847,
+                  "fn": 5,
+                  "fp": 1,
+                  "precision": 0.9583333333333334,
+                  "recall": 0.8214285714285714,
+                  "tp": 23
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 28
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 137
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 137
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 89
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 89
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.9956521739130435,
+                  "fn": 1,
+                  "fp": 1,
+                  "precision": 0.9956521739130435,
+                  "recall": 0.9956521739130435,
+                  "tp": 229
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 230
+                }
+              }
+            },
+            "emi_bounce": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.9446064139941692,
+                  "fn": 18,
+                  "fp": 1,
+                  "precision": 0.9938650306748467,
+                  "recall": 0.9,
+                  "tp": 162
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 180
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 598
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 598
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 445
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 445
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 395
+                },
+                "rules": {
+                  "f1": 0.9987325728770595,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9974683544303797,
+                  "tp": 394
+                }
+              }
+            },
+            "employer_rename": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.9411764705882353,
+                  "fn": 2,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.8888888888888888,
+                  "tp": 16
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 18
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 137
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 137
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 214
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 214
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.998019801980198,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9960474308300395,
+                  "tp": 252
+                },
+                "rules": {
+                  "f1": 0.998019801980198,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9960474308300395,
+                  "tp": 252
+                }
+              }
+            },
+            "missed_salary": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.9189189189189189,
+                  "fn": 3,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.85,
+                  "tp": 17
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 20
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 154
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 154
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 187
+                },
+                "rules": {
+                  "f1": 0.9809264305177112,
+                  "fn": 7,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9625668449197861,
+                  "tp": 180
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.9981785063752276,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9963636363636363,
+                  "tp": 274
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 275
+                }
+              }
+            },
+            "none": {
+              "is_bounce": {
+                "model": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                },
+                "rules": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 596
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 596
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 962
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 962
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 536
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 536
+                }
+              }
+            },
+            "salary_date_shift": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.7692307692307692,
+                  "fn": 2,
+                  "fp": 10,
+                  "precision": 0.6666666666666666,
+                  "recall": 0.9090909090909091,
+                  "tp": 20
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 22
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 206
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 206
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 266
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 266
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.998689384010485,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9973821989528796,
+                  "tp": 381
+                },
+                "rules": {
+                  "f1": 0.9947368421052631,
+                  "fn": 4,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9895287958115183,
+                  "tp": 378
+                }
+              }
+            }
+          },
+          "by_layout": {
+            "columns": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.9685534591194969,
+                  "fn": 5,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9390243902439024,
+                  "tp": 77
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 82
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 697
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 697
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 890
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 890
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.9987819732034104,
+                  "fn": 1,
+                  "fp": 1,
+                  "precision": 0.9987819732034104,
+                  "recall": 0.9987819732034104,
+                  "tp": 820
+                },
+                "rules": {
+                  "f1": 0.9987804878048782,
+                  "fn": 2,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.997563946406821,
+                  "tp": 819
+                }
+              }
+            },
+            "drcr": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.8808290155440415,
+                  "fn": 13,
+                  "fp": 10,
+                  "precision": 0.8947368421052632,
+                  "recall": 0.8673469387755102,
+                  "tp": 85
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 98
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 765
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 765
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 1001
+                },
+                "rules": {
+                  "f1": 0.9964912280701755,
+                  "fn": 7,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.993006993006993,
+                  "tp": 994
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 791
+                },
+                "rules": {
+                  "f1": 0.9987341772151899,
+                  "fn": 2,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9974715549936789,
+                  "tp": 789
+                }
+              }
+            }
+          }
+        },
+        "false_salary": {
+          "gig": {
+            "model": 0,
+            "rules": 0,
+            "statements": 63
+          },
+          "self_employed": {
+            "model": 0,
+            "rules": 0,
+            "statements": 52
+          }
+        },
+        "has_salary": {
+          "model": {
+            "f1": 1.0,
+            "f1_ci": {
+              "high": 1.0,
+              "includes_zero": false,
+              "low": 1.0,
+              "resamples_used": 1000
+            },
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          },
+          "model_minus_rules": {
+            "ci": {
+              "high": 0.0,
+              "includes_zero": true,
+              "low": 0.0,
+              "resamples_used": 1000
+            },
+            "f1": 0.0
+          },
+          "rules": {
+            "f1": 1.0,
+            "f1_ci": {
+              "high": 1.0,
+              "includes_zero": false,
+              "low": 1.0,
+              "resamples_used": 1000
+            },
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          }
+        },
+        "labels": {
+          "is_bounce": {
+            "model": {
+              "f1": 0.9204545454545455,
+              "f1_ci": {
+                "high": 0.9607420363597816,
+                "includes_zero": false,
+                "low": 0.8618932874354561,
+                "resamples_used": 1000
+              },
+              "fn": 18,
+              "fp": 10,
+              "pr_auc": 0.9470561817997653,
+              "precision": 0.9418604651162791,
+              "recall": 0.9,
+              "tp": 162
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": -0.03925796364021839,
+                "includes_zero": false,
+                "low": -0.13810671256454385,
+                "resamples_used": 1000
+              },
+              "f1": -0.07954545454545447
+            },
+            "rules": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 180
+            }
+          },
+          "is_emi": {
+            "model": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "pr_auc": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": 0.0,
+                "includes_zero": true,
+                "low": 0.0,
+                "resamples_used": 1000
+              },
+              "f1": 0.0
+            },
+            "rules": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1462
+            }
+          },
+          "is_rent": {
+            "model": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "pr_auc": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1891
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": 0.0057487784266192915,
+                "includes_zero": true,
+                "low": 0.0,
+                "resamples_used": 1000
+              },
+              "f1": 0.0018543046357616388
+            },
+            "rules": {
+              "f1": 0.9981456953642384,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 0.9942512215733808,
+                "resamples_used": 1000
+              },
+              "fn": 7,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9962982548915917,
+              "tp": 1884
+            }
+          },
+          "is_salary": {
+            "model": {
+              "f1": 0.999379652605459,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 0.9984350057306126,
+                "resamples_used": 1000
+              },
+              "fn": 1,
+              "fp": 1,
+              "pr_auc": 0.9998474916245758,
+              "precision": 0.999379652605459,
+              "recall": 0.999379652605459,
+              "tp": 1611
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": 0.0019947710093475846,
+                "includes_zero": true,
+                "low": -0.0008436644267763193,
+                "resamples_used": 1000
+              },
+              "f1": 0.0006218886303036575
+            },
+            "rules": {
+              "f1": 0.9987577639751554,
+              "f1_ci": {
+                "high": 0.9997049407443557,
+                "includes_zero": false,
+                "low": 0.9976279266368031,
+                "resamples_used": 1000
+              },
+              "fn": 4,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9975186104218362,
+              "tp": 1608
+            }
+          }
+        },
+        "rows": 176576,
+        "statements": 300
+      },
+      "profile": {
+        "breakdown": {
+          "by_customer_type": {
+            "gig": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 17
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 63
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": null,
+                "fuzzy_match_rate": null,
+                "statements_with_true_employer": 0
+              },
+              "has_salary": {
+                "f1": null,
+                "fn": 0,
+                "fp": 0,
+                "precision": null,
+                "recall": null,
+                "tp": 0
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 63,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 63,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 63
+            },
+            "salaried": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 45
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 185
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9567567567567568,
+                "fuzzy_match_rate": 0.9783783783783784,
+                "statements_with_true_employer": 185
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 185
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 185,
+                  "within_10pct": 0.9891891891891892,
+                  "within_5pct": 0.9783783783783784
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 185,
+                  "within_10pct": 0.9891891891891892,
+                  "within_5pct": 0.9783783783783784
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 185
+            },
+            "self_employed": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 12
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "self_employed": {
+                    "self_employed": 52
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": null,
+                "fuzzy_match_rate": null,
+                "statements_with_true_employer": 0
+              },
+              "has_salary": {
+                "f1": null,
+                "fn": 0,
+                "fp": 0,
+                "precision": null,
+                "recall": null,
+                "tp": 0
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.030728569202603667,
+                  "statements": 52,
+                  "within_10pct": 0.9807692307692307,
+                  "within_5pct": 0.7307692307692307
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.030728569202603667,
+                  "statements": 52,
+                  "within_10pct": 0.9807692307692307,
+                  "within_5pct": 0.7307692307692307
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 52
+            }
+          },
+          "by_hard_case": {
+            "bonus_month": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 9
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 27
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.8888888888888888,
+                "fuzzy_match_rate": 0.9259259259259259,
+                "statements_with_true_employer": 27
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 27
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 27,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 27,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 27
+            },
+            "emi_bounce": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 74
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 17
+                  },
+                  "salaried": {
+                    "salaried": 45
+                  },
+                  "self_employed": {
+                    "self_employed": 12
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9555555555555556,
+                "fuzzy_match_rate": 1.0,
+                "statements_with_true_employer": 45
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 45
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 74,
+                  "within_10pct": 0.9864864864864865,
+                  "within_5pct": 0.9324324324324325
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 74,
+                  "within_10pct": 0.9864864864864865,
+                  "within_5pct": 0.9324324324324325
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 74
+            },
+            "employer_rename": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 7
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 29
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9655172413793104,
+                "fuzzy_match_rate": 0.9655172413793104,
+                "statements_with_true_employer": 29
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 29
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 29,
+                  "within_10pct": 1.0,
+                  "within_5pct": 0.9655172413793104
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 29,
+                  "within_10pct": 1.0,
+                  "within_5pct": 0.9655172413793104
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 29
+            },
+            "missed_salary": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 7
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 35
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9714285714285714,
+                "fuzzy_match_rate": 0.9714285714285714,
+                "statements_with_true_employer": 35
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 35
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 35,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 35,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 35
+            },
+            "none": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 0
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 46
+                  },
+                  "salaried": {
+                    "salaried": 59
+                  },
+                  "self_employed": {
+                    "self_employed": 40
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9661016949152542,
+                "fuzzy_match_rate": 1.0,
+                "statements_with_true_employer": 59
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 59
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 145,
+                  "within_10pct": 0.993103448275862,
+                  "within_5pct": 0.9310344827586207
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 145,
+                  "within_10pct": 0.993103448275862,
+                  "within_5pct": 0.9310344827586207
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 145
+            },
+            "salary_date_shift": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 9
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 45
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9777777777777777,
+                "fuzzy_match_rate": 0.9777777777777777,
+                "statements_with_true_employer": 45
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 45
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 45,
+                  "within_10pct": 0.9555555555555556,
+                  "within_5pct": 0.9111111111111111
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 45,
+                  "within_10pct": 0.9555555555555556,
+                  "within_5pct": 0.9111111111111111
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 45
+            }
+          },
+          "by_layout": {
+            "columns": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 37
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 33
+                  },
+                  "salaried": {
+                    "salaried": 93
+                  },
+                  "self_employed": {
+                    "self_employed": 26
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.956989247311828,
+                "fuzzy_match_rate": 0.978494623655914,
+                "statements_with_true_employer": 93
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 93
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 152,
+                  "within_10pct": 0.9802631578947368,
+                  "within_5pct": 0.9342105263157895
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 152,
+                  "within_10pct": 0.9802631578947368,
+                  "within_5pct": 0.9342105263157895
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 152
+            },
+            "drcr": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 37
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 30
+                  },
+                  "salaried": {
+                    "salaried": 92
+                  },
+                  "self_employed": {
+                    "self_employed": 26
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9565217391304348,
+                "fuzzy_match_rate": 0.9782608695652174,
+                "statements_with_true_employer": 92
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 92
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 148,
+                  "within_10pct": 1.0,
+                  "within_5pct": 0.9459459459459459
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 148,
+                  "within_10pct": 1.0,
+                  "within_5pct": 0.9459459459459459
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 148
+            }
+          }
+        },
+        "intervals": {
+          "bounce_count_exact": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "customer_type_accuracy": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "emi_count_exact": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "emi_total_exact": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "employer_exact": {
+            "high": 0.9839635519279483,
+            "low": 0.9244186046511628,
+            "resamples_used": 1000,
+            "value": 0.9567567567567568
+          },
+          "employer_fuzzy": {
+            "high": 0.9947916666666666,
+            "low": 0.9534883720930233,
+            "resamples_used": 1000,
+            "value": 0.9783783783783784
+          },
+          "has_salary_precision": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "has_salary_recall": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "income_median_ape": {
+            "high": 0.0,
+            "low": 0.0,
+            "resamples_used": 1000,
+            "value": 0.0
+          },
+          "income_within_10pct": {
+            "high": 1.0,
+            "low": 0.9799166666666667,
+            "resamples_used": 1000,
+            "value": 0.99
+          },
+          "income_within_5pct": {
+            "high": 0.9666666666666667,
+            "low": 0.9133333333333333,
+            "resamples_used": 1000,
+            "value": 0.94
+          },
+          "share_without_estimate": {
+            "high": 0.0,
+            "low": 0.0,
+            "resamples_used": 1000,
+            "value": 0.0
+          }
+        },
+        "overall": {
+          "bounces": {
+            "count_exact_rate": 1.0,
+            "statements_with_true_bounce": 74
+          },
+          "customer_type": {
+            "accuracy": 1.0,
+            "confusion_true_to_predicted": {
+              "gig": {
+                "gig": 63
+              },
+              "salaried": {
+                "salaried": 185
+              },
+              "self_employed": {
+                "self_employed": 52
+              }
+            }
+          },
+          "emi": {
+            "count_exact_rate": 1.0,
+            "total_monthly_abs_error_paise": {
+              "max": 0,
+              "mean": 0.0,
+              "median": 0.0
+            },
+            "total_monthly_exact_rate": 1.0
+          },
+          "employer": {
+            "exact_match_rate": 0.9567567567567568,
+            "fuzzy_match_rate": 0.9783783783783784,
+            "statements_with_true_employer": 185
+          },
+          "has_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          },
+          "income": {
+            "estimated_only": {
+              "median_ape": 0.0,
+              "statements": 300,
+              "within_10pct": 0.99,
+              "within_5pct": 0.94
+            },
+            "missing_as_100pct": {
+              "median_ape": 0.0,
+              "statements": 300,
+              "within_10pct": 0.99,
+              "within_5pct": 0.94
+            },
+            "share_without_estimate": 0.0,
+            "true_income_zero": 0
+          },
+          "statements": 300
+        },
+        "worst_income_errors": [
+          {
+            "error": 0.16666662646242913,
+            "income_reason": "INR 69,091 a month: salary INR 69,091 a month (5 credits over 6 months), over 6 months",
+            "p_income": 6909167,
+            "p_type": "salaried",
+            "statement_id": "stmt_1183",
+            "t_income": 8291000,
+            "t_type": "salaried",
+            "tags": "salary_date_shift|emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.1398727442893288,
+            "income_reason": "INR 38,437 a month: other regular income INR 19,367 a month (3 group(s)) + one-off customer credits INR 19,070 a month (13 credits), over 6 months",
+            "p_income": 3843774,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1184",
+            "t_income": 3372108,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.12499994074495444,
+            "income_reason": "INR 73,833 a month: salary INR 73,833 a month (7 credits over 8 months), over 8 months",
+            "p_income": 7383338,
+            "p_type": "salaried",
+            "statement_id": "stmt_1523",
+            "t_income": 8438100,
+            "t_type": "salaried",
+            "tags": "salary_date_shift",
+            "warnings": ""
+          },
+          {
+            "error": 0.1,
+            "income_reason": "INR 59,640 a month: salary INR 59,640 a month (9 credits over 10 months), over 10 months",
+            "p_income": 5964030,
+            "p_type": "salaried",
+            "statement_id": "stmt_1794",
+            "t_income": 6626700,
+            "t_type": "salaried",
+            "tags": "salary_date_shift",
+            "warnings": ""
+          },
+          {
+            "error": 0.0969777459060865,
+            "income_reason": "INR 27,901 a month: other regular income INR 15,427 a month (2 group(s)) + one-off customer credits INR 12,474 a month (23 credits), over 9 months",
+            "p_income": 2790198,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0217",
+            "t_income": 2543532,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.09579357699535629,
+            "income_reason": "INR 47,090 a month: other regular income INR 6,262 a month (1 group(s)) + one-off customer credits INR 40,828 a month (31 credits), over 6 months",
+            "p_income": 4709094,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1947",
+            "t_income": 4297428,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.09090910989806718,
+            "income_reason": "INR 1,30,567 a month: salary INR 1,30,567 a month (10 credits over 11 months), over 11 months",
+            "p_income": 13056727,
+            "p_type": "salaried",
+            "statement_id": "stmt_0391",
+            "t_income": 14362400,
+            "t_type": "salaried",
+            "tags": "salary_date_shift|employer_rename",
+            "warnings": "employer name changed during the statement"
+          },
+          {
+            "error": 0.08849668577989306,
+            "income_reason": "INR 48,919 a month: other regular income INR 25,379 a month (3 group(s)) + one-off customer credits INR 23,540 a month (34 credits), over 11 months",
+            "p_income": 4891998,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1791",
+            "t_income": 4494270,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.07834706550955399,
+            "income_reason": "INR 33,158 a month: other regular income INR 12,722 a month (4 group(s)) + one-off customer credits INR 20,435 a month (38 credits), over 11 months",
+            "p_income": 3315804,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0245",
+            "t_income": 3074895,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.0752842368672739,
+            "income_reason": "INR 82,984 a month: other regular income INR 52,702 a month (2 group(s)) + one-off customer credits INR 30,281 a month (27 credits), over 10 months",
+            "p_income": 8298419,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1283",
+            "t_income": 7717419,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.07103615962968052,
+            "income_reason": "INR 87,996 a month: other regular income INR 50,642 a month (3 group(s)) + one-off customer credits INR 37,354 a month (32 credits), over 11 months",
+            "p_income": 8799677,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1762",
+            "t_income": 8216041,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.06525410405772158,
+            "income_reason": "INR 51,496 a month: other regular income INR 20,540 a month (2 group(s)) + one-off customer credits INR 30,956 a month (27 credits), over 11 months",
+            "p_income": 5149694,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0700",
+            "t_income": 4834240,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.06441037180028775,
+            "income_reason": "INR 77,504 a month: other regular income INR 45,312 a month (5 group(s)) + one-off customer credits INR 32,191 a month (25 credits), over 10 months",
+            "p_income": 7750436,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0241",
+            "t_income": 7281436,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.05691212330376335,
+            "income_reason": "INR 36,213 a month: other regular income INR 17,634 a month (2 group(s)) + one-off customer credits INR 18,578 a month (23 credits), over 10 months",
+            "p_income": 3621335,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0721",
+            "t_income": 3426335,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.05480601123869373,
+            "income_reason": "INR 36,567 a month: other regular income INR 27,937 a month (2 group(s)) + one-off customer credits INR 8,630 a month (20 credits), over 9 months",
+            "p_income": 3656773,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0746",
+            "t_income": 3466773,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.05110587777271784,
+            "income_reason": "INR 50,109 a month: other regular income INR 18,968 a month (4 group(s)) + one-off customer credits INR 31,140 a month (35 credits), over 11 months",
+            "p_income": 5010936,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0763",
+            "t_income": 4767299,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.051070355042731115,
+            "income_reason": "INR 71,346 a month: other regular income INR 40,884 a month (2 group(s)) + one-off customer credits INR 30,462 a month (13 credits), over 6 months",
+            "p_income": 7134695,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1322",
+            "t_income": 6788028,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.05025025825043437,
+            "income_reason": "INR 43,890 a month: other regular income INR 22,264 a month (3 group(s)) + one-off customer credits INR 21,626 a month (23 credits), over 8 months",
+            "p_income": 4389083,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1853",
+            "t_income": 4179083,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.04690335397946817,
+            "income_reason": "INR 72,541 a month: other regular income INR 47,512 a month (2 group(s)) + one-off customer credits INR 25,028 a month (32 credits), over 12 months",
+            "p_income": 7254142,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1469",
+            "t_income": 6929142,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.04589209684676907,
+            "income_reason": "INR 1,39,020 a month: other regular income INR 96,419 a month (2 group(s)) + one-off customer credits INR 42,601 a month (11 credits), over 6 months",
+            "p_income": 13902049,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0754",
+            "t_income": 13292049,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          }
+        ]
+      }
+    },
+    "shift_karan_v1": {
+      "labels": {
+        "breakdown": {
+          "by_format_group": {
+            "default_narration": {
+              "is_bounce": {
+                "model": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                },
+                "rules": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                },
+                "rules": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                },
+                "rules": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                },
+                "rules": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                }
+              },
+              "rows": 416
+            },
+            "known_opening": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.0,
+                  "fn": 11,
+                  "fp": 90,
+                  "precision": 0.0,
+                  "recall": 0.0,
+                  "tp": 0
+                },
+                "rules": {
+                  "f1": 0.0,
+                  "fn": 11,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 837
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 837
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 0.9956331877729258,
+                  "fn": 8,
+                  "fp": 1,
+                  "precision": 0.9990262901655307,
+                  "recall": 0.9922630560928434,
+                  "tp": 1026
+                },
+                "rules": {
+                  "f1": 0.996116504854369,
+                  "fn": 8,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9922630560928434,
+                  "tp": 1026
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.6966292134831461,
+                  "fn": 0,
+                  "fp": 405,
+                  "precision": 0.5344827586206896,
+                  "recall": 1.0,
+                  "tp": 465
+                },
+                "rules": {
+                  "f1": 0.9989235737351991,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9978494623655914,
+                  "tp": 464
+                }
+              },
+              "rows": 159332
+            },
+            "new_opening": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.47777777777777775,
+                  "fn": 75,
+                  "fp": 113,
+                  "precision": 0.4321608040201005,
+                  "recall": 0.5341614906832298,
+                  "tp": 86
+                },
+                "rules": {
+                  "f1": 0.0,
+                  "fn": 161,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 790
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 790
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 0.9956076134699853,
+                  "fn": 9,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9912536443148688,
+                  "tp": 1020
+                },
+                "rules": {
+                  "f1": 0.9956076134699853,
+                  "fn": 9,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9912536443148688,
+                  "tp": 1020
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.056634304207119734,
+                  "fn": 1166,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.029142381348875937,
+                  "tp": 35
+                },
+                "rules": {
+                  "f1": 0.9991680532445923,
+                  "fn": 0,
+                  "fp": 2,
+                  "precision": 0.99833748960931,
+                  "recall": 1.0,
+                  "tp": 1201
+                }
+              },
+              "rows": 18093
+            }
+          },
+          "by_hard_case": {
+            "bonus_month": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.3181818181818182,
+                  "fn": 11,
+                  "fp": 19,
+                  "precision": 0.2692307692307692,
+                  "recall": 0.3888888888888889,
+                  "tp": 7
+                },
+                "rules": {
+                  "f1": 0.0,
+                  "fn": 18,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 330
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 330
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 0.9970760233918129,
+                  "fn": 2,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9941690962099126,
+                  "tp": 341
+                },
+                "rules": {
+                  "f1": 0.9970760233918129,
+                  "fn": 2,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9941690962099126,
+                  "tp": 341
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.43177892918825556,
+                  "fn": 329,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.2753303964757709,
+                  "tp": 125
+                },
+                "rules": {
+                  "f1": 0.9966996699669967,
+                  "fn": 1,
+                  "fp": 2,
+                  "precision": 0.9956043956043956,
+                  "recall": 0.9977973568281938,
+                  "tp": 453
+                }
+              }
+            },
+            "emi_bounce": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.3839285714285714,
+                  "fn": 86,
+                  "fp": 190,
+                  "precision": 0.3115942028985507,
+                  "recall": 0.5,
+                  "tp": 86
+                },
+                "rules": {
+                  "f1": 0.0,
+                  "fn": 172,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 577
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 577
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 0.9903121636167923,
+                  "fn": 9,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9808102345415778,
+                  "tp": 460
+                },
+                "rules": {
+                  "f1": 0.9903121636167923,
+                  "fn": 9,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9808102345415778,
+                  "tp": 460
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.4909983633387889,
+                  "fn": 216,
+                  "fp": 95,
+                  "precision": 0.6122448979591837,
+                  "recall": 0.4098360655737705,
+                  "tp": 150
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 366
+                }
+              }
+            },
+            "employer_rename": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.4067796610169492,
+                  "fn": 12,
+                  "fp": 23,
+                  "precision": 0.34285714285714286,
+                  "recall": 0.5,
+                  "tp": 12
+                },
+                "rules": {
+                  "f1": 0.0,
+                  "fn": 24,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 202
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 202
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 0.9980506822612086,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9961089494163424,
+                  "tp": 256
+                },
+                "rules": {
+                  "f1": 0.9980506822612086,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9961089494163424,
+                  "tp": 256
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.5180180180180181,
+                  "fn": 214,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.3495440729483283,
+                  "tp": 115
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 329
+                }
+              }
+            },
+            "missed_salary": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.2857142857142857,
+                  "fn": 11,
+                  "fp": 24,
+                  "precision": 0.22580645161290322,
+                  "recall": 0.3888888888888889,
+                  "tp": 7
+                },
+                "rules": {
+                  "f1": 0.0,
+                  "fn": 18,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 175
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 175
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 206
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 206
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.4203821656050955,
+                  "fn": 182,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.2661290322580645,
+                  "tp": 66
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 248
+                }
+              }
+            },
+            "none": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.0,
+                  "fn": 0,
+                  "fp": 6,
+                  "precision": 0.0,
+                  "recall": null,
+                  "tp": 0
+                },
+                "rules": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 596
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 596
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 0.9994750656167979,
+                  "fn": 0,
+                  "fp": 1,
+                  "precision": 0.9989506820566632,
+                  "recall": 1.0,
+                  "tp": 952
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 952
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.26455026455026454,
+                  "fn": 385,
+                  "fp": 310,
+                  "precision": 0.28735632183908044,
+                  "recall": 0.24509803921568626,
+                  "tp": 125
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 510
+                }
+              }
+            },
+            "salary_date_shift": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.15789473684210525,
+                  "fn": 9,
+                  "fp": 23,
+                  "precision": 0.11538461538461539,
+                  "recall": 0.25,
+                  "tp": 3
+                },
+                "rules": {
+                  "f1": 0.0,
+                  "fn": 12,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 214
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 214
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 0.9876543209876543,
+                  "fn": 7,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.975609756097561,
+                  "tp": 280
+                },
+                "rules": {
+                  "f1": 0.9876543209876543,
+                  "fn": 7,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.975609756097561,
+                  "tp": 280
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.4525547445255474,
+                  "fn": 225,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.29245283018867924,
+                  "tp": 93
+                },
+                "rules": {
+                  "f1": 0.9952904238618524,
+                  "fn": 1,
+                  "fp": 2,
+                  "precision": 0.9937304075235109,
+                  "recall": 0.9968553459119497,
+                  "tp": 317
+                }
+              }
+            }
+          },
+          "by_layout": {
+            "columns": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.34259259259259256,
+                  "fn": 43,
+                  "fp": 99,
+                  "precision": 0.27205882352941174,
+                  "recall": 0.4625,
+                  "tp": 37
+                },
+                "rules": {
+                  "f1": 0.0,
+                  "fn": 80,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 736
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 736
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 0.992047713717694,
+                  "fn": 16,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9842209072978304,
+                  "tp": 998
+                },
+                "rules": {
+                  "f1": 0.992047713717694,
+                  "fn": 16,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9842209072978304,
+                  "tp": 998
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.38611346316680784,
+                  "fn": 549,
+                  "fp": 176,
+                  "precision": 0.5643564356435643,
+                  "recall": 0.29343629343629346,
+                  "tp": 228
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 777
+                }
+              }
+            },
+            "drcr": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.39999999999999997,
+                  "fn": 43,
+                  "fp": 104,
+                  "precision": 0.3202614379084967,
+                  "recall": 0.532608695652174,
+                  "tp": 49
+                },
+                "rules": {
+                  "f1": 0.0,
+                  "fn": 92,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": 0.0,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 891
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 891
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 0.9990467111534795,
+                  "fn": 1,
+                  "fp": 1,
+                  "precision": 0.9990467111534795,
+                  "recall": 0.9990467111534795,
+                  "tp": 1048
+                },
+                "rules": {
+                  "f1": 0.9995231282784931,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9990467111534795,
+                  "tp": 1048
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.3913669064748201,
+                  "fn": 617,
+                  "fp": 229,
+                  "precision": 0.5429141716566867,
+                  "recall": 0.3059617547806524,
+                  "tp": 272
+                },
+                "rules": {
+                  "f1": 0.9983136593591906,
+                  "fn": 1,
+                  "fp": 2,
+                  "precision": 0.9977528089887641,
+                  "recall": 0.9988751406074241,
+                  "tp": 888
+                }
+              }
+            }
+          }
+        },
+        "false_salary": {
+          "gig": {
+            "model": 0,
+            "rules": 0,
+            "statements": 56
+          },
+          "self_employed": {
+            "model": 57,
+            "rules": 0,
+            "statements": 59
+          }
+        },
+        "has_salary": {
+          "model": {
+            "f1": 0.40789473684210525,
+            "f1_ci": {
+              "high": 0.47213768480337925,
+              "includes_zero": false,
+              "low": 0.34072916666666664,
+              "resamples_used": 1000
+            },
+            "fn": 123,
+            "fp": 57,
+            "precision": 0.5210084033613446,
+            "recall": 0.33513513513513515,
+            "tp": 62
+          },
+          "model_minus_rules": {
+            "ci": {
+              "high": -0.5278623151966207,
+              "includes_zero": false,
+              "low": -0.6592708333333333,
+              "resamples_used": 1000
+            },
+            "f1": -0.5921052631578947
+          },
+          "rules": {
+            "f1": 1.0,
+            "f1_ci": {
+              "high": 1.0,
+              "includes_zero": false,
+              "low": 1.0,
+              "resamples_used": 1000
+            },
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          }
+        },
+        "labels": {
+          "is_bounce": {
+            "model": {
+              "f1": 0.37310195227765725,
+              "f1_ci": {
+                "high": 0.458661932609301,
+                "includes_zero": false,
+                "low": 0.2969952647438657,
+                "resamples_used": 1000
+              },
+              "fn": 86,
+              "fp": 203,
+              "pr_auc": 0.34937994428496133,
+              "precision": 0.2975778546712803,
+              "recall": 0.5,
+              "tp": 86
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": 0.458661932609301,
+                "includes_zero": false,
+                "low": 0.2969952647438657,
+                "resamples_used": 1000
+              },
+              "f1": 0.37310195227765725
+            },
+            "rules": {
+              "f1": 0.0,
+              "f1_ci": {
+                "high": 0.0,
+                "includes_zero": true,
+                "low": 0.0,
+                "resamples_used": 1000
+              },
+              "fn": 172,
+              "fp": 0,
+              "precision": null,
+              "recall": 0.0,
+              "tp": 0
+            }
+          },
+          "is_emi": {
+            "model": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "pr_auc": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1627
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": 0.0,
+                "includes_zero": true,
+                "low": 0.0,
+                "resamples_used": 1000
+              },
+              "f1": 0.0
+            },
+            "rules": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1627
+            }
+          },
+          "is_rent": {
+            "model": {
+              "f1": 0.9956204379562044,
+              "f1_ci": {
+                "high": 0.9997506918241337,
+                "includes_zero": false,
+                "low": 0.9888771749308646,
+                "resamples_used": 1000
+              },
+              "fn": 17,
+              "fp": 1,
+              "pr_auc": 0.999673084326471,
+              "precision": 0.9995114802149487,
+              "recall": 0.9917595734367426,
+              "tp": 2046
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": 0.0,
+                "includes_zero": true,
+                "low": -0.000740553232429364,
+                "resamples_used": 1000
+              },
+              "f1": -0.0002423023699090754
+            },
+            "rules": {
+              "f1": 0.9958627403261134,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 0.9889883260744188,
+                "resamples_used": 1000
+              },
+              "fn": 17,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 0.9917595734367426,
+              "tp": 2046
+            }
+          },
+          "is_salary": {
+            "model": {
+              "f1": 0.38895371450797356,
+              "f1_ci": {
+                "high": 0.454879191003507,
+                "includes_zero": false,
+                "low": 0.31553827484030433,
+                "resamples_used": 1000
+              },
+              "fn": 1166,
+              "fp": 405,
+              "pr_auc": 0.5944053941610128,
+              "precision": 0.5524861878453039,
+              "recall": 0.30012004801920766,
+              "tp": 500
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": -0.5440017988362496,
+                "includes_zero": false,
+                "low": -0.6836041186291806,
+                "resamples_used": 1000
+              },
+              "f1": -0.6101461954830256
+            },
+            "rules": {
+              "f1": 0.9990999099909992,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 0.9980420763170332,
+                "resamples_used": 1000
+              },
+              "fn": 1,
+              "fp": 2,
+              "precision": 0.9988002399520096,
+              "recall": 0.9993997599039616,
+              "tp": 1665
+            }
+          }
+        },
+        "rows": 177841,
+        "statements": 300
+      },
+      "profile": {
+        "breakdown": {
+          "by_customer_type": {
+            "gig": {
+              "bounces": {
+                "count_exact_rate": 0.7857142857142857,
+                "statements_with_true_bounce": 12
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 56
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": null,
+                "fuzzy_match_rate": null,
+                "statements_with_true_employer": 0
+              },
+              "has_salary": {
+                "f1": null,
+                "fn": 0,
+                "fp": 0,
+                "precision": null,
+                "recall": null,
+                "tp": 0
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 56,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 56,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 56
+            },
+            "salaried": {
+              "bounces": {
+                "count_exact_rate": 0.7837837837837838,
+                "statements_with_true_bounce": 40
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 185
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.6108108108108108,
+                "fuzzy_match_rate": 0.6648648648648648,
+                "statements_with_true_employer": 185
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 185
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 185,
+                  "within_10pct": 0.9945945945945946,
+                  "within_5pct": 0.9837837837837838
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 185,
+                  "within_10pct": 0.9945945945945946,
+                  "within_5pct": 0.9837837837837838
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 185
+            },
+            "self_employed": {
+              "bounces": {
+                "count_exact_rate": 0.7288135593220338,
+                "statements_with_true_bounce": 16
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "self_employed": {
+                    "self_employed": 59
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": null,
+                "fuzzy_match_rate": null,
+                "statements_with_true_employer": 0
+              },
+              "has_salary": {
+                "f1": null,
+                "fn": 0,
+                "fp": 0,
+                "precision": null,
+                "recall": null,
+                "tp": 0
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.031685840201711384,
+                  "statements": 59,
+                  "within_10pct": 0.9322033898305084,
+                  "within_5pct": 0.6949152542372882
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.031685840201711384,
+                  "statements": 59,
+                  "within_10pct": 0.9322033898305084,
+                  "within_5pct": 0.6949152542372882
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 59
+            }
+          },
+          "by_hard_case": {
+            "bonus_month": {
+              "bounces": {
+                "count_exact_rate": 0.8297872340425532,
+                "statements_with_true_bounce": 8
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 47
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.5106382978723404,
+                "fuzzy_match_rate": 0.574468085106383,
+                "statements_with_true_employer": 47
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 47
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 47,
+                  "within_10pct": 0.9787234042553191,
+                  "within_5pct": 0.9361702127659575
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 47,
+                  "within_10pct": 0.9787234042553191,
+                  "within_5pct": 0.9361702127659575
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 47
+            },
+            "emi_bounce": {
+              "bounces": {
+                "count_exact_rate": 0.0,
+                "statements_with_true_bounce": 68
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 12
+                  },
+                  "salaried": {
+                    "salaried": 40
+                  },
+                  "self_employed": {
+                    "self_employed": 16
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.65,
+                "fuzzy_match_rate": 0.675,
+                "statements_with_true_employer": 40
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 40
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 68,
+                  "within_10pct": 0.9558823529411765,
+                  "within_5pct": 0.8529411764705882
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 68,
+                  "within_10pct": 0.9558823529411765,
+                  "within_5pct": 0.8529411764705882
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 68
+            },
+            "employer_rename": {
+              "bounces": {
+                "count_exact_rate": 0.7222222222222222,
+                "statements_with_true_bounce": 10
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 36
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.5555555555555556,
+                "fuzzy_match_rate": 0.6388888888888888,
+                "statements_with_true_employer": 36
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 36
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 36,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 36,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 36
+            },
+            "missed_salary": {
+              "bounces": {
+                "count_exact_rate": 0.75,
+                "statements_with_true_bounce": 8
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 32
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.59375,
+                "fuzzy_match_rate": 0.625,
+                "statements_with_true_employer": 32
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 32
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 32,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 32,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 32
+            },
+            "none": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 0
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 44
+                  },
+                  "salaried": {
+                    "salaried": 57
+                  },
+                  "self_employed": {
+                    "self_employed": 43
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.6666666666666666,
+                "fuzzy_match_rate": 0.7017543859649122,
+                "statements_with_true_employer": 57
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 57
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 144,
+                  "within_10pct": 0.9930555555555556,
+                  "within_5pct": 0.9444444444444444
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 144,
+                  "within_10pct": 0.9930555555555556,
+                  "within_5pct": 0.9444444444444444
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 144
+            },
+            "salary_date_shift": {
+              "bounces": {
+                "count_exact_rate": 0.8611111111111112,
+                "statements_with_true_bounce": 5
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 36
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.5833333333333334,
+                "fuzzy_match_rate": 0.6944444444444444,
+                "statements_with_true_employer": 36
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 36
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 36,
+                  "within_10pct": 0.9722222222222222,
+                  "within_5pct": 0.9166666666666666
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 36,
+                  "within_10pct": 0.9722222222222222,
+                  "within_5pct": 0.9166666666666666
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 36
+            }
+          },
+          "by_layout": {
+            "columns": {
+              "bounces": {
+                "count_exact_rate": 0.7753623188405797,
+                "statements_with_true_bounce": 31
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 26
+                  },
+                  "salaried": {
+                    "salaried": 85
+                  },
+                  "self_employed": {
+                    "self_employed": 27
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.5411764705882353,
+                "fuzzy_match_rate": 0.5882352941176471,
+                "statements_with_true_employer": 85
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 85
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 138,
+                  "within_10pct": 0.9855072463768116,
+                  "within_5pct": 0.9492753623188406
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 138,
+                  "within_10pct": 0.9855072463768116,
+                  "within_5pct": 0.9492753623188406
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 138
+            },
+            "drcr": {
+              "bounces": {
+                "count_exact_rate": 0.7716049382716049,
+                "statements_with_true_bounce": 37
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 30
+                  },
+                  "salaried": {
+                    "salaried": 100
+                  },
+                  "self_employed": {
+                    "self_employed": 32
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.67,
+                "fuzzy_match_rate": 0.73,
+                "statements_with_true_employer": 100
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 100
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 162,
+                  "within_10pct": 0.9814814814814815,
+                  "within_5pct": 0.9135802469135802
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 162,
+                  "within_10pct": 0.9814814814814815,
+                  "within_5pct": 0.9135802469135802
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 162
+            }
+          }
+        },
+        "intervals": {
+          "bounce_count_exact": {
+            "high": 0.82,
+            "low": 0.7265833333333334,
+            "resamples_used": 1000,
+            "value": 0.7733333333333333
+          },
+          "customer_type_accuracy": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "emi_count_exact": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "emi_total_exact": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "employer_exact": {
+            "high": 0.6825526932084309,
+            "low": 0.5380116959064327,
+            "resamples_used": 1000,
+            "value": 0.6108108108108108
+          },
+          "employer_fuzzy": {
+            "high": 0.7297404547404547,
+            "low": 0.590332139368284,
+            "resamples_used": 1000,
+            "value": 0.6648648648648648
+          },
+          "has_salary_precision": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "has_salary_recall": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "income_median_ape": {
+            "high": 0.0,
+            "low": 0.0,
+            "resamples_used": 1000,
+            "value": 0.0
+          },
+          "income_within_10pct": {
+            "high": 0.9966666666666667,
+            "low": 0.9666666666666667,
+            "resamples_used": 1000,
+            "value": 0.9833333333333333
+          },
+          "income_within_5pct": {
+            "high": 0.9566666666666667,
+            "low": 0.9,
+            "resamples_used": 1000,
+            "value": 0.93
+          },
+          "share_without_estimate": {
+            "high": 0.0,
+            "low": 0.0,
+            "resamples_used": 1000,
+            "value": 0.0
+          }
+        },
+        "overall": {
+          "bounces": {
+            "count_exact_rate": 0.7733333333333333,
+            "statements_with_true_bounce": 68
+          },
+          "customer_type": {
+            "accuracy": 1.0,
+            "confusion_true_to_predicted": {
+              "gig": {
+                "gig": 56
+              },
+              "salaried": {
+                "salaried": 185
+              },
+              "self_employed": {
+                "self_employed": 59
+              }
+            }
+          },
+          "emi": {
+            "count_exact_rate": 1.0,
+            "total_monthly_abs_error_paise": {
+              "max": 0,
+              "mean": 0.0,
+              "median": 0.0
+            },
+            "total_monthly_exact_rate": 1.0
+          },
+          "employer": {
+            "exact_match_rate": 0.6108108108108108,
+            "fuzzy_match_rate": 0.6648648648648648,
+            "statements_with_true_employer": 185
+          },
+          "has_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          },
+          "income": {
+            "estimated_only": {
+              "median_ape": 0.0,
+              "statements": 300,
+              "within_10pct": 0.9833333333333333,
+              "within_5pct": 0.93
+            },
+            "missing_as_100pct": {
+              "median_ape": 0.0,
+              "statements": 300,
+              "within_10pct": 0.9833333333333333,
+              "within_5pct": 0.93
+            },
+            "share_without_estimate": 0.0,
+            "true_income_zero": 0
+          },
+          "statements": 300
+        },
+        "worst_income_errors": [
+          {
+            "error": 0.19528693451730686,
+            "income_reason": "INR 33,754 a month: other regular income INR 12,011 a month (2 group(s)) + one-off customer credits INR 21,742 a month (31 credits), over 9 months",
+            "p_income": 3375415,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0080",
+            "t_income": 2823937,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          },
+          {
+            "error": 0.1950528352756346,
+            "income_reason": "INR 1,98,267 a month: other regular income INR 94,344 a month (2 group(s)) + one-off customer credits INR 1,03,923 a month (36 credits), over 12 months",
+            "p_income": 19826781,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0268",
+            "t_income": 16590715,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          },
+          {
+            "error": 0.16666666666666666,
+            "income_reason": "INR 37,847 a month: salary INR 37,847 a month (5 credits over 6 months), over 6 months",
+            "p_income": 3784750,
+            "p_type": "salaried",
+            "statement_id": "stmt_0009",
+            "t_income": 4541700,
+            "t_type": "salaried",
+            "tags": "salary_date_shift|bonus_month",
+            "warnings": ""
+          },
+          {
+            "error": 0.1129249663883004,
+            "income_reason": "INR 38,731 a month: other regular income INR 21,005 a month (3 group(s)) + one-off customer credits INR 17,726 a month (28 credits), over 10 months",
+            "p_income": 3873187,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0020",
+            "t_income": 3480187,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.10270099629118853,
+            "income_reason": "INR 49,566 a month: other regular income INR 19,231 a month (3 group(s)) + one-off customer credits INR 30,334 a month (26 credits), over 8 months",
+            "p_income": 4956609,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0292",
+            "t_income": 4494971,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          },
+          {
+            "error": 0.09802408246444713,
+            "income_reason": "INR 31,854 a month: other regular income INR 20,814 a month (3 group(s)) + one-off customer credits INR 11,039 a month (15 credits), over 7 months",
+            "p_income": 3185403,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0092",
+            "t_income": 2901032,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          },
+          {
+            "error": 0.0979174811687127,
+            "income_reason": "INR 42,123 a month: salary INR 42,123 a month (11 credits over 10 months), over 10 months",
+            "p_income": 4212380,
+            "p_type": "salaried",
+            "statement_id": "stmt_0173",
+            "t_income": 3836700,
+            "t_type": "salaried",
+            "tags": "salary_date_shift|bonus_month",
+            "warnings": ""
+          },
+          {
+            "error": 0.08932336925758347,
+            "income_reason": "INR 43,781 a month: other regular income INR 18,500 a month (4 group(s)) + one-off customer credits INR 25,280 a month (28 credits), over 10 months",
+            "p_income": 4378105,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0089",
+            "t_income": 4019105,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.0880749712363053,
+            "income_reason": "INR 48,533 a month: other regular income INR 20,044 a month (2 group(s)) + one-off customer credits INR 28,488 a month (25 credits), over 7 months",
+            "p_income": 4853341,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0211",
+            "t_income": 4460484,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.08545340504070623,
+            "income_reason": "INR 71,714 a month: other regular income INR 35,777 a month (4 group(s)) + one-off customer credits INR 35,937 a month (25 credits), over 9 months",
+            "p_income": 7171430,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0084",
+            "t_income": 6606852,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          },
+          {
+            "error": 0.08376555506081414,
+            "income_reason": "INR 46,245 a month: salary INR 46,245 a month (12 credits over 11 months), over 11 months",
+            "p_income": 4624536,
+            "p_type": "salaried",
+            "statement_id": "stmt_0112",
+            "t_income": 4267100,
+            "t_type": "salaried",
+            "tags": "salary_date_shift|bonus_month",
+            "warnings": ""
+          },
+          {
+            "error": 0.06621650391048113,
+            "income_reason": "INR 1,36,824 a month: other regular income INR 66,475 a month (3 group(s)) + one-off customer credits INR 70,348 a month (33 credits), over 11 months",
+            "p_income": 13682428,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0218",
+            "t_income": 12832692,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          },
+          {
+            "error": 0.06582554367152439,
+            "income_reason": "INR 51,582 a month: other regular income INR 26,660 a month (3 group(s)) + one-off customer credits INR 24,921 a month (18 credits), over 7 months",
+            "p_income": 5158213,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0280",
+            "t_income": 4839641,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.06552398794027556,
+            "income_reason": "INR 1,40,737 a month: other regular income INR 66,748 a month (2 group(s)) + one-off customer credits INR 73,988 a month (33 credits), over 12 months",
+            "p_income": 14073720,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0166",
+            "t_income": 13208262,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          },
+          {
+            "error": 0.06541085363013134,
+            "income_reason": "INR 58,365 a month: other regular income INR 18,174 a month (2 group(s)) + one-off customer credits INR 40,190 a month (22 credits), over 6 months",
+            "p_income": 5836538,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0149",
+            "t_income": 5478204,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.06529241616140888,
+            "income_reason": "INR 1,00,919 a month: other regular income INR 40,841 a month (3 group(s)) + one-off customer credits INR 60,077 a month (30 credits), over 10 months",
+            "p_income": 10091922,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0026",
+            "t_income": 9473382,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          },
+          {
+            "error": 0.06385919567687436,
+            "income_reason": "INR 44,980 a month: other regular income INR 21,397 a month (5 group(s)) + one-off customer credits INR 23,583 a month (24 credits), over 9 months",
+            "p_income": 4498052,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0269",
+            "t_income": 4228052,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.05929972413992859,
+            "income_reason": "INR 39,498 a month: other regular income INR 21,850 a month (2 group(s)) + one-off customer credits INR 17,647 a month (21 credits), over 9 months",
+            "p_income": 3949813,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0039",
+            "t_income": 3728702,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.05919910834717376,
+            "income_reason": "INR 82,830 a month: other regular income INR 49,882 a month (3 group(s)) + one-off customer credits INR 32,947 a month (14 credits), over 7 months",
+            "p_income": 8283026,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0170",
+            "t_income": 7820084,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          },
+          {
+            "error": 0.05802165004618992,
+            "income_reason": "INR 58,959 a month: other regular income INR 35,090 a month (4 group(s)) + one-off customer credits INR 23,869 a month (33 credits), over 12 months",
+            "p_income": 5895978,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0213",
+            "t_income": 5572644,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": ""
+          }
+        ]
+      }
+    },
+    "test": {
+      "labels": {
+        "breakdown": {
+          "by_hard_case": {
+            "bonus_month": {
+              "is_bounce": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 12
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 12
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 174
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 174
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 199
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 199
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 283
+                },
+                "rules": {
+                  "f1": 0.9946902654867257,
+                  "fn": 2,
+                  "fp": 1,
+                  "precision": 0.9964539007092199,
+                  "recall": 0.9929328621908127,
+                  "tp": 281
+                }
+              }
+            },
+            "emi_bounce": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.9213483146067416,
+                  "fn": 21,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.8541666666666666,
+                  "tp": 123
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 144
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 437
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 437
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 363
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 363
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.998211091234347,
+                  "fn": 0,
+                  "fp": 1,
+                  "precision": 0.9964285714285714,
+                  "recall": 1.0,
+                  "tp": 279
+                },
+                "rules": {
+                  "f1": 0.9982046678635548,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.996415770609319,
+                  "tp": 278
+                }
+              }
+            },
+            "employer_rename": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.9090909090909091,
+                  "fn": 2,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.8333333333333334,
+                  "tp": 10
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 12
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 168
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 168
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 327
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 327
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 390
+                },
+                "rules": {
+                  "f1": 0.9948453608247423,
+                  "fn": 4,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9897435897435898,
+                  "tp": 386
+                }
+              }
+            },
+            "missed_salary": {
+              "is_bounce": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 18
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 18
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 162
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 162
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 263
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 263
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 328
+                },
+                "rules": {
+                  "f1": 0.9969418960244648,
+                  "fn": 2,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9939024390243902,
+                  "tp": 326
+                }
+              }
+            },
+            "none": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.0,
+                  "fn": 0,
+                  "fp": 33,
+                  "precision": 0.0,
+                  "recall": null,
+                  "tp": 0
+                },
+                "rules": {
+                  "f1": null,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": null,
+                  "recall": null,
+                  "tp": 0
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 667
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 667
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 1024
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 1024
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.999043062200957,
+                  "fn": 0,
+                  "fp": 1,
+                  "precision": 0.9980879541108987,
+                  "recall": 1.0,
+                  "tp": 522
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 522
+                }
+              }
+            },
+            "salary_date_shift": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.9333333333333333,
+                  "fn": 2,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.875,
+                  "tp": 14
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 16
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 177
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 177
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 226
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 226
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 360
+                },
+                "rules": {
+                  "f1": 0.9916201117318436,
+                  "fn": 5,
+                  "fp": 1,
+                  "precision": 0.9971910112359551,
+                  "recall": 0.9861111111111112,
+                  "tp": 355
+                }
+              }
+            }
+          },
+          "by_layout": {
+            "columns": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.7425149700598802,
+                  "fn": 10,
+                  "fp": 33,
+                  "precision": 0.6526315789473685,
+                  "recall": 0.8611111111111112,
+                  "tp": 62
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 72
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 783
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 783
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 1007
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 1007
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 826
+                },
+                "rules": {
+                  "f1": 0.9993943064809208,
+                  "fn": 1,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.9987893462469734,
+                  "tp": 825
+                }
+              }
+            },
+            "drcr": {
+              "is_bounce": {
+                "model": {
+                  "f1": 0.9172932330827067,
+                  "fn": 11,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 0.8472222222222222,
+                  "tp": 61
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 72
+                }
+              },
+              "is_emi": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 693
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 693
+                }
+              },
+              "is_rent": {
+                "model": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 1020
+                },
+                "rules": {
+                  "f1": 1.0,
+                  "fn": 0,
+                  "fp": 0,
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "tp": 1020
+                }
+              },
+              "is_salary": {
+                "model": {
+                  "f1": 0.9987730061349693,
+                  "fn": 0,
+                  "fp": 2,
+                  "precision": 0.9975490196078431,
+                  "recall": 1.0,
+                  "tp": 814
+                },
+                "rules": {
+                  "f1": 0.9969230769230769,
+                  "fn": 4,
+                  "fp": 1,
+                  "precision": 0.998766954377312,
+                  "recall": 0.995085995085995,
+                  "tp": 810
+                }
+              }
+            }
+          }
+        },
+        "false_salary": {
+          "gig": {
+            "model": 0,
+            "rules": 0,
+            "statements": 63
+          },
+          "self_employed": {
+            "model": 2,
+            "rules": 0,
+            "statements": 52
+          }
+        },
+        "has_salary": {
+          "model": {
+            "f1": 0.9946236559139785,
+            "f1_ci": {
+              "high": 1.0,
+              "includes_zero": false,
+              "low": 0.9858336763435913,
+              "resamples_used": 1000
+            },
+            "fn": 0,
+            "fp": 2,
+            "precision": 0.9893048128342246,
+            "recall": 1.0,
+            "tp": 185
+          },
+          "model_minus_rules": {
+            "ci": {
+              "high": 0.0,
+              "includes_zero": true,
+              "low": -0.014166323656408669,
+              "resamples_used": 1000
+            },
+            "f1": -0.005376344086021501
+          },
+          "rules": {
+            "f1": 1.0,
+            "f1_ci": {
+              "high": 1.0,
+              "includes_zero": false,
+              "low": 1.0,
+              "resamples_used": 1000
+            },
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          }
+        },
+        "labels": {
+          "is_bounce": {
+            "model": {
+              "f1": 0.8200000000000001,
+              "f1_ci": {
+                "high": 0.9333333333333333,
+                "includes_zero": false,
+                "low": 0.6936582591081883,
+                "resamples_used": 1000
+              },
+              "fn": 21,
+              "fp": 33,
+              "pr_auc": 0.889100534953988,
+              "precision": 0.7884615384615384,
+              "recall": 0.8541666666666666,
+              "tp": 123
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": -0.06666666666666665,
+                "includes_zero": false,
+                "low": -0.30634174089181165,
+                "resamples_used": 1000
+              },
+              "f1": -0.17999999999999994
+            },
+            "rules": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 144
+            }
+          },
+          "is_emi": {
+            "model": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "pr_auc": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1476
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": 0.0,
+                "includes_zero": true,
+                "low": 0.0,
+                "resamples_used": 1000
+              },
+              "f1": 0.0
+            },
+            "rules": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 1476
+            }
+          },
+          "is_rent": {
+            "model": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "pr_auc": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 2027
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": 0.0,
+                "includes_zero": true,
+                "low": 0.0,
+                "resamples_used": 1000
+              },
+              "f1": 0.0
+            },
+            "rules": {
+              "f1": 1.0,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 1.0,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "tp": 2027
+            }
+          },
+          "is_salary": {
+            "model": {
+              "f1": 0.9993906154783668,
+              "f1_ci": {
+                "high": 1.0,
+                "includes_zero": false,
+                "low": 0.9983746944346713,
+                "resamples_used": 1000
+              },
+              "fn": 0,
+              "fp": 2,
+              "pr_auc": 0.9998040079156594,
+              "precision": 0.9987819732034104,
+              "recall": 1.0,
+              "tp": 1640
+            },
+            "model_minus_rules": {
+              "ci": {
+                "high": 0.003549710223260673,
+                "includes_zero": true,
+                "low": -0.0006782763888887406,
+                "resamples_used": 1000
+              },
+              "f1": 0.0012221173098686533
+            },
+            "rules": {
+              "f1": 0.9981684981684982,
+              "f1_ci": {
+                "high": 0.9997067143527515,
+                "includes_zero": false,
+                "low": 0.9959346725405166,
+                "resamples_used": 1000
+              },
+              "fn": 5,
+              "fp": 1,
+              "precision": 0.9993887530562348,
+              "recall": 0.9969512195121951,
+              "tp": 1635
+            }
+          }
+        },
+        "rows": 175364,
+        "statements": 300
+      },
+      "profile": {
+        "breakdown": {
+          "by_customer_type": {
+            "gig": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 8
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 63
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": null,
+                "fuzzy_match_rate": null,
+                "statements_with_true_employer": 0
+              },
+              "has_salary": {
+                "f1": null,
+                "fn": 0,
+                "fp": 0,
+                "precision": null,
+                "recall": null,
+                "tp": 0
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 63,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 63,
+                  "within_10pct": 1.0,
+                  "within_5pct": 1.0
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 63
+            },
+            "salaried": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 33
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 185
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9513513513513514,
+                "fuzzy_match_rate": 0.972972972972973,
+                "statements_with_true_employer": 185
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 185
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 185,
+                  "within_10pct": 0.9783783783783784,
+                  "within_5pct": 0.9783783783783784
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 185,
+                  "within_10pct": 0.9783783783783784,
+                  "within_5pct": 0.9783783783783784
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 185
+            },
+            "self_employed": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 14
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "self_employed": {
+                    "self_employed": 52
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": null,
+                "fuzzy_match_rate": null,
+                "statements_with_true_employer": 0
+              },
+              "has_salary": {
+                "f1": null,
+                "fn": 0,
+                "fp": 0,
+                "precision": null,
+                "recall": null,
+                "tp": 0
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.025677167723500274,
+                  "statements": 52,
+                  "within_10pct": 0.9038461538461539,
+                  "within_5pct": 0.7307692307692307
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.025677167723500274,
+                  "statements": 52,
+                  "within_10pct": 0.9038461538461539,
+                  "within_5pct": 0.7307692307692307
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 52
+            }
+          },
+          "by_hard_case": {
+            "bonus_month": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 6
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 32
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9375,
+                "fuzzy_match_rate": 0.96875,
+                "statements_with_true_employer": 32
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 32
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 32,
+                  "within_10pct": 0.9375,
+                  "within_5pct": 0.9375
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 32,
+                  "within_10pct": 0.9375,
+                  "within_5pct": 0.9375
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 32
+            },
+            "emi_bounce": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 55
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 8
+                  },
+                  "salaried": {
+                    "salaried": 33
+                  },
+                  "self_employed": {
+                    "self_employed": 14
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9696969696969697,
+                "fuzzy_match_rate": 1.0,
+                "statements_with_true_employer": 33
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 33
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 55,
+                  "within_10pct": 0.9454545454545454,
+                  "within_5pct": 0.8909090909090909
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 55,
+                  "within_10pct": 0.9454545454545454,
+                  "within_5pct": 0.8909090909090909
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 55
+            },
+            "employer_rename": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 4
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 44
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.8863636363636364,
+                "fuzzy_match_rate": 0.9090909090909091,
+                "statements_with_true_employer": 44
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 44
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 44,
+                  "within_10pct": 0.9545454545454546,
+                  "within_5pct": 0.9545454545454546
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 44,
+                  "within_10pct": 0.9545454545454546,
+                  "within_5pct": 0.9545454545454546
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 44
+            },
+            "missed_salary": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 9
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 39
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.8974358974358975,
+                "fuzzy_match_rate": 0.9230769230769231,
+                "statements_with_true_employer": 39
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 39
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 39,
+                  "within_10pct": 0.9743589743589743,
+                  "within_5pct": 0.9743589743589743
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 39,
+                  "within_10pct": 0.9743589743589743,
+                  "within_5pct": 0.9743589743589743
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 39
+            },
+            "none": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 0
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 55
+                  },
+                  "salaried": {
+                    "salaried": 57
+                  },
+                  "self_employed": {
+                    "self_employed": 38
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9649122807017544,
+                "fuzzy_match_rate": 0.9824561403508771,
+                "statements_with_true_employer": 57
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 57
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 150,
+                  "within_10pct": 0.98,
+                  "within_5pct": 0.94
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 150,
+                  "within_10pct": 0.98,
+                  "within_5pct": 0.94
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 150
+            },
+            "salary_date_shift": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 6
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "salaried": {
+                    "salaried": 42
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9523809523809523,
+                "fuzzy_match_rate": 0.9523809523809523,
+                "statements_with_true_employer": 42
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 42
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 42,
+                  "within_10pct": 0.9047619047619048,
+                  "within_5pct": 0.9047619047619048
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 42,
+                  "within_10pct": 0.9047619047619048,
+                  "within_5pct": 0.9047619047619048
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 42
+            }
+          },
+          "by_layout": {
+            "columns": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 27
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 33
+                  },
+                  "salaried": {
+                    "salaried": 93
+                  },
+                  "self_employed": {
+                    "self_employed": 26
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.967741935483871,
+                "fuzzy_match_rate": 1.0,
+                "statements_with_true_employer": 93
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 93
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 152,
+                  "within_10pct": 0.993421052631579,
+                  "within_5pct": 0.9605263157894737
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 152,
+                  "within_10pct": 0.993421052631579,
+                  "within_5pct": 0.9605263157894737
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 152
+            },
+            "drcr": {
+              "bounces": {
+                "count_exact_rate": 1.0,
+                "statements_with_true_bounce": 28
+              },
+              "customer_type": {
+                "accuracy": 1.0,
+                "confusion_true_to_predicted": {
+                  "gig": {
+                    "gig": 30
+                  },
+                  "salaried": {
+                    "salaried": 92
+                  },
+                  "self_employed": {
+                    "self_employed": 26
+                  }
+                }
+              },
+              "emi": {
+                "count_exact_rate": 1.0,
+                "total_monthly_abs_error_paise": {
+                  "max": 0,
+                  "mean": 0.0,
+                  "median": 0.0
+                },
+                "total_monthly_exact_rate": 1.0
+              },
+              "employer": {
+                "exact_match_rate": 0.9347826086956522,
+                "fuzzy_match_rate": 0.9456521739130435,
+                "statements_with_true_employer": 92
+              },
+              "has_salary": {
+                "f1": 1.0,
+                "fn": 0,
+                "fp": 0,
+                "precision": 1.0,
+                "recall": 1.0,
+                "tp": 92
+              },
+              "income": {
+                "estimated_only": {
+                  "median_ape": 0.0,
+                  "statements": 148,
+                  "within_10pct": 0.9459459459459459,
+                  "within_5pct": 0.918918918918919
+                },
+                "missing_as_100pct": {
+                  "median_ape": 0.0,
+                  "statements": 148,
+                  "within_10pct": 0.9459459459459459,
+                  "within_5pct": 0.918918918918919
+                },
+                "share_without_estimate": 0.0,
+                "true_income_zero": 0
+              },
+              "statements": 148
+            }
+          }
+        },
+        "intervals": {
+          "bounce_count_exact": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "customer_type_accuracy": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "emi_count_exact": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "emi_total_exact": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "employer_exact": {
+            "high": 0.9801479131289659,
+            "low": 0.9193439407149084,
+            "resamples_used": 1000,
+            "value": 0.9513513513513514
+          },
+          "employer_fuzzy": {
+            "high": 0.9944467213114754,
+            "low": 0.9487179487179487,
+            "resamples_used": 1000,
+            "value": 0.972972972972973
+          },
+          "has_salary_precision": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "has_salary_recall": {
+            "high": 1.0,
+            "low": 1.0,
+            "resamples_used": 1000,
+            "value": 1.0
+          },
+          "income_median_ape": {
+            "high": 0.0,
+            "low": 0.0,
+            "resamples_used": 1000,
+            "value": 0.0
+          },
+          "income_within_10pct": {
+            "high": 0.9866666666666667,
+            "low": 0.95,
+            "resamples_used": 1000,
+            "value": 0.97
+          },
+          "income_within_5pct": {
+            "high": 0.9666666666666667,
+            "low": 0.91,
+            "resamples_used": 1000,
+            "value": 0.94
+          },
+          "share_without_estimate": {
+            "high": 0.0,
+            "low": 0.0,
+            "resamples_used": 1000,
+            "value": 0.0
+          }
+        },
+        "overall": {
+          "bounces": {
+            "count_exact_rate": 1.0,
+            "statements_with_true_bounce": 55
+          },
+          "customer_type": {
+            "accuracy": 1.0,
+            "confusion_true_to_predicted": {
+              "gig": {
+                "gig": 63
+              },
+              "salaried": {
+                "salaried": 185
+              },
+              "self_employed": {
+                "self_employed": 52
+              }
+            }
+          },
+          "emi": {
+            "count_exact_rate": 1.0,
+            "total_monthly_abs_error_paise": {
+              "max": 0,
+              "mean": 0.0,
+              "median": 0.0
+            },
+            "total_monthly_exact_rate": 1.0
+          },
+          "employer": {
+            "exact_match_rate": 0.9513513513513514,
+            "fuzzy_match_rate": 0.972972972972973,
+            "statements_with_true_employer": 185
+          },
+          "has_salary": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 185
+          },
+          "income": {
+            "estimated_only": {
+              "median_ape": 0.0,
+              "statements": 300,
+              "within_10pct": 0.97,
+              "within_5pct": 0.94
+            },
+            "missing_as_100pct": {
+              "median_ape": 0.0,
+              "statements": 300,
+              "within_10pct": 0.97,
+              "within_5pct": 0.94
+            },
+            "share_without_estimate": 0.0,
+            "true_income_zero": 0
+          },
+          "statements": 300
+        },
+        "worst_income_errors": [
+          {
+            "error": 0.3333333049432767,
+            "income_reason": "INR 78,274 a month: salary INR 78,274 a month (4 credits over 6 months), over 6 months",
+            "p_income": 7827467,
+            "p_type": "salaried",
+            "statement_id": "stmt_1895",
+            "t_income": 11741200,
+            "t_type": "salaried",
+            "tags": "salary_date_shift|employer_rename|bonus_month",
+            "warnings": ""
+          },
+          {
+            "error": 0.25000004902259726,
+            "income_reason": "INR 76,495 a month: salary INR 76,495 a month (6 credits over 9 months), over 9 months",
+            "p_income": 7649533,
+            "p_type": "salaried",
+            "statement_id": "stmt_0563",
+            "t_income": 10199378,
+            "t_type": "salaried",
+            "tags": "salary_date_shift|employer_rename|missed_salary",
+            "warnings": ""
+          },
+          {
+            "error": 0.19606618865839162,
+            "income_reason": "INR 1,47,348 a month: other regular income INR 74,423 a month (2 group(s)) + one-off customer credits INR 72,925 a month (19 credits), over 7 months",
+            "p_income": 14734880,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1909",
+            "t_income": 12319452,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.14904517931998137,
+            "income_reason": "INR 37,005 a month: other regular income INR 20,573 a month (4 group(s)) + one-off customer credits INR 16,431 a month (22 credits), over 7 months",
+            "p_income": 3700500,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0461",
+            "t_income": 3220500,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.14777225124917293,
+            "income_reason": "INR 50,305 a month: salary INR 50,305 a month (8 credits over 7 months), over 7 months",
+            "p_income": 5030571,
+            "p_type": "salaried",
+            "statement_id": "stmt_1499",
+            "t_income": 4382900,
+            "t_type": "salaried",
+            "tags": "salary_date_shift|bonus_month",
+            "warnings": ""
+          },
+          {
+            "error": 0.14285718008181983,
+            "income_reason": "INR 32,894 a month: salary INR 32,894 a month (6 credits over 7 months), over 7 months",
+            "p_income": 3289457,
+            "p_type": "salaried",
+            "statement_id": "stmt_1136",
+            "t_income": 3837700,
+            "t_type": "salaried",
+            "tags": "salary_date_shift|emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.12197646357257996,
+            "income_reason": "INR 30,103 a month: other regular income INR 19,176 a month (4 group(s)) + one-off customer credits INR 10,926 a month (21 credits), over 11 months",
+            "p_income": 3010347,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1310",
+            "t_income": 2683075,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.1096992478228296,
+            "income_reason": "INR 30,853 a month: other regular income INR 6,537 a month (1 group(s)) + one-off customer credits INR 24,315 a month (21 credits), over 6 months",
+            "p_income": 3085329,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1368",
+            "t_income": 2780329,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.10425032289675905,
+            "income_reason": "INR 29,658 a month: other regular income INR 17,259 a month (2 group(s)) + one-off customer credits INR 12,398 a month (16 credits), over 8 months",
+            "p_income": 2965843,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1733",
+            "t_income": 2685843,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.09942708869103727,
+            "income_reason": "INR 31,422 a month: other regular income INR 17,704 a month (3 group(s)) + one-off customer credits INR 13,717 a month (31 credits), over 12 months",
+            "p_income": 3142200,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0832",
+            "t_income": 2858034,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.09926511532407586,
+            "income_reason": "INR 60,605 a month: other regular income INR 32,976 a month (4 group(s)) + one-off customer credits INR 27,628 a month (26 credits), over 11 months",
+            "p_income": 6060519,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0684",
+            "t_income": 5513246,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.09911001894034097,
+            "income_reason": "INR 94,078 a month: other regular income INR 18,589 a month (2 group(s)) + one-off customer credits INR 75,489 a month (21 credits), over 6 months",
+            "p_income": 9407841,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0667",
+            "t_income": 8559508,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.09263713700890044,
+            "income_reason": "INR 68,999 a month: other regular income INR 19,957 a month (3 group(s)) + one-off customer credits INR 49,041 a month (24 credits), over 8 months",
+            "p_income": 6899962,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0419",
+            "t_income": 6314962,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.08491668192749384,
+            "income_reason": "INR 71,802 a month: other regular income INR 41,040 a month (2 group(s)) + one-off customer credits INR 30,761 a month (27 credits), over 10 months",
+            "p_income": 7180252,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1735",
+            "t_income": 6618252,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.06989077954738038,
+            "income_reason": "INR 86,337 a month: other regular income INR 54,787 a month (4 group(s)) + one-off customer credits INR 31,549 a month (31 credits), over 10 months",
+            "p_income": 8633734,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1667",
+            "t_income": 8069734,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.0614560119241196,
+            "income_reason": "INR 64,690 a month: other regular income INR 25,298 a month (2 group(s)) + one-off customer credits INR 39,392 a month (33 credits), over 11 months",
+            "p_income": 6469084,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1035",
+            "t_income": 6094538,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.0556595279266507,
+            "income_reason": "INR 94,357 a month: other regular income INR 51,863 a month (3 group(s)) + one-off customer credits INR 42,494 a month (24 credits), over 8 months",
+            "p_income": 9435772,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1000",
+            "t_income": 8938272,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.05548843522784982,
+            "income_reason": "INR 61,250 a month: other regular income INR 27,859 a month (4 group(s)) + one-off customer credits INR 33,390 a month (28 credits), over 10 months",
+            "p_income": 6125011,
+            "p_type": "self_employed",
+            "statement_id": "stmt_0499",
+            "t_income": 5803011,
+            "t_type": "self_employed",
+            "tags": "emi_bounce",
+            "warnings": "1 bounced EMI"
+          },
+          {
+            "error": 0.046271808417438345,
+            "income_reason": "INR 38,156 a month: other regular income INR 28,130 a month (2 group(s)) + one-off customer credits INR 10,026 a month (16 credits), over 8 months",
+            "p_income": 3815679,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1646",
+            "t_income": 3646929,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          },
+          {
+            "error": 0.04578205653714545,
+            "income_reason": "INR 67,074 a month: other regular income INR 51,623 a month (4 group(s)) + one-off customer credits INR 15,450 a month (21 credits), over 11 months",
+            "p_income": 6707438,
+            "p_type": "self_employed",
+            "statement_id": "stmt_1356",
+            "t_income": 6413801,
+            "t_type": "self_employed",
+            "tags": "",
+            "warnings": ""
+          }
+        ]
+      }
+    }
+  },
+  "test_vs_dev": {
+    "overstated_by_dev": [
+      "income_within_10pct"
+    ],
+    "summary": "dev overstated 1 metric(s): dev was better than the far end of the test 95% interval for income_within_10pct"
+  }
+}
