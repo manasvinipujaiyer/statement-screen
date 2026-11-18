@@ -336,6 +336,22 @@ Speed and memory on a MacBook Air (M2, 8 GB): features 0.0008 s per statement (t
 libomp`, part of LLVM, Apache-2.0 with LLVM exceptions), installed on the machine, not
 added to this repo.
 
+## Income profile
+
+### What "monthly income" means
+
+`true_monthly_income` in `labels/*.json` is the **average regular income per month that
+actually arrived**: salary, gig payouts or payments from clients and customers, added up
+over the statement and divided by the **number of calendar months the statement covers**.
+Bonuses, money from family, self-transfers, refunds and interest are never counted, because
+a lender shouldn't count them as stable income.
+
+| Customer | Counted | So... |
+|---|---|---|
+| Salaried | salary credits that arrived | a missed month lowers the average; a late salary and a salary under the employer's new name still count; a bonus never counts |
+| Gig | platform payouts that arrived | weeks without a payout lower it |
+| Self-employed | payments from clients and customers, by any channel | money from family doesn't count, even though it can look the same |
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
