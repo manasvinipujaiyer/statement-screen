@@ -227,17 +227,24 @@ def main(argv: Sequence[str] | None = None) -> int:
                    help="pattern folders to build, e.g. train dev shift_karan_v1")  # fmt: skip
     p.add_argument("--out", type=Path, default=Path("data/features"))
     p.add_argument("--overwrite", action="store_true", help="replace previous features")
+    saved = "load the frozen <out>/tfidf.joblib instead of refitting (never rewrites it)"
+    p.add_argument("--use-saved-tfidf", action="store_true", help=saved)
     args = p.parse_args(argv)
     try:
         for name in args.sets:
             _check_set(name)
-        vec, meta = fit_tfidf(args.patterns)
-        args.out.mkdir(parents=True, exist_ok=True)
-        joblib.dump(vec, args.out / "tfidf.joblib")
-        (args.out / "tfidf_run.json").write_text(json.dumps(meta, indent=2, sort_keys=True)
-                                                 + "\n", encoding="utf-8")  # fmt: skip
-        print(f"TF-IDF fitted on {meta['sample_rows']} of {meta['train_rows']} train rows: "
-              f"{meta['features']} features")  # fmt: skip
+        if args.use_saved_tfidf:
+            vec = joblib.load(args.out / "tfidf.joblib")
+            meta = json.loads((args.out / "tfidf_run.json").read_text(encoding="utf-8"))
+            print(f"TF-IDF loaded from {args.out / 'tfidf.joblib'} (not refitted)")
+        else:
+            vec, meta = fit_tfidf(args.patterns)
+            args.out.mkdir(parents=True, exist_ok=True)
+            joblib.dump(vec, args.out / "tfidf.joblib")
+            text = json.dumps(meta, indent=2, sort_keys=True) + "\n"
+            (args.out / "tfidf_run.json").write_text(text, encoding="utf-8")
+            print(f"TF-IDF fitted on {meta['sample_rows']} of {meta['train_rows']} train rows: "
+                  f"{meta['features']} features")  # fmt: skip
         for name in args.sets:
             s = build_set(args.patterns, name, args.out, vec, meta, args.overwrite)
             print(f"Wrote {args.out / name}: {s['statements']} statements, {s['rows']} rows, "
