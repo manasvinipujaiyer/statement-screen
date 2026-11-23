@@ -3,7 +3,7 @@
     "STATEMENTSCREEN_OPEN_TEST=1 uv run python -m statementscreen.tamper data/week1_n2000/ --set test --per-type 100 --seed 6 --include-overlay",
     "uv run python -m statementscreen.tamper.run data/tamper/test/copies --out data/tamper/test/detect",
     "STATEMENTSCREEN_OPEN_TEST=1 uv run python -m statementscreen.tamper.run data/week1_n2000/pdfs --split test --manifest data/week1_n2000/manifest.csv --out data/tamper/genuine_test/detect",
-    "uv run python -m statementscreen.tamper.run data/week4_shift_n300/pdfs --out data/tamper/genuine_shift/detect",
+    "uv run python -m statementscreen.tamper.run data/week4_shift_n300/pdfs --population shift --out data/tamper/genuine_shift/detect",
     "uv run python -m statementscreen.tamper.score_tamper --copies data/tamper/test --genuine test=data/tamper/genuine_test/detect --genuine shift=data/tamper/genuine_shift/detect --manifest data/week1_n2000/manifest.csv --genuine-manifest shift=data/week4_shift_n300/manifest.csv --preregistration reports/week6_preregistration.json --out reports/week6_tamper_test.json --table reports/week6_tamper_test_copies.csv",
     "uv run python -m statementscreen.tamper.log_run --report reports/week6_tamper_test.json --csv reports/week6_tamper_test_copies.csv --preregistration reports/week6_preregistration.json"
   ],
@@ -57,9 +57,23 @@
     "shift: 'tampered' expected near 0; flagged (tampered or suspicious) rate may exceed 2% because the anomaly model never saw this distribution; no number pre-stated.",
     "Anything far from this is reported as it is."
   ],
-  "frozen_commit": "77f13d7d1d044c5988cf34bba6de762b95a692c6",
+  "expected_inputs": {
+    "copies_per_type": 100,
+    "counts": {
+      "copies": 800,
+      "shift": 300,
+      "test": 300
+    },
+    "sources": {
+      "shift": "data/week4_shift_n300/pdfs",
+      "test": "data/week1_n2000/pdfs"
+    }
+  },
+  "frozen_commit": "52c1b6bc1b66e587dd390cf268e4565290983dbd",
   "hashes": {
     "artefacts": {
+      "data/week1_n2000/manifest.csv": "4bb5f314b131bcf01927e12a7ca1f71dfaf7c331757c1e0890dfd1eee42f0fb0",
+      "data/week4_shift_n300/manifest.csv": "5c7691353ed3971b23068254a3156c44bf960052d92206b742ed5f4865eac21e",
       "models/week6_iforest.pkl": "623419f37b5f6f6b30d489378b266dcfae0663e315b25e3951f8576cc75dda88",
       "reports/week6_rule_comparison_dev.json": "8a8983c417b998db71376757fba09fad5ef88020d4e07baea223492215440596",
       "reports/week6_rule_versions.json": "0ff0e43b0347408921ab408e67452cbadc72c57e321626fd49d7e9aa9fda18ec",
@@ -126,8 +140,8 @@
       "src/statementscreen/synth/util.py": "715ebd4f1e63a8a350d0f2b8fcd55a39620ca2159d71e0fc0206cba6ff32be60",
       "src/statementscreen/tamper/__init__.py": "10bc3650510a03bd7274adc8de992b94d58b007719c83ca03429cf1ef2289eed",
       "src/statementscreen/tamper/__main__.py": "b011bed906629b367c270cc77271ec86cafb2bf8d4d59ef3b85858d2ef17ca2b",
-      "src/statementscreen/tamper/build.py": "95706cd88093119afec85d12c881b9a593fb2be841cca655c75ec8149981789d",
-      "src/statementscreen/tamper/compare_rules.py": "f90504d1734da10b1e66d022c4dc949bcd93c32c3431c3c85e37e63196d20269",
+      "src/statementscreen/tamper/build.py": "dfd5ddb74233b6a7dd5756c747bb4588980ac63cbef038027af9cb1ba7aa0641",
+      "src/statementscreen/tamper/compare_rules.py": "6caaff8bb40b08c018769cd81328595d5d06f48bf5606e85f0171ca737b5337c",
       "src/statementscreen/tamper/copy.py": "c5a1e5440ab10e38ee74cdfbe848cab9a02ed37565e554e226ec69a818556941",
       "src/statementscreen/tamper/detect/__init__.py": "e3afb822eb32f773df678554c5173c3169166c9bbf2c17b2d9d00317fee1d3df",
       "src/statementscreen/tamper/detect/anomaly.py": "6aeef0b771cd7f4d4c96d35684e8b23a0d147ac68cbb79e04ada79ddd5a58ab0",
@@ -140,13 +154,14 @@
       "src/statementscreen/tamper/detect/structure.py": "0d871655233da035f6d9ef6d14d4bdb89ababedb4c8beca5b311a45ac271c8ac",
       "src/statementscreen/tamper/detect/verdict.py": "dbb942072060fbe6eae00440ac97af07080dac6db1ff7fb489ba607e428fa549",
       "src/statementscreen/tamper/fingerprint.py": "e5b2be50eac08c2c7d877daee451c58ddeafe2f01f8377f303f1a891debb5999",
-      "src/statementscreen/tamper/log_run.py": "a6d8a5ec415f166fcf4f573838a835e83a09811807745cf1dd42c3d9d6dfab7a",
-      "src/statementscreen/tamper/preregister.py": "3072307b1ebfe97b6ec644b11d68e7baebdaa392bca371b2904b98ee82850ee2",
+      "src/statementscreen/tamper/log_run.py": "7772383a11e71970c82204eee6c6dd906752fb0b7958ac7f61c0b81833262246",
+      "src/statementscreen/tamper/preregister.py": "5816eb1a99a12d584f8abec159201ea3e9326af60ad59d070c523c5ef35e5686",
+      "src/statementscreen/tamper/provenance.py": "8937a7860d52f4eafec06eeafb89ccdc906d028abfb9425369ccbda35a833388",
       "src/statementscreen/tamper/rebuild.py": "04602998485d9c2f5decf33a390679424075b470e2e80cb2338ef6bb2b176d65",
       "src/statementscreen/tamper/rebuild_check.py": "ce18480846605b76f4ea2e0dbee48c3b630cacac87db088985d790e197d48964",
-      "src/statementscreen/tamper/run.py": "dc25d524316dfe214e3ed863949aa7bd07dc55ee41cb81edb4efba9fd6b2ba07",
-      "src/statementscreen/tamper/score_tamper.py": "affbfa0bb2c561d6c0488c83cb8c67f9394e51cf7ec09ece84817d44a709af0a",
-      "src/statementscreen/tamper/scoring.py": "ec2440997267a2a028f8f93a9c8102f303a0b8cce7f97cd0238b71c1d4195b3e",
+      "src/statementscreen/tamper/run.py": "bfa165e0667fb670008b684c0e46936bb2be4795cf541f4e8539ef8aa288da49",
+      "src/statementscreen/tamper/score_tamper.py": "5e09f2aac4051a5c402f25b7bdaff64061d865f35116548b24912c7cf45c8637",
+      "src/statementscreen/tamper/scoring.py": "ef73266a5de1832f039ccb408405c5cb0ef379c8297b12cee2d7adaf17fbbf7c",
       "src/statementscreen/tracking.py": "fa9887e40556cae231a54d66a02898c1410008ca854f1cb114fdf90d385175eb",
       "src/statementscreen/train.py": "4601fde0bb0c5091aded8853a879894e6c1093599a7cfee80cc5cf75d11f68ee",
       "src/statementscreen/verify.py": "019250724770c26583b3eb6a2d70895b14b41722d7917a732e08e6751082053f",
@@ -156,7 +171,11 @@
   "known_limits": [
     "The anomaly check's false-alarm rate on genuine dev and genuine train is in-sample (its threshold and model came from those statements); only test and shift are independent.",
     "v2 was adopted on dev with a thin margin on condition (a): rerender_consistent rose from 0/60 to 7/60, 11.7 points against 10 needed.",
+    "All of v2's rerender_consistent gains come from the anomaly score alone, whose threshold is in-sample on dev.",
+    "Two anomaly features (income_to_debits and salary_to_spending) depend indirectly on the Week 3 salary rule, through the profile; the anomaly check can never give 'tampered' on its own.",
     "The layout tolerances and the font baseline were measured on genuine train, so the zero strong findings on genuine dev and train are not independent evidence.",
+    "The in-table character-overlap maximum on genuine PDFs was never recorded; only that no genuine dev or train PDF produced a strong finding, so the margin to the 0.30 threshold is not shown. This measurement cannot change a verdict.",
+    "There is no test for a header mismatch on the drcr layout (only on columns). A missing test cannot change a verdict.",
     "The pooled all-six-types rate hides the rerender_consistent gap and is not a headline.",
     "Dev copies are 60 per type; test is 100 per type, so test intervals are narrower."
   ],
@@ -168,19 +187,24 @@
     "the layout breakdown (columns vs drcr) as count/total and percent, no intervals; gaps over 15 points flagged, small counts noted",
     "false alarms on genuine test: 'tampered', and 'tampered or suspicious', with and without anomaly findings",
     "false alarms on genuine shift, and on the resaved_genuine copies",
+    "'could not check' (the detector crashed on the PDF): its own count for every group, tampered copies and genuine alike, never counted as no evidence",
     "the per-copy CSV reports/week6_tamper_test_copies.csv (copy, type, layout, save mode, verdict, first check), committed",
     "overlay: reported separately, not pooled with the six types"
   ],
   "rule_version": "v2",
   "rules": [
     "test and shift are each scored once, after this file is committed and pushed",
-    "nothing in src/statementscreen, the model, uv.lock or the verdict rules changes after this commit; score_tamper refuses to score if anything differs",
+    "nothing in src/statementscreen, the model, uv.lock or the verdict rules changes after this commit; score_tamper refuses to score if anything differs, and it compares with the pushed version of this file, not the working-tree copy",
     "no retuning after seeing test results; a bug found is reported as a finding, not fixed silently",
     "test numbers are reported next to the dev numbers, never blended with them",
     "a re-run is reported next to the first result and labelled post-hoc",
     "If the builder cannot reach 100 copies for any type, it exits and we STOP and report the shortfall. No change to seed, count or code. Any re-run with a reduced count is labelled post-hoc.",
+    "score_tamper reads each detector run's own record, not the name typed on the command line: the recorded population must match, a --limit run is never scored, and 300 genuine test, 300 shift and 800 copies (100 of each of eight types) are required; an incomplete build is refused.",
+    "The test report and the per-copy CSV are written once and never overwritten (--overwrite is refused). Any later run uses --post-hoc, writes its own file with post_hoc in its name, and is labelled post-hoc.",
+    "Inputs created at step 6 (the test keys, the build summary, the detector runs) cannot be hashed now: their seeds are recorded above, and their SHA-256 hashes are written into the test report.",
+    "A PDF the detector crashes on is 'could not check': reported in its own column for tampered copies and genuine PDFs, never counted as no evidence.",
     "The final registered step logs the scoring run to the local MLflow store (detector fingerprint, pre-registration commit hash, all metrics, and the report and per-copy CSV as artifacts). It runs after scoring, only reads the report, and does not change any result.",
-    "dev was used for development; test and shift were not looked at before scoring"
+    "Test statements were opened in Week 5 for profile and label scoring, and the shift batch was scored in Weeks 4 and 5. The Week 6 detector has never been run on either, and no tampered copies of them exist before step 6."
   ],
   "seeds": {
     "anomaly_model": "IsolationForest seed 42, already fitted and frozen (models/week6_iforest.pkl)",
