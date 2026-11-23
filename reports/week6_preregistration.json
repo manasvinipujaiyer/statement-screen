@@ -69,7 +69,7 @@
       "test": "data/week1_n2000/pdfs"
     }
   },
-  "frozen_commit": "4a8ef6e1730723eb52cc834d1e9ceb4096065c47",
+  "frozen_commit": "41fcc04470f1eca9732e95dc3eb8c1a256ae0b9b",
   "hashes": {
     "artefacts": {
       "data/week1_n2000/manifest.csv": "4bb5f314b131bcf01927e12a7ca1f71dfaf7c331757c1e0890dfd1eee42f0fb0",
@@ -156,11 +156,11 @@
       "src/statementscreen/tamper/detect/verdict.py": "dbb942072060fbe6eae00440ac97af07080dac6db1ff7fb489ba607e428fa549",
       "src/statementscreen/tamper/fingerprint.py": "e5b2be50eac08c2c7d877daee451c58ddeafe2f01f8377f303f1a891debb5999",
       "src/statementscreen/tamper/log_run.py": "40230c8eea63543e7d98f2d0dc539af0b7049a3d7814aa0203cf05f587848390",
-      "src/statementscreen/tamper/preregister.py": "9f76fab9407344050cf65a68246aba61ddf4c0e4bcf3c93c311de0c84a1a21d2",
+      "src/statementscreen/tamper/preregister.py": "6acf3f85b6564ba577172f1958d1c87b05da86d7e20e25e600fab6e81f9a90a0",
       "src/statementscreen/tamper/provenance.py": "7c72477feb7910bb7ea04189fbbcd3a73d570c37e8e1d656216087a3b38cb595",
       "src/statementscreen/tamper/rebuild.py": "04602998485d9c2f5decf33a390679424075b470e2e80cb2338ef6bb2b176d65",
       "src/statementscreen/tamper/rebuild_check.py": "ce18480846605b76f4ea2e0dbee48c3b630cacac87db088985d790e197d48964",
-      "src/statementscreen/tamper/run.py": "6230a1e5c98b9a8cc0ade5d5b6e9a5d3710a35a861c9cd1ce93ea17323f856c9",
+      "src/statementscreen/tamper/run.py": "207138558a0cb346002cf34a1aa3f1bc9eb5afe1cfcbd62c989a0360a8ea03ec",
       "src/statementscreen/tamper/score_tamper.py": "31c9509105d7be947f9b1a484ed2669a7695acd0818eb238f92488694bf1fda7",
       "src/statementscreen/tamper/scoring.py": "3bdb2769567550a30b0829c3a71fee745101d13ca728b1a7da89eb575daee9c9",
       "src/statementscreen/tracking.py": "fa9887e40556cae231a54d66a02898c1410008ca854f1cb114fdf90d385175eb",
@@ -181,6 +181,7 @@
     "The rebuild check (reports/week6_rebuild_check_dev.json) covered only the 300 dev statements; it was never run on the test statements, so a test source may fail to build and be replaced (recorded, at most 5).",
     "Nothing at step 6 can be hashed before it exists: a deleted and rebuilt data/tamper/test is not detected before scoring, and a build that fails and is re-run once uses the same seed.",
     "The stand-ins in the test suite (the remote branch, the upstream commit) mean the full remote flow is exercised only on a throwaway repository, not end to end.",
+    "log_run does not prevent a second MLflow entry for the same report; the committed report is the record of truth.",
     "The generator always prints every summary label, so a missing label here means it could not be read. Real statements may omit totals by design; that will need a per-layout list of expected labels.",
     "The pooled all-six-types rate hides the rerender_consistent gap and is not a headline.",
     "Dev copies are 60 per type; test is 100 per type, so test intervals are narrower."
@@ -210,7 +211,7 @@
     "Inputs created at step 6 (the test keys, the build summary, the detector runs and their PDFs) cannot be hashed now: their seeds are recorded above, and their SHA-256 hashes, a combined hash of all PDFs per run, and the upstream commit hash are written into the test report.",
     "Checks that did not run: 'could not check' means no evidence was found and at least one applicable check did not run (it crashed, or it could not run: a layout not recognised, a header field not read, an unparseable PDF). Any strong finding still gives 'tampered' and a weak verdict stands; otherwise it turns 'no evidence of tampering' into 'could not check', reported in its own column for tampered copies and genuine PDFs, and the checks that did not run are counted per check. Every arithmetic 'not checked' note (a missing closing balance, total, count, period or account number) counts as a check that did not run; the only exemption is the anomaly check on a statement with no transactions to measure. A PDF the parser cannot parse keeps the earlier rule (PARSE_FAILED alone is 'suspicious'), and a check that raises leaves only that check unrun, except in the arithmetic stage, where an exception marks the whole PDF as not checkable.",
     "A source that raises RebuildError or CopyError (a string or row that cannot be located) is replaced by the next source by seed, like NotApplicable, except that its other page_swap donors are not tried; each failed source id, donor and reason are recorded in the build summary and in the report. If more than 5 sources fail across the test build, the build ends, is marked incomplete, and we STOP and report. Any other error, RuntimeError included, still fails loudly.",
-    "A registered command that fails with no output (a crash, not a result) is not a result: its partial output is deleted by hand and the identical command is re-run once; a second failure means STOP and report. Nothing about the seed, the counts or the code changes.",
+    "A registered command that fails with no output (a crash, not a result) is not a result: its partial output is deleted by hand and the identical command is re-run once; a second failure means STOP and report. Nothing about the seed, the counts or the code changes. An interrupted registered detector run may be continued with --resume, which re-checks the detector fingerprint and skips finished chunks; this is not a re-run.",
     "Any code change after this freeze needs a new pre-registration: delete this file, re-run tamper.preregister and commit and push the new one (both versions stay in git history and only the pushed one is used). The report discloses it as a post-freeze change; a scoring is labelled post-hoc only if a first result already exists. score_tamper refuses to score against code that differs from the pushed file.",
     "The final registered step logs the scoring run to the local MLflow store (detector fingerprint, pre-registration commit hash, all metrics, and the report and per-copy CSV as artifacts). It runs after scoring, only reads the report, and does not change any result.",
     "Test statements were opened in Week 5 for profile and label scoring, and the shift batch was scored in Weeks 4 and 5. The Week 6 detector has never been run on either, and no tampered copies of them exist before step 6."
