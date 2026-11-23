@@ -102,13 +102,20 @@ def test_finding_refuses_empty_reason_or_unknown_strength():
 def test_detector_never_imports_generator_or_tamper_generator():
     """The detector works from the PDF alone: no synth.*, tamper.copy, tamper.rebuild,
     and no reading of answer keys, labels or parquet (checked by tamper_pdf tests too)."""
-    forbidden = ("statementscreen.synth", "statementscreen.tamper.copy",
-                 "statementscreen.tamper.rebuild", "statementscreen.tamper.sets")  # fmt: skip
+    forbidden = (
+        "statementscreen.synth",
+        "statementscreen.tamper.copy",
+        "statementscreen.tamper.rebuild",
+        "statementscreen.tamper.build",
+        "statementscreen.tamper.scoring",
+        "statementscreen.splits",
+    )
     for path in sorted(DETECT_DIR.glob("*.py")):
         tree = ast.parse(path.read_text())
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom) and node.module:
-                names = [node.module]
+                # "from statementscreen.tamper import copy" imports statementscreen.tamper.copy
+                names = [node.module] + [f"{node.module}.{a.name}" for a in node.names]
             elif isinstance(node, ast.Import):
                 names = [a.name for a in node.names]
             else:

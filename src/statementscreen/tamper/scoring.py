@@ -1,0 +1,457 @@
+"""Score the tamper detector against the answer keys. The only module that reads them.
+
+It never opens a PDF. It reads:
+  - the answer keys (<set>/keys/copy_NNNN.json): tamper type, source statement, layout,
+    save mode, pages and fields changed;
+  - the manifest, only for each genuine statement's layout (via splits.read_manifest);
+  - the findings the detector cached (findings.parquet: item, group, code, page, row,
+    strength, reason). An item with no row there had no findings.
+The verdict is recomputed here from the findings with the rule version asked for, so a new
+version can be scored without re-reading any PDF. The detector never imports this module.
+
+Reported (build_report):
+  detection         per tamper type: verdict counts, the "tampered" rate and the "tampered
+                    or suspicious" rate, each with a 95% bootstrap interval, and the same
+                    rates recomputed with every file-history finding removed
+  overlay_holdout   the held-out type, in its own section, only when overlay copies exist
+  false_alarms      resaved_genuine copies, and each genuine population (dev, test, shift),
+                    counted the same two ways
+  first_check       for each flagged copy, the first non-info finding in verdict order
+                    (strong first, then check group, page, row), counted per type
+  by_layout         counts as count/total and percent, no intervals; layout gaps over 15
+                    points are flagged in plain words
+  by_save_mode      for types a PDF library wrote, incremental save vs full rewrite
+  history_dependence  types whose detection (or false alarms) fall by more than half
+                    without file-history findings
+  misses            every tamper copy that was not called "tampered", with the detector's
+                    own reasons and the key's facts
+  false_alarm_cases every genuine or re-saved item that was flagged, with reasons
+
+Intervals: 1,000 bootstrap resamples with a fixed seed, resampling SOURCE STATEMENTS (a
+statement can appear in several types; its copies stay together), 2.5th to 97.5th
+percentile. A group that is all hits or no hits gets a zero-width interval, which is
+narrower than the real uncertainty.
+"""
+
+import csv
+import json
+from collections import Counter
+from collections.abc import Callable
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import numpy as np
+import polars as pl
+
+from statementscreen.splits import read_manifest
+from statementscreen.tamper.copy import CONTROL, HELD_OUT, TYPES
+from statementscreen.tamper.detect.findings import Finding
+from statementscreen.tamper.detect.verdict import (
+    LABELS,
+    NONE,
+    RULE_VERSION,
+    SUSPICIOUS,
+    TAMPERED,
+    decide,
+)
+
+BOOTSTRAP_SEED = 2026
+RESAMPLES = 1000
+LAYOUT_GAP = 0.15  # flag a type whose two layouts differ by more than this (in rate)
+TAMPER_TYPES = tuple(t for t in TYPES if t not in (HELD_OUT, CONTROL))
+COPY_COLUMNS = ("copy", "tamper_type", "layout", "save_mode", "verdict", "first_check")
+SAVE_MODES = ("incremental", "full")
+# The two ways a copy is counted: (key in the report, words for a sentence).
+METRICS = (("tampered", "tampered"), ("tampered_or_suspicious", "tampered or suspicious"))
+
+
+@dataclass(frozen=True)
+class Item:
+    """One thing the detector looked at: a tampered or re-saved copy, or a genuine PDF."""
+
+    item: str  # copy_NNNN, or a genuine statement id
+    source: str  # the source statement: what the bootstrap resamples
+    kind: str  # a tamper type, "resaved_genuine", or "genuine"
+    layout: str
+    save_mode: str = "n/a"  # "incremental" | "full" for PDFs a library wrote, else "n/a"
+    findings: tuple[Finding, ...] = ()
+    facts: dict = field(default_factory=dict)  # from the key: pages, fields changed, donor
+
+
+@dataclass(frozen=True)
+class Scored:
+    item: Item
+    verdict: dict
+    label: str
+    label_without_history: str
+    first: str | None  # "group:code" of the first non-info finding, if any
+
+
+# ---------------------------------------------------------------- loading
+
+
+def load_findings(path: Path) -> dict[str, list[Finding]]:
+    """The detector's cached findings by item. An item with none has no entry."""
+    out: dict[str, list[Finding]] = {}
+    for r in pl.read_parquet(path).iter_rows(named=True):
+        finding = Finding(r["code"], r["group"], r["page"], r["row"], r["strength"], r["reason"])
+        out.setdefault(r["item"], []).append(finding)
+    return out
+
+
+def _save_mode(incremental: bool | None) -> str:
+    return "n/a" if incremental is None else ("incremental" if incremental else "full")
+
+
+def load_copies(set_dir: Path, findings: dict[str, list[Finding]]) -> list[Item]:
+    """The set's copies, from its answer keys, with the findings cached for each."""
+    items = []
+    for path in sorted((Path(set_dir) / "keys").glob("copy_*.json")):
+        key = json.loads(path.read_text(encoding="utf-8"))
+        facts = {
+            "pages_changed": key["pages_changed"],
+            "fields_changed": len(key["changes"]),
+            "donor": key.get("donor"),
+        }
+        items.append(
+            Item(
+                item=key["copy_id"],
+                source=key["source"],
+                kind=key["tamper_type"],
+                layout=key["source_layout"],
+                save_mode=_save_mode(key["incremental_save"]),
+                findings=tuple(findings.get(key["copy_id"], ())),
+                facts=facts,
+            )
+        )
+    return items
+
+
+def layouts_from_manifest(manifest: Path) -> dict[str, str]:
+    return {r["statement_id"]: r["layout"] for r in read_manifest(Path(manifest))}
+
+
+def genuine_items(
+    ids: list[str], layout_of: dict[str, str], findings: dict[str, list[Finding]]
+) -> list[Item]:
+    return [
+        Item(sid, sid, "genuine", layout_of[sid], findings=tuple(findings.get(sid, ())))
+        for sid in sorted(ids)
+    ]
+
+
+# ---------------------------------------------------------------- scoring one item
+
+
+def first_check(verdict: dict) -> str | None:
+    """The first non-info finding in verdict order, as 'group:code'."""
+    for f in verdict["findings"]:
+        if f["strength"] != "info":
+            return f"{f['group']}:{f['code']}"
+    return None
+
+
+def score_item(item: Item, version: str = RULE_VERSION) -> Scored:
+    found = list(item.findings)
+    verdict = decide(found, version)
+    without = decide([f for f in found if f.group != "history"], version)
+    return Scored(item, verdict, verdict["label"], without["label"], first_check(verdict))
+
+
+# ---------------------------------------------------------------- rates and intervals
+
+
+def bootstrap_ci(sources: list[str], hits: list[bool]) -> list[float] | None:
+    """95% interval of the hit rate, resampling source statements with replacement."""
+    if not sources:
+        return None
+    ids = {s: i for i, s in enumerate(sorted(set(sources)))}
+    idx = np.array([ids[s] for s in sources])
+    n = np.bincount(idx, minlength=len(ids)).astype(float)
+    h = np.bincount(idx, weights=np.array(hits, dtype=float), minlength=len(ids))
+    rng = np.random.default_rng(BOOTSTRAP_SEED)
+    draw = rng.integers(0, len(ids), size=(RESAMPLES, len(ids)))
+    rates = h[draw].sum(axis=1) / n[draw].sum(axis=1)
+    lo, hi = np.percentile(rates, [2.5, 97.5])
+    return [round(float(lo), 4), round(float(hi), 4)]
+
+
+def _text(count: int, total: int) -> str:
+    return f"{count}/{total} ({100 * count / total:.1f}%)" if total else "0/0"
+
+
+def _plain(scored: list[Scored], pick: Callable[[Scored], bool]) -> dict:
+    count, total = sum(bool(pick(s)) for s in scored), len(scored)
+    rate = round(count / total, 4) if total else None
+    return {"count": count, "total": total, "rate": rate, "text": _text(count, total)}
+
+
+def _with_ci(scored: list[Scored], pick: Callable[[Scored], bool]) -> dict:
+    out = _plain(scored, pick)
+    hits = [bool(pick(s)) for s in scored]
+    out["ci95"] = bootstrap_ci([s.item.source for s in scored], hits)
+    return out
+
+
+def _tampered(s: Scored) -> bool:
+    return s.label == TAMPERED
+
+
+def _flagged(s: Scored) -> bool:
+    return s.label != NONE
+
+
+def _tampered_nh(s: Scored) -> bool:
+    return s.label_without_history == TAMPERED
+
+
+def _flagged_nh(s: Scored) -> bool:
+    return s.label_without_history != NONE
+
+
+def _labels(scored: list[Scored], without_history: bool) -> dict[str, int]:
+    count = Counter(s.label_without_history if without_history else s.label for s in scored)
+    return {label: count.get(label, 0) for label in LABELS}
+
+
+def _pair(scored: list[Scored]) -> dict:
+    return {
+        "with_history": {
+            "labels": _labels(scored, False),
+            "tampered": _with_ci(scored, _tampered),
+            "tampered_or_suspicious": _with_ci(scored, _flagged),
+        },
+        "without_history": {
+            "labels": _labels(scored, True),
+            "tampered": _with_ci(scored, _tampered_nh),
+            "tampered_or_suspicious": _with_ci(scored, _flagged_nh),
+        },
+    }
+
+
+# ---------------------------------------------------------------- breakdowns
+
+
+def _by_layout(scored: list[Scored]) -> dict:
+    out = {}
+    for layout in sorted({s.item.layout for s in scored}):
+        sub = [s for s in scored if s.item.layout == layout]
+        out[layout] = {
+            "n": len(sub),
+            "tampered": _plain(sub, _tampered),
+            "tampered_or_suspicious": _plain(sub, _flagged),
+        }
+    return out
+
+
+def _layout_notes(name: str, by_layout: dict) -> list[str]:
+    notes = []
+    for key, words in METRICS:
+        rates = {k: v[key] for k, v in by_layout.items() if v[key]["rate"] is not None}
+        if len(rates) < 2:
+            continue
+        hi = max(rates, key=lambda k: rates[k]["rate"])
+        lo = min(rates, key=lambda k: rates[k]["rate"])
+        gap = rates[hi]["rate"] - rates[lo]["rate"]
+        if gap > LAYOUT_GAP:
+            notes.append(
+                f"{name}: the {words} rate differs by {100 * gap:.1f} points between layouts "
+                f"({hi} {rates[hi]['text']} vs {lo} {rates[lo]['text']}); the counts per "
+                "layout are small, so treat the gap with caution"
+            )
+    return notes
+
+
+def _by_save_mode(scored: list[Scored]) -> dict:
+    out = {}
+    for mode in SAVE_MODES:
+        sub = [s for s in scored if s.item.save_mode == mode]
+        if sub:
+            out[mode] = {
+                "n": len(sub),
+                "tampered": _plain(sub, _tampered),
+                "tampered_or_suspicious": _plain(sub, _flagged),
+                "tampered_without_history": _plain(sub, _tampered_nh),
+                "tampered_or_suspicious_without_history": _plain(sub, _flagged_nh),
+            }
+    return out
+
+
+def _first_checks(scored: list[Scored]) -> dict:
+    out: dict[str, Counter] = {"tampered": Counter(), "suspicious": Counter()}
+    for s in scored:
+        if s.label == TAMPERED:
+            out["tampered"][s.first or "none"] += 1
+        elif s.label == SUSPICIOUS:
+            out["suspicious"][s.first or "none"] += 1
+    return {k: dict(sorted(v.items())) for k, v in out.items()}
+
+
+def _history_notes(name: str, pair: dict, subject: str) -> list[str]:
+    """Notes where removing file-history findings cuts a count by more than half."""
+    verb = (
+        "detection depends mainly on file history"
+        if subject == "detection"
+        else "the false alarms come mainly from file history"
+    )
+    notes = []
+    for key, words in METRICS:
+        w, wo = pair["with_history"][key], pair["without_history"][key]
+        if w["count"] and wo["count"] * 2 < w["count"]:
+            notes.append(
+                f"{name}: the {words} rate falls from {w['text']} to {wo['text']} when "
+                f"file-history findings are removed: {verb}"
+            )
+    return notes
+
+
+def _group_report(scored: list[Scored]) -> dict:
+    out = {
+        "n": len(scored),
+        **_pair(scored),
+        "by_layout": _by_layout(scored),
+        "first_check": _first_checks(scored),
+    }
+    if any(s.item.save_mode != "n/a" for s in scored):
+        out["by_save_mode"] = _by_save_mode(scored)
+    return out
+
+
+# ---------------------------------------------------------------- cases
+
+
+def _case(s: Scored, outcome: str, population: str | None = None) -> dict:
+    case = {
+        "item": s.item.item,
+        "type": s.item.kind,
+        "layout": s.item.layout,
+        "source": s.item.source,
+        "save_mode": s.item.save_mode,
+        "outcome": outcome,
+        "summary": s.verdict["summary"],
+        "reasons": [r["reason"] for r in s.verdict["reasons"]],
+        **s.item.facts,
+    }
+    if population:
+        case["population"] = population
+    return case
+
+
+def _misses(scored: list[Scored]) -> list[dict]:
+    """Tamper copies not called "tampered": not flagged at all, or only suspicious."""
+    out = []
+    for s in scored:
+        if s.label == NONE:
+            out.append(_case(s, "not flagged"))
+        elif s.label == SUSPICIOUS:
+            out.append(_case(s, "only suspicious"))
+    return out
+
+
+def _false_alarms(scored: list[Scored], population: str) -> list[dict]:
+    out = []
+    for s in scored:
+        if s.label != NONE:
+            out.append(_case(s, "tampered" if s.label == TAMPERED else "suspicious", population))
+    return out
+
+
+# ---------------------------------------------------------------- the report
+
+
+def build_report(
+    copies: list[Item],
+    genuine: dict[str, list[Item]],
+    rule_version: str = RULE_VERSION,
+) -> dict:
+    """Everything in the module docstring. genuine: population name -> its genuine items."""
+    unknown = sorted({i.kind for i in copies} - set(TYPES))
+    if unknown:
+        raise ValueError(f"unknown tamper types in the copies: {unknown}")
+    scored = [score_item(i, rule_version) for i in sorted(copies, key=lambda i: i.item)]
+    by_kind = {k: [s for s in scored if s.item.kind == k] for k in TYPES}
+    detection = {t: _group_report(by_kind[t]) for t in TAMPER_TYPES if by_kind[t]}
+    pooled = [s for t in TAMPER_TYPES for s in by_kind[t]]
+    overlay = _group_report(by_kind[HELD_OUT]) if by_kind[HELD_OUT] else None
+    resaved = _group_report(by_kind[CONTROL]) if by_kind[CONTROL] else None
+    genuine_scored = {
+        name: [score_item(i, rule_version) for i in sorted(items, key=lambda i: i.item)]
+        for name, items in sorted(genuine.items())
+    }
+    false_alarms = {
+        "resaved_genuine": resaved,
+        "genuine": {name: _group_report(sc) for name, sc in genuine_scored.items()},
+    }
+
+    notes = {"detection": [], "false_alarms": [], "overlay": []}
+    layout_notes = []
+    for t, rep in detection.items():
+        notes["detection"] += _history_notes(t, rep, "detection")
+        layout_notes += _layout_notes(t, rep["by_layout"])
+    if overlay:
+        notes["overlay"] += _history_notes(HELD_OUT, overlay, "detection")
+        layout_notes += _layout_notes(HELD_OUT, overlay["by_layout"])
+    if resaved:
+        notes["false_alarms"] += _history_notes(CONTROL, resaved, "false_alarms")
+    for name, rep in false_alarms["genuine"].items():
+        notes["false_alarms"] += _history_notes(f"genuine {name}", rep, "false_alarms")
+
+    return {
+        "rule_version": rule_version,
+        "bootstrap": {
+            "resamples": RESAMPLES,
+            "seed": BOOTSTRAP_SEED,
+            "resampled": "source statements",
+            "interval": "2.5th to 97.5th percentile",
+        },
+        "definitions": {
+            "tampered": "the verdict is 'tampered'",
+            "tampered_or_suspicious": "the verdict is 'tampered' or 'suspicious'",
+            "without_history": "the verdict recomputed with every file-history finding removed",
+            "first_check": "the first non-info finding in verdict order (strong first, then "
+            "check group, page, row)",
+        },
+        "detection": detection,
+        "pooled_detection": _pair(pooled) if pooled else None,
+        "overlay_holdout": overlay,
+        "false_alarms": false_alarms,
+        "history_dependence": notes,
+        "layout_notes": layout_notes,
+        "misses": _misses([s for s in scored if s.item.kind in TAMPER_TYPES]),
+        "overlay_misses": _misses(by_kind[HELD_OUT]),
+        "false_alarm_cases": _false_alarms(by_kind[CONTROL], CONTROL)
+        + [c for name, sc in genuine_scored.items() for c in _false_alarms(sc, name)],
+    }
+
+
+# ---------------------------------------------------------------- the per-copy table
+
+
+def copy_rows(
+    items: list[Item], rule_version: str = RULE_VERSION, extended: bool = False
+) -> list[dict]:
+    """One row per copy: name, type, layout, save mode, verdict, first check that fired."""
+    rows = []
+    for s in sorted((score_item(i, rule_version) for i in items), key=lambda s: s.item.item):
+        row = {
+            "copy": s.item.item,
+            "tamper_type": s.item.kind,
+            "layout": s.item.layout,
+            "save_mode": s.item.save_mode,
+            "verdict": s.label,
+            "first_check": s.first or "",
+        }
+        if extended:
+            row["verdict_without_history"] = s.label_without_history
+        rows.append(row)
+    return rows
+
+
+def write_copy_table(path: Path, rows: list[dict]) -> None:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    columns = list(rows[0]) if rows else list(COPY_COLUMNS)
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=columns, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
