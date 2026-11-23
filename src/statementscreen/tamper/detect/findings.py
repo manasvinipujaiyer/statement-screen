@@ -42,6 +42,20 @@ class Finding:
         return asdict(self)
 
 
+def rupees(paise: int) -> str:
+    """12345678 -> 'INR 1,23,456.78' (Indian grouping, as the statements print it)."""
+    sign = "-" if paise < 0 else ""
+    whole, frac = divmod(abs(paise), 100)
+    digits = str(whole)
+    if len(digits) > 3:
+        head, groups = digits[:-3], [digits[-3:]]
+        while len(head) > 2:
+            groups.insert(0, head[-2:])
+            head = head[:-2]
+        digits = ",".join([head, *groups])
+    return f"INR {sign}{digits}.{frac:02d}"
+
+
 def where(page: int | None, row: int | None) -> str:
     """'page 2, transaction 14: ' (row is 0-based, shown 1-based), or '' if neither."""
     parts = []
