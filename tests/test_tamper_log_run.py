@@ -64,10 +64,11 @@ def _files(tmp_path: Path, report: dict | None = None) -> dict:
         "csv": tmp_path / "copies.csv",
         "prereg": tmp_path / "prereg.json",
     }
-    paths["report"].write_text(json.dumps(report), encoding="utf-8")
-    paths["csv"].write_text("copy,type\ncopy_0001,inplace_edit\n", encoding="utf-8")
     data = pre.build(head=pre.git("rev-parse", "HEAD"), dirty="")
     paths["prereg"].write_text(json.dumps(data), encoding="utf-8")
+    inputs = {"preregistration": {"sha256": lr.sha256(paths["prereg"])}}  # as score_tamper records
+    paths["report"].write_text(json.dumps({**report, "inputs": inputs}), encoding="utf-8")
+    paths["csv"].write_text("copy,type\ncopy_0001,inplace_edit\n", encoding="utf-8")
     return paths
 
 
@@ -200,3 +201,26 @@ def test_metrics_are_logged_in_chunks(tmp_path, monkeypatch):
     metrics = {f"m{n}": float(n) for n in range(1203)}
     run_id, _ = lr.log({"a": "b"}, metrics, [], tmp_path)
     assert run_id == "r1" and calls == [500, 500, 203]
+
+
+def test_a_report_scored_against_another_preregistration_is_refused(tmp_path, capsys):
+    p = _files(tmp_path)
+    report = json.loads(p["report"].read_text(encoding="utf-8"))
+    report["inputs"]["preregistration"]["sha256"] = "0" * 64
+    p["report"].write_text(json.dumps(report), encoding="utf-8")
+    assert lr.main(_argv(p)) == 2
+    assert "different pre-registration" in capsys.readouterr().err
+
+
+def test_a_report_that_records_no_preregistration_is_refused(tmp_path, capsys):
+    p = _files(tmp_path)
+    report = json.loads(p["report"].read_text(encoding="utf-8"))
+    del report["inputs"]
+    p["report"].write_text(json.dumps(report), encoding="utf-8")
+    assert lr.main(_argv(p)) == 2
+    assert "different pre-registration" in capsys.readouterr().err
+
+
+def test_metric_names_that_collide_after_cleaning_are_refused():
+    with pytest.raises(ValueError, match="collide"):
+        lr.flatten({"a b": 1, "a_b": 2}, "x")

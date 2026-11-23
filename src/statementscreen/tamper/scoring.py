@@ -30,10 +30,15 @@ Reported (build_report):
   misses            every tamper copy that was not called "tampered", with the detector's
                     own reasons and the key's facts
   false_alarm_cases every genuine or re-saved item that was flagged, with reasons
-  could_not_check   a PDF the detector crashed on gets its own verdict, "could not check": it
-                    is counted in every total, reported in its own column (could_not_check in
-                    each group) and listed in could_not_check_cases, and is never counted as
-                    "no evidence of tampering", as flagged or as a miss that was not reported
+  could_not_check   a check group that crashed on a PDF (a CHECK_NOT_RUN finding from any
+                    group but arithmetic, or the whole detector crashing) leaves that check
+                    unrun, for that check only. Any strong finding still gives "tampered" and
+                    any weak verdict stands; but a verdict that would read "no evidence of
+                    tampering" with a crashed check reads "could not check" instead. Those
+                    PDFs are counted in every total, reported in their own column
+                    (could_not_check in each group) and listed in could_not_check_cases, and
+                    are never counted as flagged or as "no evidence". crashed_checks counts,
+                    per check, the PDFs on which that check crashed, whatever their verdict.
 
 Intervals: 1,000 bootstrap resamples with a fixed seed, resampling SOURCE STATEMENTS (a
 statement can appear in several types; its copies stay together), 2.5th to 97.5th
@@ -97,6 +102,7 @@ class Scored:
     label_without_history: str
     label_without_anomaly: str
     first: str | None  # "group:code" of the first non-info finding, if any
+    crashed_checks: tuple[str, ...] = ()  # the check groups that crashed on this item
 
 
 # ---------------------------------------------------------------- loading
@@ -177,16 +183,41 @@ def first_check(verdict: dict) -> str | None:
     return None
 
 
+def crashed_checks(item: Item) -> frozenset[str]:
+    """The check groups that crashed on this item. A CHECK_NOT_RUN finding from any group but
+    arithmetic is a check that raised (the detector's own wrapper, or tamper/run.py when the
+    whole detector raised: group parse). Arithmetic's CHECK_NOT_RUN accompanies PARSE_FAILED:
+    a PDF that could not be parsed, which has its own verdict rule, not a crash."""
+    groups = {
+        f.group for f in item.findings if f.code == "CHECK_NOT_RUN" and f.group != "arithmetic"
+    }
+    if item.crashed:
+        groups.add("parse")
+    return frozenset(groups)
+
+
+def _label(verdict: dict, crashed: frozenset[str]) -> str:
+    """The verdict's label, except that "no evidence" with a crashed check is "could not
+    check": a strong finding or a weak verdict is evidence the crash does not remove."""
+    label = verdict["label"]
+    return COULD_NOT_CHECK if label == NONE and crashed else label
+
+
 def score_item(item: Item, version: str = RULE_VERSION) -> Scored:
     found = list(item.findings)
     verdict = decide(found, version)
     without = decide([f for f in found if f.group != "history"], version)
     no_anomaly = decide([f for f in found if f.group != "anomaly"], version)
-    first = first_check(verdict)
-    if item.crashed:  # the CHECK_NOT_RUN finding is info only: don't let it read as "no evidence"
-        label = COULD_NOT_CHECK
-        return Scored(item, verdict, label, label, label, first)
-    return Scored(item, verdict, verdict["label"], without["label"], no_anomaly["label"], first)
+    crashed = crashed_checks(item)
+    return Scored(
+        item,
+        verdict,
+        _label(verdict, crashed),
+        _label(without, crashed - {"history"}),  # a history crash is moot with history removed
+        _label(no_anomaly, crashed - {"anomaly"}),
+        first_check(verdict),
+        tuple(sorted(crashed)),
+    )
 
 
 # ---------------------------------------------------------------- rates and intervals
@@ -372,11 +403,18 @@ def _history_notes(name: str, pair: dict, subject: str) -> list[str]:
     return notes
 
 
+def _crashed_counts(scored: list[Scored]) -> dict[str, int]:
+    """Per check group, on how many items it crashed (whatever the item's verdict)."""
+    count = Counter(g for s in scored for g in s.crashed_checks)
+    return dict(sorted(count.items()))
+
+
 def _group_report(scored: list[Scored]) -> dict:
     out = {
         "n": len(scored),
         **_pair(scored),
         "could_not_check": _plain(scored, _could_not_check),
+        "crashed_checks": _crashed_counts(scored),
         "by_layout": _by_layout(scored),
         "first_check": _first_checks(scored),
         "codes_fired": _codes_fired(scored),
@@ -428,8 +466,15 @@ def _false_alarms(scored: list[Scored], population: str) -> list[dict]:
 
 
 def _unchecked(scored: list[Scored], population: str | None = None) -> list[dict]:
-    """Every item the detector crashed on, with the detector's own reason."""
-    return [_case(s, "could not check", population) for s in scored if _could_not_check(s)]
+    """Every item whose verdict is "could not check", and every item on which a check crashed
+    but a verdict stood, with the checks that crashed and the detector's own reasons."""
+    out = []
+    for s in scored:
+        if s.crashed_checks:
+            case = _case(s, s.label, population)
+            case["crashed_checks"] = list(s.crashed_checks)
+            out.append(case)
+    return out
 
 
 # ---------------------------------------------------------------- genuine populations

@@ -36,6 +36,14 @@ CHUNK = 500  # metrics per MLflow call: the store limits how many go in one batc
 _BAD_KEY = re.compile(r"[^A-Za-z0-9_\-./]")
 
 
+def _merge(into: dict[str, float], new: dict[str, float]) -> None:
+    """into |= new, but two different numbers may never end up under one cleaned name."""
+    clash = sorted(set(into) & set(new))
+    if clash:
+        raise ValueError(f"metric names collide after cleaning: {clash[:3]}")
+    into |= new
+
+
 def flatten(value: object, prefix: str) -> dict[str, float]:
     """Every number under `value` as {dotted.path: float}; an interval [lo, hi] under a key
     ending in ci95 becomes <key>_lo and <key>_hi. Strings, booleans and None are skipped."""
@@ -46,17 +54,17 @@ def flatten(value: object, prefix: str) -> dict[str, float]:
     out: dict[str, float] = {}
     if isinstance(value, dict):
         for key, inner in value.items():
-            out |= flatten(inner, f"{prefix}.{key}" if prefix else str(key))
+            _merge(out, flatten(inner, f"{prefix}.{key}" if prefix else str(key)))
     elif isinstance(value, list) and prefix.endswith("ci95") and len(value) == 2:
         for suffix, end in zip(("_lo", "_hi"), value, strict=True):
-            out |= flatten(end, prefix + suffix)
+            _merge(out, flatten(end, prefix + suffix))
     return out
 
 
 def report_metrics(report: dict) -> dict[str, float]:
     metrics: dict[str, float] = {}
     for section in SECTIONS:
-        metrics |= flatten(report.get(section), section)
+        _merge(metrics, flatten(report.get(section), section))
     return metrics
 
 
@@ -116,6 +124,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 raise FileNotFoundError(f"{path} not found: score first")
         report = json.loads(args.report.read_text(encoding="utf-8"))
         prereg = load_and_verify(args.preregistration, report.get("rule_version", ""))
+        recorded = report.get("inputs", {}).get("preregistration", {}).get("sha256")
+        if recorded != sha256(args.preregistration):
+            raise ValueError(
+                f"{args.report} was scored against a different pre-registration file than "
+                f"{args.preregistration} (recorded hash {recorded})"
+            )
         params = run_params(prereg, report, args.report, args.csv)
         metrics = report_metrics(report)
         if not metrics:

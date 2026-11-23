@@ -17,6 +17,7 @@ from statementscreen.tamper.scoring import (
     layouts_from_manifest,
     load_copies,
     load_findings,
+    score_item,
     write_copy_table,
 )
 
@@ -366,3 +367,67 @@ def test_the_crashed_flag_comes_from_the_runs_crashed_list(tmp_path):
     items = genuine_items(["stmt_b", "stmt_a"], {"stmt_a": "drcr", "stmt_b": "columns"}, {},
                           frozenset({"stmt_b"}))  # fmt: skip
     assert [(i.item, i.crashed) for i in items] == [("stmt_a", False), ("stmt_b", True)]
+
+
+def _crash_in(group):
+    reason = f"{group} checks didn't run: ValueError: boom"
+    return Finding("CHECK_NOT_RUN", group, None, None, "info", reason)
+
+
+def _one(findings):
+    return Item("c_1", "s_1", "inplace_edit", "columns", findings=tuple(findings))
+
+
+def test_a_crashed_check_turns_no_evidence_into_could_not_check():
+    report = _report([_one([_crash_in("layout")])])
+    group = report["detection"]["inplace_edit"]
+    assert group["with_history"]["labels"]["could not check"] == 1
+    assert group["with_history"]["labels"]["no evidence of tampering"] == 0
+    assert group["could_not_check"]["count"] == 1 and group["crashed_checks"] == {"layout": 1}
+    assert [c["crashed_checks"] for c in report["could_not_check_cases"]] == [["layout"]]
+
+
+def test_a_strong_finding_still_gives_tampered_when_a_check_crashed():
+    group = _report([_one([STRONG, _crash_in("layout")])])["detection"]["inplace_edit"]
+    assert group["with_history"]["tampered"]["count"] == 1
+    assert group["could_not_check"]["count"] == 0 and group["crashed_checks"] == {"layout": 1}
+
+
+def test_a_weak_verdict_stands_when_a_check_crashed():
+    group = _report([_one([*VERDICTS["suspicious"], _crash_in("anomaly")])])["detection"][
+        "inplace_edit"
+    ]
+    labels = group["with_history"]["labels"]
+    assert labels["suspicious"] == 1 and labels["could not check"] == 0
+    assert group["crashed_checks"] == {"anomaly": 1}
+
+
+def test_the_without_views_ignore_the_crash_of_the_check_they_remove():
+    history = score_item(_one([_crash_in("history")]))
+    assert history.label == "could not check"
+    assert history.label_without_history == "no evidence of tampering"
+    assert history.label_without_anomaly == "could not check"
+    anomaly = score_item(_one([_crash_in("anomaly")]))
+    assert anomaly.label == "could not check"
+    assert anomaly.label_without_anomaly == "no evidence of tampering"
+    assert anomaly.label_without_history == "could not check"
+
+
+def test_each_check_is_counted_and_a_pdf_can_crash_several():
+    items = [
+        Item("c_1", "s_1", "inplace_edit", "columns", findings=(_crash_in("layout"),)),
+        Item("c_2", "s_2", "inplace_edit", "drcr", findings=(_crash_in("layout"), STRONG)),
+        Item("c_3", "s_3", "inplace_edit", "columns", findings=(_crash_in("history"),
+                                                                _crash_in("anomaly"))),
+    ]  # fmt: skip
+    group = _report(items)["detection"]["inplace_edit"]
+    assert group["crashed_checks"] == {"anomaly": 1, "history": 1, "layout": 2}
+    assert group["could_not_check"]["count"] == 2  # c_2 is tampered: it keeps its verdict
+
+
+def test_arithmetics_check_not_run_beside_parse_failed_is_not_a_crash():
+    failed = Finding("PARSE_FAILED", "parse", None, None, "weak", "the PDF couldn't be parsed")
+    arithmetic = Finding("CHECK_NOT_RUN", "arithmetic", None, None, "info", "didn't run")
+    group = _report([_one([failed, arithmetic])])["detection"]["inplace_edit"]
+    assert group["with_history"]["labels"]["suspicious"] == 1  # the earlier rule stands
+    assert group["crashed_checks"] == {} and group["could_not_check"]["count"] == 0

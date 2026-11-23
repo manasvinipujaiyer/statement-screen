@@ -163,6 +163,7 @@ def _write_run(
             "peak_memory_mb": [100.0] * n,
             "n_findings": [len(findings.get(i, [])) for i in items],
             "crashed": [False] * n,
+            "sha256": [f"sha_{i}" for i in items],
         },
         schema=driver.ITEM_SCHEMA,
     ).write_parquet(folder / "items.parquet")

@@ -5,6 +5,7 @@ resume, refusals, the split guard) without reading any PDF. One test runs the re
 detector on a few PDFs alone in a folder. Everything is in temp folders."""
 
 import ast
+import hashlib
 import json
 import shutil
 from pathlib import Path
@@ -296,3 +297,58 @@ def test_a_population_that_contradicts_the_split_is_refused(tmp_path, fake, caps
     argv = _argv(folder, tmp_path / "out", "--split", "dev", "--population", "shift")
     assert driver.main(argv) == 2
     assert "contradicts" in capsys.readouterr().err
+
+
+def test_every_pdf_gets_a_sha256_in_items(tmp_path, fake):
+    folder, out = _pdfs(tmp_path / "pdfs", NAMES), tmp_path / "out"
+    assert driver.main(_argv(folder, out)) == 0
+    items = pl.read_parquet(out / "items.parquet")
+    assert items["sha256"].to_list() == [hashlib.sha256(b"").hexdigest()] * len(NAMES)
+    (folder / "x_03.pdf").write_bytes(b"changed")
+    again = tmp_path / "again"
+    assert driver.main(_argv(folder, again)) == 0
+    items_again = pl.read_parquet(again / "items.parquet")
+    hashes = dict(zip(items_again["item"], items_again["sha256"], strict=True))
+    assert hashes["x_03"] == hashlib.sha256(b"changed").hexdigest()
+
+
+def test_test_pdfs_are_not_read_without_the_split_or_the_env_var(
+    tmp_path, fake, monkeypatch, capsys
+):
+    monkeypatch.setattr(driver.provenance, "split_test_ids", lambda splits_dir=None: {"x_02"})
+    monkeypatch.delenv("STATEMENTSCREEN_OPEN_TEST", raising=False)
+    folder = _pdfs(tmp_path / "pdfs", NAMES)
+    assert driver.main(_argv(folder, tmp_path / "a")) == 2
+    assert "are test statements" in capsys.readouterr().err
+    relabelled = _argv(folder, tmp_path / "b", "--population", "dev")
+    assert driver.main(relabelled) == 2
+    assert "are test statements" in capsys.readouterr().err
+    as_test = _argv(folder, tmp_path / "c", "--population", "test")
+    assert driver.main(as_test) == 2
+    assert "STATEMENTSCREEN_OPEN_TEST=1" in capsys.readouterr().err
+    assert not (tmp_path / "a").exists() and not (tmp_path / "b").exists()
+    # No test may set the real open-test variable (tests/test_stress.py enforces it), so the
+    # allowed path is exercised with a stand-in variable name.
+    monkeypatch.setattr(driver, "OPEN_TEST_ENV", "STAND_IN_FOR_THE_GATE")
+    monkeypatch.setenv("STAND_IN_FOR_THE_GATE", "1")
+    assert driver.main(as_test) == 0
+
+
+def test_a_folder_without_test_statements_runs_under_any_population(tmp_path, fake, monkeypatch):
+    monkeypatch.setattr(driver.provenance, "split_test_ids", lambda splits_dir=None: {"nope"})
+    folder = _pdfs(tmp_path / "pdfs", NAMES)
+    assert driver.main(_argv(folder, tmp_path / "out", "--population", "dev")) == 0
+
+
+def test_the_shift_batch_may_reuse_main_batch_ids_only_from_its_own_folder(
+    tmp_path, fake, monkeypatch
+):
+    # the shift batch's ids (stmt_0001..) overlap the main batch's test ids
+    monkeypatch.setattr(driver.provenance, "split_test_ids", lambda splits_dir=None: {"x_02"})
+    folder = _pdfs(tmp_path / "shift_pdfs", NAMES)
+    other = _pdfs(tmp_path / "main_pdfs", NAMES)
+    monkeypatch.setattr(driver.provenance, "EXPECTED_SOURCES", {"shift": str(folder), "test": "t"})
+    assert driver.main(_argv(folder, tmp_path / "a", "--population", "shift")) == 0
+    # the same label on any other folder is not exempt
+    assert driver.main(_argv(other, tmp_path / "b", "--population", "shift")) == 2
+    assert not (tmp_path / "b").exists()

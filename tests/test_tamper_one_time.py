@@ -3,6 +3,7 @@ the pre-registration guard, and write-once results. A miniature world stands in 
 one: the registered counts are shrunk to match it (the real ones are 300, 300 and 800)."""
 
 import json
+import shutil
 from pathlib import Path
 
 import polars as pl
@@ -19,7 +20,7 @@ from statementscreen.tamper.detect.findings import Finding
 STRONG = Finding("BALANCE_CHAIN", "arithmetic", 1, 0, "strong", "balance broken")
 COPIES = [f"copy_{n:04d}" for n in range(1, 5)]
 TEST_IDS = [f"stmt_{n:04d}" for n in range(1, 6)]
-SHIFT_IDS = ["shift_0001", "shift_0002"]
+SHIFT_IDS = ["stmt_0001", "stmt_0002"]  # the real shift batch reuses main-batch ids
 
 
 def _run(folder: Path, items: list[str], findings: dict | None = None, **extra) -> None:
@@ -36,6 +37,7 @@ def _run(folder: Path, items: list[str], findings: dict | None = None, **extra) 
             "peak_memory_mb": [100.0] * n,
             "n_findings": [len(findings.get(i, [])) for i in items],
             "crashed": [False] * n,
+            "sha256": [f"sha_{i}" for i in items],
         },
         schema=driver.ITEM_SCHEMA,
     ).write_parquet(folder / "items.parquet")
@@ -63,6 +65,7 @@ def _build(set_dir: Path, **change) -> None:
     build = {
         "set": "test",
         "per_type": 4,
+        "seed": 6,
         "made": {"inplace_edit": 4},
         "short": {},
         "complete": True,
@@ -85,6 +88,8 @@ def world(tmp_path, monkeypatch, pushed):
     monkeypatch.setattr(prov, "EXPECTED_SOURCES", pdfs)
     monkeypatch.setattr(prov, "TYPES", ("inplace_edit",))
     monkeypatch.setattr(prov, "COPIES_PER_TYPE", 4)
+    monkeypatch.setattr(prov, "split_test_ids", lambda splits_dir=None: set(TEST_IDS))
+    monkeypatch.setattr(prov, "shift_batch_ids", lambda manifest=None: set(SHIFT_IDS))
     set_dir = tmp_path / "test"
     _keys(set_dir)
     _build(set_dir)
@@ -151,6 +156,9 @@ def test_the_one_time_scoring_runs_once_and_records_its_inputs(world):
     assert set(report["inputs"]) == {"copies", "genuine_test", "genuine_shift", "preregistration"}
     assert report["inputs"]["preregistration"]["sha256"] == prov.file_sha256(world["prereg"])
     assert set(report["inputs"]["copies"]["sha256"]) == {"keys", "build_run.json", "detect"}
+    assert report["inputs"]["copies"]["sha256"]["detect"]["pdfs"] is not None
+    assert report["inputs"]["genuine_shift"]["sha256"]["detect"]["pdfs"] is not None
+    assert report["inputs"]["preregistration"]["upstream_commit"] == "f" * 40
     assert report["inputs"]["genuine_shift"]["manifest"] == str(world["shift_manifest"])
 
 
@@ -311,7 +319,8 @@ def test_a_post_hoc_rerun_has_its_own_file_and_is_labelled(world, capsys):
 
 def test_post_hoc_needs_its_own_file_name_and_a_first_result(world, capsys):
     post_out = world["tmp"] / "reports" / "test_post_hoc.json"
-    argv = _argv(world, "--post-hoc", table=False)
+    post_table = world["tmp"] / "reports" / "test_post_hoc.csv"
+    argv = [*_argv(world, "--post-hoc", table=False), "--table", str(post_table)]
     argv[argv.index(str(world["out"]))] = str(post_out)
     assert cli.main(argv) == 2  # no first result yet
     assert "needs the first result" in capsys.readouterr().err
@@ -322,7 +331,7 @@ def test_post_hoc_needs_its_own_file_name_and_a_first_result(world, capsys):
 
 
 def test_post_hoc_applies_only_to_the_registered_populations(world, capsys):
-    _run(world["tmp"] / "genuine_dev", TEST_IDS, split="dev", source="pdfs/dev")
+    _run(world["tmp"] / "genuine_dev", ["dev_0001", "dev_0002"], split="dev", source="pdfs/dev")
     argv = _only(world, f"dev={world['tmp'] / 'genuine_dev'}", "--post-hoc")
     assert cli.main(argv) == 2
     assert "applies only to the test and shift populations" in capsys.readouterr().err
@@ -353,3 +362,120 @@ def test_compare_rules_cannot_be_fooled_by_a_name(world, capsys):
     argv[1] = str(world["set"])
     assert cr.main(argv) == 2
     assert "recorded as 'test'" in capsys.readouterr().err and not out.exists()
+
+
+# ---------------------------------------------------------------- identity by content
+
+
+def test_test_statements_cannot_be_scored_under_another_label(world, capsys):
+    _run(world["tmp"] / "relabelled", TEST_IDS, population="dev", source="pdfs/test")
+    assert cli.main(_only(world, f"dev={world['tmp'] / 'relabelled'}")) == 2
+    assert "covers test statements" in capsys.readouterr().err
+    assert not (world["tmp"] / "only.json").exists()
+
+
+def test_shift_statements_copied_elsewhere_are_caught_through_the_test_ids(world, capsys):
+    # the shift batch reuses ids of the main batch, so a copy of it overlaps the test ids
+    _run(world["tmp"] / "copied", SHIFT_IDS, population="dev", source="somewhere/else")
+    assert cli.main(_only(world, f"dev={world['tmp'] / 'copied'}")) == 2
+    assert "covers test statements" in capsys.readouterr().err
+
+
+def test_the_shift_batch_is_accepted_although_its_ids_overlap_the_test_ids(world):
+    assert set(SHIFT_IDS) & set(TEST_IDS)  # as in the real data
+    assert prov.check_genuine("shift", world["genuine_shift"]) is True
+    assert prov.check_populations(world["set"], None, [f"shift={world['genuine_shift']}"]) == [
+        "copies",
+        "shift",
+    ]
+
+
+def test_a_test_run_must_hold_exactly_the_test_statements(world, capsys):
+    ids = ["other_1", "other_2", "other_3", "other_4", "other_5"]  # five, but not the test five
+    _run(world["tmp"] / "wrong", ids, split="test", source="pdfs/test")
+    argv = _only(world, f"test={world['tmp'] / 'wrong'}", "--preregistration", str(world["prereg"]))
+    assert cli.main(argv) == 2
+    assert "must be exactly the test statements" in capsys.readouterr().err
+
+
+def test_a_registered_run_must_record_a_hash_for_every_pdf(world, capsys):
+    items_file = world["genuine_test"] / "items.parquet"
+    pl.read_parquet(items_file).drop("sha256").write_parquet(items_file)
+    assert cli.main(_argv(world)) == 2
+    assert "records no SHA-256" in capsys.readouterr().err
+
+
+def test_copies_must_be_built_from_test_statements(world, capsys):
+    key_file = world["set"] / "keys" / "copy_0001.json"
+    key = json.loads(key_file.read_text(encoding="utf-8"))
+    key["source"] = "stmt_9999"
+    key_file.write_text(json.dumps(key), encoding="utf-8")
+    assert cli.main(_argv(world)) == 2
+    assert "not test statements" in capsys.readouterr().err
+
+
+def test_a_dev_copies_set_built_from_test_statements_is_refused(world):
+    dev = world["tmp"] / "dev_copies"
+    _keys(dev)  # its sources are test statements in this world
+    _build(dev, set="dev")
+    _run(dev / "detect", COPIES, source=str(dev / "copies"))
+    with pytest.raises(prov.ProvenanceError, match="built from test statements"):
+        prov.check_copies(dev)
+
+
+def test_the_test_set_must_be_built_with_seed_6(world, capsys):
+    _build(world["set"], seed=7)
+    assert cli.main(_argv(world)) == 2
+    assert "must be built with seed 6" in capsys.readouterr().err
+
+
+def test_an_incomplete_or_trial_copies_run_is_refused(world, capsys):
+    shutil.rmtree(world["set"] / "detect")
+    _run(world["set"] / "detect", COPIES[:3], source=str(world["set"] / "copies"))
+    assert cli.main(_argv(world)) == 2
+    assert "must cover 4 PDFs" in capsys.readouterr().err
+    shutil.rmtree(world["set"] / "detect")
+    _run(world["set"] / "detect", COPIES, limit=2, source=str(world["set"] / "copies"))
+    assert cli.main(_argv(world)) == 2
+    assert "used --limit" in capsys.readouterr().err
+
+
+def test_copies_without_pdf_hashes_are_refused(world, capsys):
+    items_file = world["set"] / "detect" / "items.parquet"
+    pl.read_parquet(items_file).drop("sha256").write_parquet(items_file)
+    assert cli.main(_argv(world)) == 2
+    assert "records no SHA-256" in capsys.readouterr().err
+
+
+def test_the_real_split_and_shift_files_each_hold_300_statements(monkeypatch):
+    monkeypatch.undo()  # drop the stand-in ids: read the real files (ids only)
+    # the two batches reuse statement ids, so they overlap: identity is decided per batch
+    assert len(prov.split_test_ids()) == 300 and len(prov.shift_batch_ids()) == 300
+
+
+# ---------------------------------------------------------------- write-once, more
+
+
+def test_the_csv_is_required_with_the_registered_copies(world, capsys):
+    assert cli.main(_argv(world, table=False)) == 2
+    assert "pass --table" in capsys.readouterr().err
+    assert not world["out"].exists()
+
+
+def test_a_result_git_has_ever_recorded_cannot_be_written_again(world, monkeypatch, capsys):
+    monkeypatch.setattr(pre, "has_git_history", lambda path, root=pre.ROOT: True)
+    assert cli.main(_argv(world)) == 2
+    assert "in git's history" in capsys.readouterr().err
+    assert not world["out"].exists()
+
+
+# ---------------------------------------------------------------- compare_rules, more
+
+
+def test_compare_rules_refuses_the_test_copies_on_their_own(world, capsys):
+    out = world["tmp"] / "comparison.json"
+    argv = [*("--copies", str(world["set"])), *("--manifest", str(world["manifest"]))]
+    assert cr.main([*argv, "--out", str(out)]) == 2
+    captured = capsys.readouterr()
+    assert "never reads test or shift" in captured.err and captured.out == ""
+    assert not out.exists()

@@ -7,13 +7,17 @@
 A driver that sits outside tamper/detect/: it reads PDFs only, never answer keys or labels.
 With --split it takes the statement ids from the split loader (which refuses "test" unless
 STATEMENTSCREEN_OPEN_TEST=1); the detector package itself never imports the loader.
+Without --split, a folder containing test statements is refused unless it is run as
+--population test with STATEMENTSCREEN_OPEN_TEST=1, so the test PDFs cannot be read under
+another label.
 PDFs are taken in sorted order and processed one at a time (no multiprocessing).
 
 Writes, in --out:
     findings.parquet  item, group, code, page, row, strength, reason: findings only, no
                       verdicts, so verdict rules can change without re-reading any PDF
     items.parquet     one row per PDF: item, seconds, peak_memory_mb (the whole process's
-                      peak so far, not this PDF's own), n_findings, crashed
+                      peak so far, not this PDF's own), n_findings, crashed, sha256 (of the
+                      PDF's bytes, so a report can show exactly which PDFs were detected)
     detect_run.json   counts, seconds per PDF, peak memory and the detector fingerprint
                       (fingerprint.py); scoring refuses findings from a different detector
 
@@ -24,6 +28,7 @@ becomes a CHECK_NOT_RUN finding and is listed in detect_run.json, never skipped 
 """
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -34,8 +39,9 @@ from pathlib import Path
 
 import polars as pl
 
-from statementscreen.splits import SPLITS_DIR, SplitError, load_split
+from statementscreen.splits import OPEN_TEST_ENV, SPLITS_DIR, SplitError, load_split
 from statementscreen.summary import peak_memory_bytes
+from statementscreen.tamper import provenance
 from statementscreen.tamper.detect.findings import Finding
 from statementscreen.tamper.detect.pdf import collect_findings
 from statementscreen.tamper.fingerprint import differences, fingerprint
@@ -57,6 +63,7 @@ ITEM_SCHEMA = {
     "peak_memory_mb": pl.Float64,
     "n_findings": pl.Int64,
     "crashed": pl.Boolean,
+    "sha256": pl.String,
 }
 
 
@@ -87,6 +94,34 @@ def pdf_list(
     if not pdfs:
         raise RunError(f"no PDFs to run in {folder}")
     return pdfs
+
+
+def refuse_test_pdfs(
+    pdfs: list[Path],
+    split: str | None,
+    population: str | None,
+    splits_dir: Path,
+    folder: Path,
+) -> None:
+    """A run without --split must not read test statements, whatever the folder is called:
+    only --population test, with the open-test variable set, may. The registered shift batch
+    is exempt: its ids (stmt_0001..) reuse the main batch's, but it is another batch."""
+    if split:
+        return  # the split loader guards "test" itself
+    if population == "shift" and provenance.is_shift_folder(folder):
+        return
+    try:
+        held_out = provenance.split_test_ids(splits_dir)
+    except provenance.ProvenanceError as e:
+        raise RunError(f"{e}; cannot check that no test PDF is read") from e
+    leaked = sorted(p.stem for p in pdfs if p.stem in held_out)
+    if leaked and population != "test":
+        raise RunError(
+            f"{len(leaked)} of these PDFs are test statements (e.g. {leaked[:3]}): the test "
+            f"split is opened only by --split test or --population test with {OPEN_TEST_ENV}=1"
+        )
+    if leaked and os.environ.get(OPEN_TEST_ENV) != "1":
+        raise RunError(f"these PDFs include test statements: set {OPEN_TEST_ENV}=1 to open them")
 
 
 def detect_one(pdf: Path) -> tuple[list[Finding], float, float, bool]:
@@ -121,6 +156,7 @@ def _write_chunk(parts: Path, k: int, pdfs: list[Path]) -> None:
             "peak_memory_mb": peak,
             "n_findings": len(found),
             "crashed": crashed,
+            "sha256": hashlib.sha256(pdf.read_bytes()).hexdigest(),
         }
         items.append(row)
         findings += [{"item": pdf.stem, **f.to_dict()} for f in found]
@@ -249,6 +285,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.split and args.population and args.population != args.split:
             raise RunError(f"--population {args.population!r} contradicts --split {args.split!r}")
         pdfs = pdf_list(args.pdfs, args.split, args.manifest, args.splits_dir, args.limit)
+        refuse_test_pdfs(pdfs, args.split, args.population, args.splits_dir, args.pdfs)
         summary = run(
             pdfs,
             args.out,

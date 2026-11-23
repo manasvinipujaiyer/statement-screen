@@ -39,6 +39,7 @@ def test_the_preregistration_records_what_the_scoring_will_check():
 def test_the_manifests_and_split_files_are_frozen_too():
     artefacts = _built()["hashes"]["artefacts"]
     for name in (
+        "pyproject.toml",
         "data/week1_n2000/manifest.csv",
         "data/week4_shift_n300/manifest.csv",
         "splits/split_v1.csv",
@@ -94,7 +95,11 @@ def test_the_new_limits_are_stated():
 def test_the_one_time_and_crash_rules_are_stated():
     rules = " ".join(_built()["rules"])
     assert "never overwritten" in rules and "--post-hoc" in rules
-    assert "could not check" in rules and "never counted as no evidence" in rules
+    assert "Crashes, per check" in rules and "Any strong finding still gives 'tampered'" in rules
+    assert "turns 'no evidence of tampering' into 'could not check'" in rules
+    assert "identifies populations by what they contain" in rules and "seed 6" in rules
+    assert "git has ever recorded" in rules and "combined hash of all PDFs" in rules
+    assert "--split test (or --population test)" in rules
     assert "the pushed version of this file" in rules
 
 
@@ -224,3 +229,71 @@ def test_a_commit_is_pushed_only_when_it_is_on_the_upstream_branch(tmp_path):
     ).stdout.strip()
     assert pre.is_ancestor(first, "@{u}", work) is True
     assert pre.is_ancestor(second, "@{u}", work) is False
+
+
+def _frozen_repo(tmp_path: Path) -> Path:
+    """A repository laid out like the project: code and frozen artefacts, the pre-registration
+    and an unrelated file, all committed."""
+    work = tmp_path / "frozen"
+    subprocess.run(["git", "init", str(work)], check=True, capture_output=True)
+    _git(work, "config", "user.email", "test@example.com")
+    _git(work, "config", "user.name", "Test")
+    names = ("src/a.py", "models/m.pkl", "splits/s.csv", "uv.lock", "notes.txt")
+    for name in (*names, "reports/week6_preregistration.json"):
+        file = work / name
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_text("x\n", encoding="utf-8")
+    _git(work, "add", ".")
+    _git(work, "commit", "-m", "everything")
+    return work
+
+
+def test_a_clean_tree_is_clean_and_the_preregistration_itself_is_ignored(tmp_path):
+    work = _frozen_repo(tmp_path)
+    assert pre.dirty_files(work) == ""
+    (work / "reports" / "week6_preregistration.json").unlink()  # about to be replaced
+    assert pre.dirty_files(work) == ""
+
+
+def test_a_changed_tracked_file_or_an_untracked_code_file_is_dirty(tmp_path):
+    work = _frozen_repo(tmp_path)
+    (work / "notes.txt").write_text("changed\n", encoding="utf-8")
+    assert "notes.txt" in pre.dirty_files(work)
+    _git(work, "checkout", "notes.txt")
+    (work / "src" / "b.py").write_text("new\n", encoding="utf-8")
+    assert "src/b.py" in pre.dirty_files(work)
+
+
+def test_untracked_files_outside_the_frozen_folders_are_not_dirty(tmp_path):
+    work = _frozen_repo(tmp_path)
+    (work / "data").mkdir()
+    (work / "data" / "x.csv").write_text("x\n", encoding="utf-8")
+    (work / "scratch.txt").write_text("x\n", encoding="utf-8")
+    assert pre.dirty_files(work) == ""
+
+
+def test_a_path_git_has_ever_recorded_has_history_even_after_it_is_deleted(tmp_path):
+    work, prereg = _repo(tmp_path)
+    assert pre.has_git_history(prereg, work) is True
+    prereg.unlink()
+    assert pre.has_git_history(prereg, work) is True
+    assert pre.has_git_history(work / "reports" / "never.json", work) is False
+    assert pre.has_git_history(tmp_path / "outside.json", work) is False
+
+
+def test_the_upstream_commit_is_the_pushed_one(tmp_path):
+    work, _ = _repo(tmp_path)
+    head = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=work, check=True, capture_output=True, text=True
+    ).stdout.strip()
+    assert pre.upstream_sha(work) == head
+    (work / "reports" / "later.json").write_text("{}\n", encoding="utf-8")
+    _git(work, "add", ".")
+    _git(work, "commit", "-m", "not pushed")
+    assert pre.upstream_sha(work) == head  # still the pushed commit, not HEAD
+
+
+def test_no_upstream_means_no_upstream_commit(tmp_path):
+    work, _ = _repo(tmp_path, push=False)
+    with pytest.raises(pre.PreregError, match="no upstream"):
+        pre.upstream_sha(work)

@@ -45,6 +45,7 @@ CODE_DIR = Path("src/statementscreen")
 ARTEFACTS = (
     "models/week6_iforest.pkl",
     "uv.lock",
+    "pyproject.toml",
     "splits/split_v1.csv",
     "splits/split_v1.json",
     "splits/eval_shift_karan_v1.json",
@@ -111,8 +112,9 @@ METRICS = [
     "false alarms on genuine test: 'tampered', and 'tampered or suspicious', with and "
     "without anomaly findings",
     "false alarms on genuine shift, and on the resaved_genuine copies",
-    "'could not check' (the detector crashed on the PDF): its own count for every group, "
-    "tampered copies and genuine alike, never counted as no evidence",
+    "'could not check' (a check crashed and no evidence was found): its own count for every "
+    "group, tampered copies and genuine alike, never counted as no evidence; and per check, "
+    "on how many PDFs each check crashed",
     "the per-copy CSV reports/week6_tamper_test_copies.csv (copy, type, layout, save mode, "
     "verdict, first check), committed",
     "overlay: reported separately, not pooled with the six types",
@@ -152,6 +154,9 @@ KNOWN_LIMITS = [
     "threshold is not shown. This measurement cannot change a verdict.",
     "There is no test for a header mismatch on the drcr layout (only on columns). A missing "
     "test cannot change a verdict.",
+    "Populations are identified by statement id and by the PDF hash recorded by each run, "
+    "not checked against the generator; shift PDFs copied to another folder would be caught "
+    "only through their overlap with the test ids.",
     "The pooled all-six-types rate hides the rerender_consistent gap and is not a headline.",
     "Dev copies are 60 per type; test is 100 per type, so test intervals are narrower.",
 ]
@@ -172,18 +177,32 @@ RULES = [
     "If the builder cannot reach 100 copies for any type, it exits and we STOP and report "
     "the shortfall. No change to seed, count or code. Any re-run with a reduced count is "
     "labelled post-hoc.",
-    "score_tamper reads each detector run's own record, not the name typed on the command "
-    "line: the recorded population must match, a --limit run is never scored, and 300 "
-    "genuine test, 300 shift and 800 copies (100 of each of eight types) are required; an "
-    "incomplete build is refused.",
-    "The test report and the per-copy CSV are written once and never overwritten "
-    "(--overwrite is refused). Any later run uses --post-hoc, writes its own file with "
-    "post_hoc in its name, and is labelled post-hoc.",
-    "Inputs created at step 6 (the test keys, the build summary, the detector runs) cannot be "
-    "hashed now: their seeds are recorded above, and their SHA-256 hashes are written into "
-    "the test report.",
-    "A PDF the detector crashes on is 'could not check': reported in its own column for "
-    "tampered copies and genuine PDFs, never counted as no evidence.",
+    "score_tamper identifies populations by what they contain and what each run records, "
+    "not by the name typed on the command line: the recorded population must match; test "
+    "must be exactly the test statements and shift exactly the shift batch from its own "
+    "folder; no other population may contain a test statement (ids are unique only within a "
+    "batch: the shift batch reuses ids of the main batch, so it is identified by its source "
+    "folder and its manifest ids); test copies must be built only from test statements, "
+    "with seed 6; a --limit run is never scored; 300 genuine test, 300 shift and 800 copies "
+    "(100 of each of eight types) are required, each PDF with a recorded SHA-256; an "
+    "incomplete build is refused. tamper.run also refuses to read test PDFs without "
+    "--split test (or --population test) and STATEMENTSCREEN_OPEN_TEST=1. Statements are "
+    "identified by id and PDF hash as recorded by the run, not checked against the "
+    "generator.",
+    "The test report and the per-copy CSV (required with the copies) are written once and "
+    "never overwritten (--overwrite is refused, and a path that git has ever recorded "
+    "cannot be written again, so deleting a committed result does not allow a second first "
+    "result). Any later run uses --post-hoc, writes its own file with post_hoc in its name, "
+    "and is labelled post-hoc.",
+    "Inputs created at step 6 (the test keys, the build summary, the detector runs and their "
+    "PDFs) cannot be hashed now: their seeds are recorded above, and their SHA-256 hashes, a "
+    "combined hash of all PDFs per run, and the upstream commit hash are written into the "
+    "test report.",
+    "Crashes, per check: a check that crashes on a PDF leaves only that check unrun. Any "
+    "strong finding still gives 'tampered' and a weak verdict stands; otherwise a crashed "
+    "check turns 'no evidence of tampering' into 'could not check', reported in its own "
+    "column for tampered copies and genuine PDFs. Crashes are counted per check. A PDF the "
+    "parser cannot parse keeps the earlier rule (PARSE_FAILED alone is 'suspicious').",
     "The final registered step logs the scoring run to the local MLflow store (detector "
     "fingerprint, pre-registration commit hash, all metrics, and the report and per-copy CSV "
     "as artifacts). It runs after scoring, only reads the report, and does not change any "
@@ -207,14 +226,16 @@ def git(*args: str, root: Path = ROOT) -> str:
     return done.stdout.strip()
 
 
-def dirty_files() -> str:
+def dirty_files(root: Path = ROOT) -> str:
     """Uncommitted changes: any change to a tracked file, and any untracked file in the code
     or frozen-artefact folders (so no code that is not in the commit can run). The
     pre-registration itself is excluded: replacing it (delete, regenerate, commit) must not
     block its own regeneration."""
     skip = f":(exclude){DEFAULT_OUT.as_posix()}"
-    tracked = git("status", "--porcelain", "--untracked-files=no", "--", ".", skip)
-    frozen = git("status", "--porcelain", "--", "src", "models", "splits", "uv.lock", skip)
+    tracked = git("status", "--porcelain", "--untracked-files=no", "--", ".", skip, root=root)
+    frozen = git(
+        "status", "--porcelain", "--", "src", "models", "splits", "uv.lock", skip, root=root
+    )
     return "\n".join(sorted(set(tracked.splitlines()) | set(frozen.splitlines())))
 
 
@@ -223,6 +244,24 @@ def is_ancestor(commit: str, ref: str = "HEAD", root: Path = ROOT) -> bool:
         ["git", "merge-base", "--is-ancestor", commit, ref], capture_output=True, cwd=root
     )
     return done.returncode == 0
+
+
+def upstream_sha(root: Path = ROOT) -> str:
+    """The commit the branch's upstream (the pushed branch) points at, as git last knew it."""
+    done = subprocess.run(["git", "rev-parse", "@{u}"], capture_output=True, text=True, cwd=root)
+    if done.returncode != 0:
+        raise PreregError("the branch has no upstream: push the pre-registration first")
+    return done.stdout.strip()
+
+
+def has_git_history(path: Path, root: Path = ROOT) -> bool:
+    """True if git has ever recorded this path on any ref: a result that was committed and
+    then deleted is still a result that was written."""
+    try:
+        rel = Path(path).resolve().relative_to(Path(root).resolve()).as_posix()
+    except ValueError:
+        return False  # outside the repository
+    return bool(git("log", "--all", "--oneline", "--", rel, root=root))
 
 
 def pushed_text(path: Path, root: Path = ROOT) -> str:

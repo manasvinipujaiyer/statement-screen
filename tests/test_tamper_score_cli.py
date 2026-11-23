@@ -31,6 +31,7 @@ def _write_run(folder: Path, items: list[str], findings: dict[str, list[Finding]
             "peak_memory_mb": [100.0] * n,
             "n_findings": [len(findings.get(i, [])) for i in items],
             "crashed": [False] * n,
+            "sha256": [f"sha_{i}" for i in items],
         },
         schema=driver.ITEM_SCHEMA,
     ).write_parquet(folder / "items.parquet")
@@ -155,6 +156,7 @@ def _write_run_items_only(folder: Path, items: list[str]) -> None:
             "peak_memory_mb": [100.0] * n,
             "n_findings": [0] * n,
             "crashed": [False] * n,
+            "sha256": [f"sha_{i}" for i in items],
         },
         schema=driver.ITEM_SCHEMA,
     ).write_parquet(folder / "items.parquet")
@@ -256,7 +258,7 @@ def test_the_report_records_the_hashes_of_its_inputs(tmp_path):
     assert cli.main(_argv(s)) == 0
     inputs = json.loads(s["out"].read_text(encoding="utf-8"))["inputs"]
     assert set(inputs["copies"]["sha256"]) == {"keys", "build_run.json", "detect"}
-    assert set(inputs["copies"]["sha256"]["detect"]) == set(driver.OUTPUTS)
+    assert set(inputs["copies"]["sha256"]["detect"]) == {*driver.OUTPUTS, "pdfs"}
     assert set(inputs["genuine_dev"]["sha256"]) == {"manifest", "detect"}
     assert (
         inputs["genuine_dev"]["sha256"]["manifest"]
@@ -273,5 +275,6 @@ def test_a_crashed_pdf_is_shown_as_could_not_check_in_the_summary(tmp_path, caps
     assert cli.main(_argv(s)) == 0
     out = capsys.readouterr().out
     assert "could not check 1/5 (20.0%)" in out and "could not check 0/4" in out
+    assert "Crashed checks" in out and "parse 1" in out
     report = json.loads(s["out"].read_text(encoding="utf-8"))
     assert [c["item"] for c in report["could_not_check_cases"]] == ["stmt_0002"]

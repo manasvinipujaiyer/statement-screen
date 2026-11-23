@@ -17,13 +17,18 @@ match the current code, config, model file and uv.lock; there is no override), a
 run that doesn't cover exactly the copies in the keys. Each --genuine population is its own
 row and is never combined with another. A report is not overwritten without --overwrite.
 
-The test and shift populations are recognised from each run's own record (tamper/provenance.py),
-not from the name typed here: the recorded population must match the --genuine name, a --limit
-trial run is never scored, and 300 genuine test, 300 shift and 800 copies (100 of each of eight
-types, built without a shortfall) are required. They need --preregistration, are scored once
-into the registered file (never overwritten, --overwrite refused); a later run is --post-hoc
-and goes to a file of its own. A PDF the detector crashed on is "could not check": counted in
-the totals, reported in its own column, never as "no evidence of tampering".
+The test and shift populations are recognised from each run's own record AND its contents
+(tamper/provenance.py), not from the name typed here: the recorded population must match the
+--genuine name, the statement ids must be exactly the test (or shift) statements, no other
+population may contain them, a --limit trial run is never scored, and 300 genuine test, 300
+shift and 800 copies (100 of each of eight types, seed 6, built without a shortfall) are
+required, with a SHA-256 for every PDF. They need --preregistration (compared with the pushed
+version) and, for the copies, --table; they are scored once into the registered file (never
+overwritten, not even after deleting a committed one, --overwrite refused); a later run is
+--post-hoc and goes to a file of its own. If a check crashed on a PDF, a verdict that would
+read "no evidence of tampering" reads "could not check" instead (strong findings and weak
+verdicts stand); those PDFs are counted in the totals, reported in their own column, and the
+crashes are counted per check.
 
 If any genuine PDF has a strong finding, the report is still written but the command prints
 a STOP message and exits with code 3: nothing should be changed before that is looked at.
@@ -177,11 +182,18 @@ def guard_one_time(args: argparse.Namespace, registered: list[str]) -> None:
         return
     if args.overwrite:
         raise ScoreError("--overwrite is not allowed for the test and shift populations")
+    if "copies" in registered and not args.table:
+        raise ScoreError("the test copies are scored with their per-copy CSV: pass --table")
     first, first_table = Path(pre.FIRST_REPORT), Path(pre.FIRST_TABLE)
     outputs = [(args.out, first)] + ([(args.table, first_table)] if args.table else [])
     for path, registered_path in outputs:
         if path.exists():
             raise ScoreError(f"{path} exists; the test and shift results are never overwritten")
+        if pre.has_git_history(path):
+            raise ScoreError(
+                f"{path} is in git's history: that result was already written (and committed), "
+                "so deleting the file does not make a new first result"
+            )
         if args.post_hoc:
             if "post_hoc" not in path.name:
                 raise ScoreError(f"a post-hoc result goes to its own file: {path} needs post_hoc")
@@ -211,6 +223,22 @@ def _row(name: str, block: dict, extra_key: str, extra_label: str) -> str:
     )
 
 
+def crashed_checks_lines(report: dict) -> list[str]:
+    """Per group, the checks that crashed and on how many PDFs (whatever the PDF's verdict)."""
+    groups = {
+        **report["detection"],
+        "overlay": report["overlay_holdout"],
+        "resaved_genuine": report["false_alarms"]["resaved_genuine"],
+        **{f"genuine {n}": r for n, r in report["false_alarms"]["genuine"].items()},
+    }
+    rows = [
+        f"  {name:<26} " + ", ".join(f"{check} {n}" for check, n in rep["crashed_checks"].items())
+        for name, rep in groups.items()
+        if rep and rep["crashed_checks"]
+    ]
+    return ["Crashed checks (PDFs on which each check crashed):", *(rows or ["  none"])]
+
+
 def summary_text(report: dict) -> str:
     """The report's headline numbers, for the terminal."""
     lines = [
@@ -237,6 +265,7 @@ def summary_text(report: dict) -> str:
     for name, rep in report["false_alarms"]["genuine"].items():
         lines.append(_row(f"genuine {name}", rep, "without_anomaly", "without anomaly"))
         lines.append(f"  {'':<26} ({rep['population']})")
+    lines += ["", *crashed_checks_lines(report)]
     for title, notes in (
         ("File-history dependence (detection)", report["history_dependence"]["detection"]),
         ("File-history dependence (false alarms)", report["history_dependence"]["false_alarms"]),
@@ -321,6 +350,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             inputs["preregistration"] = {
                 "file": str(args.preregistration),
                 "sha256": file_sha256(args.preregistration),
+                "upstream_commit": pre.upstream_sha(),
             }
         report["inputs"] = inputs
         if args.post_hoc:
