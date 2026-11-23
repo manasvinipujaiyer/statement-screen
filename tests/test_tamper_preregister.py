@@ -37,6 +37,14 @@ def test_the_plain_text_fields_say_what_was_agreed():
     assert "2026" in data["seeds"]["bootstrap"] and "1,000" in data["seeds"]["bootstrap"]
     assert any("overlay: no expectation" in line for line in data["expectations"])
     assert "post-hoc" in data["stop_rule"] and "change nothing" in data["stop_rule"]
+    assert data["commands"][-1].startswith("uv run python -m statementscreen.tamper.log_run")
+    expectations = data["expectations"]
+    assert any(line.startswith("shift: 'tampered' expected near 0") for line in expectations)
+    assert any("no number pre-stated" in line for line in expectations)
+    shortfall = [r for r in data["rules"] if r.startswith("If the builder cannot reach 100")]
+    assert shortfall and "No change to seed, count or code" in shortfall[0]
+    mlflow_rule = [r for r in data["rules"] if "local MLflow store" in r]
+    assert mlflow_rule and "does not change any result" in mlflow_rule[0]
     assert any("reports/week6_tamper_test_copies.csv" in m for m in data["metrics"])
 
 

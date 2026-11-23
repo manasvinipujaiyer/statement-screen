@@ -73,6 +73,10 @@ COMMANDS = [
     "--preregistration reports/week6_preregistration.json "
     "--out reports/week6_tamper_test.json "
     "--table reports/week6_tamper_test_copies.csv",
+    "uv run python -m statementscreen.tamper.log_run "
+    "--report reports/week6_tamper_test.json "
+    "--csv reports/week6_tamper_test_copies.csv "
+    "--preregistration reports/week6_preregistration.json",
 ]
 SETS = {
     "test_copies": "800 tampered copies built from the split_v1 test statements of "
@@ -112,6 +116,8 @@ EXPECTATIONS = [
     "tampered false alarms expected near zero, and 'suspicious' on genuine expected near "
     "2% (the anomaly threshold's rate).",
     "overlay: no expectation. It is held out and dev has no overlay data.",
+    "shift: 'tampered' expected near 0; flagged (tampered or suspicious) rate may exceed 2% "
+    "because the anomaly model never saw this distribution; no number pre-stated.",
     "Anything far from this is reported as it is.",
 ]
 KNOWN_LIMITS = [
@@ -138,6 +144,13 @@ RULES = [
     "fixed silently",
     "test numbers are reported next to the dev numbers, never blended with them",
     "a re-run is reported next to the first result and labelled post-hoc",
+    "If the builder cannot reach 100 copies for any type, it exits and we STOP and report "
+    "the shortfall. No change to seed, count or code. Any re-run with a reduced count is "
+    "labelled post-hoc.",
+    "The final registered step logs the scoring run to the local MLflow store (detector "
+    "fingerprint, pre-registration commit hash, all metrics, and the report and per-copy CSV "
+    "as artifacts). It runs after scoring, only reads the report, and does not change any "
+    "result.",
     "dev was used for development; test and shift were not looked at before scoring",
 ]
 
