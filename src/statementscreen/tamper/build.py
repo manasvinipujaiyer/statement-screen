@@ -18,6 +18,13 @@ before any copy is made, so a name says nothing about its type. Writes, under <o
     build_run.json         counts and replacements per type, what each type applies to,
                            seeds, seconds and peak memory
 
+A source that raises a build error (RebuildError, or CopyError: a string or row that cannot be
+located) is replaced by the next source, like NotApplicable (but its other page_swap donors are
+not tried), and its id, donor and reason go into build_run.json ("build_errors"). Any other
+exception, RuntimeError included, fails loudly. More than MAX_BUILD_ERRORS (5) of them across
+the build is a STOP: the build ends, build_run.json says "stopped" and "complete": false, and
+scoring refuses it. Any other error still fails loudly.
+
 Overlay is the held-out type: --include-overlay is refused unless the set is "test" and
 STATEMENTSCREEN_OPEN_TEST=1 is set (the one-time Week 6 step 6 command). A test set is
 never overwritten.
@@ -43,10 +50,14 @@ from statementscreen.tamper.copy import (
     CONTROL,
     HELD_OUT,
     TYPES,
+    CopyError,
     NotApplicable,
     tamper_copy,
 )
+from statementscreen.tamper.provenance import MAX_BUILD_ERRORS
+from statementscreen.tamper.rebuild import RebuildError
 
+BUILD_ERRORS = (RebuildError, CopyError)  # a source that cannot be built: replace it
 DEFAULT_SEED = 6
 DONOR_TRIES = 5
 OUTPUTS = ("copies", "keys", "build_run.json")
@@ -93,6 +104,8 @@ def build_set(
     replaced: Counter = Counter()
     donor_retries: Counter = Counter()
     failures: dict[str, list[str]] = {}
+    build_errors: list[dict] = []
+    stopped = None
     started = time.perf_counter()
     for t in types:
         type_rng = np.random.default_rng([seed, 1 + TYPES.index(t)])
@@ -106,6 +119,7 @@ def build_set(
                 same = [s for s in ids if layout[s] == layout[source] and s != source]
                 donors = [same[i] for i in type_rng.permutation(len(same))[:DONOR_TRIES]]
             result = None
+            build_error = None
             for d, donor in enumerate(donors):
                 try:
                     donor_pdf = pdfs / f"{donor}.pdf" if donor else None
@@ -116,8 +130,19 @@ def build_set(
                     failures.setdefault(t, []).append(f"{source}: {e}")
                     if d < len(donors) - 1:
                         donor_retries[t] += 1
+                except BUILD_ERRORS as e:  # replaced like NotApplicable, but recorded and capped
+                    build_error = f"{type(e).__name__}: {e}"
+                    break
             if result is None:
                 replaced[t] += 1
+                if build_error:
+                    build_errors.append(
+                        {"type": t, "source": source, "donor": donor, "error": build_error}
+                    )
+                    print(f"  build error on {source} ({t}): {build_error}", flush=True)
+                    if len(build_errors) > MAX_BUILD_ERRORS:
+                        stopped = f"more than {MAX_BUILD_ERRORS} sources failed to build: STOP"
+                        break
                 continue
             data, key = result
             copy_id = f"copy_{numbers[(t, made[t])]:04d}"
@@ -127,15 +152,21 @@ def build_set(
             (out / "keys" / f"{copy_id}.json").write_text(text, encoding="utf-8")
             made[t] += 1
         short = per_type - made[t]
+        if stopped:
+            print(f"  {stopped}", flush=True)
         print(f"  {t}: {made[t]} copies, {replaced[t]} sources replaced"
               + (f" ({short} SHORT: not enough applicable sources)" if short else ""),
               flush=True)  # fmt: skip
+        if stopped:
+            break
     return {
         "per_type": per_type,
         "types": types,
         "made": dict(made),
         "short": {t: per_type - made[t] for t in types if made[t] < per_type},
-        "complete": all(made[t] >= per_type for t in types),  # scoring refuses an incomplete set
+        "complete": all(made[t] >= per_type for t in types) and not stopped,
+        "build_errors": build_errors,  # every source that failed to build, and why
+        "stopped": stopped,
         "sources_replaced": dict(replaced),
         "donor_retries": dict(donor_retries),
         "not_applicable_examples": {t: v[:10] for t, v in failures.items()},
@@ -174,8 +205,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                              f"{OPEN_TEST_ENV}=1 (the one-time step 6 command)")  # fmt: skip
         if args.set == "test" and args.overwrite:
             raise ValueError("a test set is never overwritten")
-        ids = load_split(args.set, args.batch / "manifest.csv", args.splits_dir)
         out = args.out / args.set
+        if args.set == "test" and out.is_dir() and any(out.iterdir()):
+            raise ValueError(
+                f"{out} is not empty, and a test set is never overwritten (--overwrite is "
+                "refused). If an earlier build failed before writing build_run.json, nothing "
+                "was scored: delete that folder by hand and re-run the identical command once; "
+                "a second failure means STOP and report"
+            )
+        ids = load_split(args.set, args.batch / "manifest.csv", args.splits_dir)
         prepare_output_folder(out, args.overwrite, allowed=OUTPUTS)
         layout = layouts_of(args.batch / "manifest.csv", ids)
         summary = build_set(args.batch / "pdfs", ids, layout, out, args.per_type, args.seed,
@@ -189,5 +227,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"Wrote {sum(summary['made'].values())} copies to {out} in "
           f"{summary['seconds_total']} s (peak memory {summary['peak_memory_mb']} MB)")  # fmt: skip
     print(f"  sources replaced: {summary['sources_replaced'] or 'none'}; "
-          f"short: {summary['short'] or 'none'}")  # fmt: skip
+          f"short: {summary['short'] or 'none'}; "
+          f"build errors: {len(summary['build_errors'])}"
+          + (f"; {summary['stopped']}" if summary["stopped"] else ""))  # fmt: skip
     return 0 if not summary["short"] else 1

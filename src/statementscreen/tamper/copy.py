@@ -94,6 +94,11 @@ class NotApplicable(ValueError):
     """This type can't be applied to this statement (see APPLIES_TO)."""
 
 
+class CopyError(RuntimeError):
+    """A string or row of the source PDF could not be located exactly, so it cannot be edited:
+    a source that can't be built (the set builder replaces it and records it)."""
+
+
 class HeldOut(PermissionError):
     """Overlay copies are made only by the one-time Week 6 step 6 command."""
 
@@ -299,7 +304,7 @@ def _apply_edits(writer: PdfWriter, page_no: int, edits: list[Edit]) -> None:
                 break
     missing = [e.old for e, d in zip(edits, done, strict=True) if d != 1]
     if missing:
-        raise RuntimeError(f"page {page_no}: strings not found exactly once: {missing}")
+        raise CopyError(f"page {page_no}: strings not found exactly once: {missing}")
     page.replace_contents(content)
 
 
@@ -338,7 +343,7 @@ def _inplace(pdf_path: Path, rng, key: dict, consistent: bool) -> bytes:
     layout = parsed.layout
     lines = _row_lines(pdf_path, layout)
     if len(lines) != len(parsed.rows):
-        raise RuntimeError(f"{len(lines)} row lines vs {len(parsed.rows)} parsed rows")
+        raise CopyError(f"{len(lines)} row lines vs {len(parsed.rows)} parsed rows")
     i = int(rng.integers(len(parsed.rows)))
     r = parsed.rows[i]
     page, y = lines[i]

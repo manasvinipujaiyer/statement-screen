@@ -69,6 +69,8 @@ def _build(set_dir: Path, **change) -> None:
         "made": {"inplace_edit": 4},
         "short": {},
         "complete": True,
+        "build_errors": [],
+        "stopped": None,
     } | change
     (set_dir / "build_run.json").write_text(json.dumps(build), encoding="utf-8")
 
@@ -479,3 +481,89 @@ def test_compare_rules_refuses_the_test_copies_on_their_own(world, capsys):
     captured = capsys.readouterr()
     assert "never reads test or shift" in captured.err and captured.out == ""
     assert not out.exists()
+
+
+# ---------------------------------------------------------------- build errors, atomic writing
+
+
+def _failed_sources(n: int) -> list[dict]:
+    return [
+        {"type": "inplace_edit", "source": f"s{k}", "error": "RebuildError: boom"} for k in range(n)
+    ]
+
+
+def test_failed_build_sources_are_recorded_in_the_report(world):
+    errors = _failed_sources(2)
+    _build(world["set"], build_errors=errors, sources_replaced={"inplace_edit": 2})
+    assert cli.main(_argv(world)) == 0
+    build = json.loads(world["out"].read_text(encoding="utf-8"))["inputs"]["copies"]["build"]
+    assert build["build_errors"] == errors and build["seed"] == 6 and build["complete"] is True
+    assert build["sources_replaced"] == {"inplace_edit": 2}
+
+
+def test_exactly_five_failed_build_sources_are_accepted(world):
+    _build(world["set"], build_errors=_failed_sources(5))
+    assert cli.main(_argv(world)) == 0
+
+
+def test_more_than_five_failed_build_sources_refuse_the_set(world, capsys):
+    _build(world["set"], build_errors=_failed_sources(6))
+    assert cli.main(_argv(world)) == 2
+    assert "more than 5 is a STOP" in capsys.readouterr().err
+    assert not world["out"].exists()
+
+
+def test_a_build_that_recorded_a_stop_is_refused(world, capsys):
+    _build(world["set"], stopped="more than 5 sources failed to build: STOP")
+    assert cli.main(_argv(world)) == 2
+    assert "failed to build" in capsys.readouterr().err
+
+
+def test_a_failure_writing_the_csv_leaves_nothing_behind_and_no_trap(world, monkeypatch):
+    real = cli.write_copy_table
+
+    def disk_full(path, rows):
+        raise OSError("disk full")
+
+    monkeypatch.setattr(cli, "write_copy_table", disk_full)
+    with pytest.raises(OSError, match="disk full"):
+        cli.main(_argv(world))
+    assert not world["out"].exists() and not world["table"].exists()
+    assert not list(world["out"].parent.glob("*.tmp"))
+    monkeypatch.setattr(cli, "write_copy_table", real)
+    assert cli.main(_argv(world)) == 0  # not locked out: no result was ever written
+
+
+def test_an_orphan_csv_from_an_interrupted_write_says_how_to_recover(world, capsys):
+    world["table"].parent.mkdir(parents=True, exist_ok=True)
+    world["table"].write_text("copy\n", encoding="utf-8")  # a CSV renamed, then the process died
+    assert cli.main(_argv(world)) == 2
+    err = capsys.readouterr().err
+    assert "orphan of an interrupted write" in err and "delete it by hand" in err
+    world["table"].unlink()
+    assert cli.main(_argv(world)) == 0  # the orphan was not a result: nothing else blocks the run
+
+
+def test_the_test_copies_run_must_not_be_labelled_as_something_else(world, capsys):
+    run_file = world["set"] / "detect" / "detect_run.json"
+    run = json.loads(run_file.read_text(encoding="utf-8"))
+    run["population"] = "dev"
+    run_file.write_text(json.dumps(run), encoding="utf-8")
+    assert cli.main(_argv(world)) == 2
+    assert "is labelled 'dev'" in capsys.readouterr().err
+    run["population"] = "test"  # the one other label that agrees with the build record
+    run_file.write_text(json.dumps(run), encoding="utf-8")
+    assert cli.main(_argv(world)) == 0
+
+
+def test_a_dev_copies_run_must_not_be_labelled_test(world):
+    dev = world["tmp"] / "dev_copies"
+    _keys(dev)
+    for key in (dev / "keys").glob("*.json"):  # sources the test split does not hold
+        data = json.loads(key.read_text(encoding="utf-8"))
+        data["source"] = "dev_" + data["source"]
+        key.write_text(json.dumps(data), encoding="utf-8")
+    _build(dev, set="dev")
+    _run(dev / "detect", COPIES, population="test", source=str(dev / "copies"))
+    with pytest.raises(prov.ProvenanceError, match="is labelled 'test'"):
+        prov.check_copies(dev)

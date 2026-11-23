@@ -4,7 +4,8 @@
     uv run python -m statementscreen.tamper.run data/week1_n2000/pdfs --split dev \\
         --manifest data/week1_n2000/manifest.csv --out data/tamper/genuine_dev/detect
 
-A driver that sits outside tamper/detect/: it reads PDFs only, never answer keys or labels.
+A driver that sits outside tamper/detect/: it reads PDFs (and hashes the manifest when it
+needs a split), never answer keys or labels.
 With --split it takes the statement ids from the split loader (which refuses "test" unless
 STATEMENTSCREEN_OPEN_TEST=1); the detector package itself never imports the loader.
 Without --split, a folder containing test statements is refused unless it is run as
@@ -96,6 +97,12 @@ def pdf_list(
     return pdfs
 
 
+def open_gate_is_set() -> bool:
+    """True when STATEMENTSCREEN_OPEN_TEST=1. The tests patch this function: no test may set
+    the variable itself (tests/test_stress.py enforces that)."""
+    return os.environ.get(OPEN_TEST_ENV) == "1"
+
+
 def refuse_test_pdfs(
     pdfs: list[Path],
     split: str | None,
@@ -120,8 +127,20 @@ def refuse_test_pdfs(
             f"{len(leaked)} of these PDFs are test statements (e.g. {leaked[:3]}): the test "
             f"split is opened only by --split test or --population test with {OPEN_TEST_ENV}=1"
         )
-    if leaked and os.environ.get(OPEN_TEST_ENV) != "1":
+    if leaked and not open_gate_is_set():
         raise RunError(f"these PDFs include test statements: set {OPEN_TEST_ENV}=1 to open them")
+
+
+def registered_run(folder: Path, split: str | None, population: str | None) -> bool:
+    """True for the runs whose output is scored once in step 6: the test split, the shift
+    batch, and the PDFs of a test copies set (a build_run.json beside the folder says test)."""
+    if split == "test" or population in provenance.REGISTERED:
+        return True
+    build = Path(folder).parent / "build_run.json"
+    try:
+        return json.loads(build.read_text(encoding="utf-8")).get("set") == "test"
+    except (OSError, ValueError):
+        return False
 
 
 def detect_one(pdf: Path) -> tuple[list[Finding], float, float, bool]:
@@ -286,6 +305,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise RunError(f"--population {args.population!r} contradicts --split {args.split!r}")
         pdfs = pdf_list(args.pdfs, args.split, args.manifest, args.splits_dir, args.limit)
         refuse_test_pdfs(pdfs, args.split, args.population, args.splits_dir, args.pdfs)
+        if registered_run(args.pdfs, args.split, args.population):
+            if args.overwrite:
+                raise RunError(
+                    "a registered run (test copies, genuine test, shift) is never overwritten: "
+                    "the report records its hashes. If it failed before writing its output, "
+                    "delete its partial folder by hand and re-run the identical command once; "
+                    "a second failure means STOP and report"
+                )
+            if any((args.out / name).exists() for name in OUTPUTS):
+                raise RunError(
+                    f"{args.out} already holds a finished run; a registered run's output is "
+                    "kept as it is (an interrupted one is continued with --resume)"
+                )
         summary = run(
             pdfs,
             args.out,

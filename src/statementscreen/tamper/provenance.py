@@ -14,7 +14,8 @@ made (build_run.json: the set, the seed, the counts, any shortfall):
   * the registered populations must be complete and come from the registered folders:
     300 genuine test, 300 shift, and 800 copies (100 for each of the eight types, built with
     seed 6 and without a shortfall);
-  * a PDF folder that is the shift batch can only be scored as "shift".
+  * a PDF folder that is the shift batch can only be scored as "shift";
+  * a build in which more than 5 sources failed (build_errors) is a STOP: it is refused.
 
 Content. The statement ids a run covers are compared with the split and the shift manifest.
 Statement ids are unique only WITHIN a batch: the shift batch is stmt_0001..stmt_0300, the
@@ -51,6 +52,7 @@ from statementscreen.tamper.copy import TYPES
 REGISTERED = ("test", "shift")  # the genuine populations that are scored once, in step 6
 COPIES_PER_TYPE = 100
 EXPECTED_BUILD_SEED = 6
+MAX_BUILD_ERRORS = 5  # sources the builder may replace after a build error; more is a STOP
 EXPECTED_COUNTS = {"test": 300, "shift": 300, "copies": COPIES_PER_TYPE * len(TYPES)}
 EXPECTED_SOURCES = {"test": "data/week1_n2000/pdfs", "shift": "data/week4_shift_n300/pdfs"}
 SPLIT_FILE = "split_v1.csv"
@@ -207,6 +209,18 @@ def check_copies(copies_dir: Path, copies_run: Path | None = None) -> bool:
         raise ProvenanceError(
             f"the build in {copies_dir} is incomplete (short: {build.get('short')}): STOP and "
             "report the shortfall; an incomplete build is never scored"
+        )
+    errors = build.get("build_errors") or []
+    if build.get("stopped") or len(errors) > MAX_BUILD_ERRORS:
+        raise ProvenanceError(
+            f"{len(errors)} sources failed to build in {copies_dir} (more than "
+            f"{MAX_BUILD_ERRORS} is a STOP): report it; the set is never scored"
+        )
+    recorded = summary.get("population") or summary.get("split")
+    if recorded is not None and (recorded == "test") != (is_test or named_test):
+        raise ProvenanceError(
+            f"the detector run in {run_dir} is labelled {recorded!r} but the copies in "
+            f"{copies_dir} are a {'test' if is_test or named_test else 'non-test'} set"
         )
     sources = _key_sources(copies_dir)
     if is_test or named_test:

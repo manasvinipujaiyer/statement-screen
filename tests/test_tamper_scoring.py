@@ -383,14 +383,14 @@ def test_a_crashed_check_turns_no_evidence_into_could_not_check():
     group = report["detection"]["inplace_edit"]
     assert group["with_history"]["labels"]["could not check"] == 1
     assert group["with_history"]["labels"]["no evidence of tampering"] == 0
-    assert group["could_not_check"]["count"] == 1 and group["crashed_checks"] == {"layout": 1}
-    assert [c["crashed_checks"] for c in report["could_not_check_cases"]] == [["layout"]]
+    assert group["could_not_check"]["count"] == 1 and group["checks_not_run"] == {"layout": 1}
+    assert [c["checks_not_run"] for c in report["could_not_check_cases"]] == [["layout"]]
 
 
 def test_a_strong_finding_still_gives_tampered_when_a_check_crashed():
     group = _report([_one([STRONG, _crash_in("layout")])])["detection"]["inplace_edit"]
     assert group["with_history"]["tampered"]["count"] == 1
-    assert group["could_not_check"]["count"] == 0 and group["crashed_checks"] == {"layout": 1}
+    assert group["could_not_check"]["count"] == 0 and group["checks_not_run"] == {"layout": 1}
 
 
 def test_a_weak_verdict_stands_when_a_check_crashed():
@@ -399,7 +399,7 @@ def test_a_weak_verdict_stands_when_a_check_crashed():
     ]
     labels = group["with_history"]["labels"]
     assert labels["suspicious"] == 1 and labels["could not check"] == 0
-    assert group["crashed_checks"] == {"anomaly": 1}
+    assert group["checks_not_run"] == {"anomaly": 1}
 
 
 def test_the_without_views_ignore_the_crash_of_the_check_they_remove():
@@ -421,13 +421,65 @@ def test_each_check_is_counted_and_a_pdf_can_crash_several():
                                                                 _crash_in("anomaly"))),
     ]  # fmt: skip
     group = _report(items)["detection"]["inplace_edit"]
-    assert group["crashed_checks"] == {"anomaly": 1, "history": 1, "layout": 2}
+    assert group["checks_not_run"] == {"anomaly": 1, "history": 1, "layout": 2}
     assert group["could_not_check"]["count"] == 2  # c_2 is tampered: it keeps its verdict
 
 
-def test_arithmetics_check_not_run_beside_parse_failed_is_not_a_crash():
-    failed = Finding("PARSE_FAILED", "parse", None, None, "weak", "the PDF couldn't be parsed")
-    arithmetic = Finding("CHECK_NOT_RUN", "arithmetic", None, None, "info", "didn't run")
-    group = _report([_one([failed, arithmetic])])["detection"]["inplace_edit"]
+def _not_run(group, reason):
+    return Finding("CHECK_NOT_RUN", group, None, None, "info", reason)
+
+
+def test_the_only_check_that_does_not_apply_by_design_is_the_anomaly_check_with_no_transactions():
+    note = _not_run("anomaly", "ANOMALY_SCORE: no parsed transactions to measure")
+    scored = score_item(_one([note]))
+    assert scored.label == "no evidence of tampering" and scored.unrun_checks == ()
+
+
+def test_every_arithmetic_not_checked_note_counts_as_a_check_that_did_not_run():
+    notes = [  # the parser's own wording: a value the generator always prints was not read
+        "BALANCE_CHAIN: no opening balance for the first row",
+        "CLOSING_MISMATCH: no closing or comparison balance read",
+        "SUMMARY_IDENTITY: not read: closing balance",
+        "SUMMARY_TOTALS: no printed total credits",
+        "SUMMARY_COUNTS: no printed Cr count",
+        "DATE_OUT_OF_PERIOD: no statement period read",
+    ]
+    for note in notes:
+        finding = _not_run("arithmetic", f"a self-check couldn't run ({note})")
+        scored = score_item(_one([finding]))
+        assert scored.label == "could not check" and scored.unrun_checks == ("arithmetic",), note
+
+
+def test_a_check_that_could_not_run_makes_no_evidence_could_not_check():
+    cases = {
+        "layout": "AMOUNT_FONT, AMOUNT_ALIGNMENT, DIGIT_SPACING: layout not recognised (x)",
+        "history": "MODDATE_AFTER_CREATION, EXTRA_FONTS: pypdf couldn't read the file (x)",
+        "structure": "HEADER_MISMATCH: page 1's account number or period wasn't read",
+        "anomaly": "ANOMALY_SCORE: no model at week6_iforest.pkl",
+    }
+    for group, reason in cases.items():
+        scored = score_item(_one([_not_run(group, reason)]))
+        assert scored.label == "could not check" and scored.unrun_checks == (group,), group
+
+
+def test_an_unparseable_pdf_is_suspicious_and_the_checks_it_stopped_are_counted():
+    findings = [
+        Finding("PARSE_FAILED", "parse", None, None, "weak", "the PDF couldn't be parsed (x)"),
+        _not_run("arithmetic", "the arithmetic checks didn't run because the PDF couldn't be "
+                 "parsed"),
+        _not_run("structure", "HEADER_MISMATCH: the PDF couldn't be parsed"),
+        _not_run("history", "EXTRA_FONTS: no font limit for layout None"),
+        _not_run("layout", "AMOUNT_FONT: layout not recognised (x)"),
+        _not_run("anomaly", "ANOMALY_SCORE: no parsed transactions to measure"),
+    ]  # fmt: skip
+    group = _report([_one(findings)])["detection"]["inplace_edit"]
     assert group["with_history"]["labels"]["suspicious"] == 1  # the earlier rule stands
-    assert group["crashed_checks"] == {} and group["could_not_check"]["count"] == 0
+    assert group["could_not_check"]["count"] == 0
+    # on an unparseable PDF "nothing to measure" is a consequence of the failure: it counts too
+    assert group["checks_not_run"] == {
+        "anomaly": 1,
+        "arithmetic": 1,
+        "history": 1,
+        "layout": 1,
+        "structure": 1,
+    }

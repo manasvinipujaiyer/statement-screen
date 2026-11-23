@@ -30,15 +30,22 @@ Reported (build_report):
   misses            every tamper copy that was not called "tampered", with the detector's
                     own reasons and the key's facts
   false_alarm_cases every genuine or re-saved item that was flagged, with reasons
-  could_not_check   a check group that crashed on a PDF (a CHECK_NOT_RUN finding from any
-                    group but arithmetic, or the whole detector crashing) leaves that check
-                    unrun, for that check only. Any strong finding still gives "tampered" and
-                    any weak verdict stands; but a verdict that would read "no evidence of
-                    tampering" with a crashed check reads "could not check" instead. Those
-                    PDFs are counted in every total, reported in their own column
-                    (could_not_check in each group) and listed in could_not_check_cases, and
-                    are never counted as flagged or as "no evidence". crashed_checks counts,
-                    per check, the PDFs on which that check crashed, whatever their verdict.
+  could_not_check   no evidence was found, but at least one applicable check did not run (it
+                    crashed, or it could not run: a layout not recognised, a header field not
+                    read, an unparseable PDF). Any strong finding still gives "tampered" and
+                    any weak verdict stands; a verdict that would read "no evidence of
+                    tampering" reads "could not check" instead. The only check that does not
+                    apply by design is the anomaly check on a statement with no transactions
+                    to measure; it does not count. Every arithmetic "not checked" note
+                    (a missing closing balance, total, count, period or account number)
+                    counts: the generator always prints them, so a missing one was not read.
+                    Those PDFs are counted in every
+                    total, reported in their own column (could_not_check in each group) and
+                    listed in could_not_check_cases, and are never counted as flagged or as
+                    "no evidence".
+  checks_not_run    per check, the number of PDFs on which that check did not run (as above),
+                    whatever their verdict; an unparseable PDF counts under each check it
+                    stopped
 
 Intervals: 1,000 bootstrap resamples with a fixed seed, resampling SOURCE STATEMENTS (a
 statement can appear in several types; its copies stay together), 2.5th to 97.5th
@@ -68,7 +75,7 @@ from statementscreen.tamper.detect.verdict import (
     decide,
 )
 
-COULD_NOT_CHECK = "could not check"  # the detector crashed on the PDF: no verdict was possible
+COULD_NOT_CHECK = "could not check"  # no evidence, and a check that applies did not run
 SCORED_LABELS = (*LABELS, COULD_NOT_CHECK)
 BOOTSTRAP_SEED = 2026
 RESAMPLES = 1000
@@ -91,7 +98,7 @@ class Item:
     save_mode: str = "n/a"  # "incremental" | "full" for PDFs a library wrote, else "n/a"
     findings: tuple[Finding, ...] = ()
     facts: dict = field(default_factory=dict)  # from the key: pages, fields changed, donor
-    crashed: bool = False  # the detector crashed on this PDF (its run lists it as crashed)
+    crashed: bool = False  # the whole detector crashed on this PDF (its run lists it)
 
 
 @dataclass(frozen=True)
@@ -102,7 +109,7 @@ class Scored:
     label_without_history: str
     label_without_anomaly: str
     first: str | None  # "group:code" of the first non-info finding, if any
-    crashed_checks: tuple[str, ...] = ()  # the check groups that crashed on this item
+    unrun_checks: tuple[str, ...] = ()  # the check groups that did not run on this item
 
 
 # ---------------------------------------------------------------- loading
@@ -183,24 +190,37 @@ def first_check(verdict: dict) -> str | None:
     return None
 
 
-def crashed_checks(item: Item) -> frozenset[str]:
-    """The check groups that crashed on this item. A CHECK_NOT_RUN finding from any group but
-    arithmetic is a check that raised (the detector's own wrapper, or tamper/run.py when the
-    whole detector raised: group parse). Arithmetic's CHECK_NOT_RUN accompanies PARSE_FAILED:
-    a PDF that could not be parsed, which has its own verdict rule, not a crash."""
+def _by_design(finding: Finding, parse_failed: bool) -> bool:
+    """A CHECK_NOT_RUN that says a check does not apply to this statement, not that it failed.
+    There is exactly one: the anomaly check on a statement with no transactions to measure
+    (matched on the frozen detector's own reason text). Every other CHECK_NOT_RUN is a check
+    that should have run, including every arithmetic "not checked" note: the generator always
+    prints every summary label, so a missing one means it could not be read."""
+    if finding.group == "anomaly":  # on an unparseable PDF "nothing to measure" is the failure
+        return not parse_failed and finding.reason.endswith("no parsed transactions to measure")
+    return False
+
+
+def unrun_checks(item: Item) -> frozenset[str]:
+    """The check groups that did not run on this item and should have: a crash (the detector's
+    own wrapper, or tamper/run.py when the whole detector raised: group parse), or a check that
+    could not run (layout not recognised, a header field not read, an unparseable PDF)."""
+    parse_failed = any(f.code == "PARSE_FAILED" for f in item.findings)
     groups = {
-        f.group for f in item.findings if f.code == "CHECK_NOT_RUN" and f.group != "arithmetic"
+        f.group
+        for f in item.findings
+        if f.code == "CHECK_NOT_RUN" and not _by_design(f, parse_failed)
     }
     if item.crashed:
         groups.add("parse")
     return frozenset(groups)
 
 
-def _label(verdict: dict, crashed: frozenset[str]) -> str:
-    """The verdict's label, except that "no evidence" with a crashed check is "could not
-    check": a strong finding or a weak verdict is evidence the crash does not remove."""
+def _label(verdict: dict, unrun: frozenset[str]) -> str:
+    """The verdict's label, except that "no evidence" with a check that did not run is "could
+    not check": a strong finding or a weak verdict is evidence that stands."""
     label = verdict["label"]
-    return COULD_NOT_CHECK if label == NONE and crashed else label
+    return COULD_NOT_CHECK if label == NONE and unrun else label
 
 
 def score_item(item: Item, version: str = RULE_VERSION) -> Scored:
@@ -208,15 +228,15 @@ def score_item(item: Item, version: str = RULE_VERSION) -> Scored:
     verdict = decide(found, version)
     without = decide([f for f in found if f.group != "history"], version)
     no_anomaly = decide([f for f in found if f.group != "anomaly"], version)
-    crashed = crashed_checks(item)
+    unrun = unrun_checks(item)
     return Scored(
         item,
         verdict,
-        _label(verdict, crashed),
-        _label(without, crashed - {"history"}),  # a history crash is moot with history removed
-        _label(no_anomaly, crashed - {"anomaly"}),
+        _label(verdict, unrun),
+        _label(without, unrun - {"history"}),  # moot with the history findings removed
+        _label(no_anomaly, unrun - {"anomaly"}),
         first_check(verdict),
-        tuple(sorted(crashed)),
+        tuple(sorted(unrun)),
     )
 
 
@@ -403,9 +423,9 @@ def _history_notes(name: str, pair: dict, subject: str) -> list[str]:
     return notes
 
 
-def _crashed_counts(scored: list[Scored]) -> dict[str, int]:
-    """Per check group, on how many items it crashed (whatever the item's verdict)."""
-    count = Counter(g for s in scored for g in s.crashed_checks)
+def _unrun_counts(scored: list[Scored]) -> dict[str, int]:
+    """Per check group, on how many items it did not run (whatever the item's verdict)."""
+    count = Counter(g for s in scored for g in s.unrun_checks)
     return dict(sorted(count.items()))
 
 
@@ -414,7 +434,7 @@ def _group_report(scored: list[Scored]) -> dict:
         "n": len(scored),
         **_pair(scored),
         "could_not_check": _plain(scored, _could_not_check),
-        "crashed_checks": _crashed_counts(scored),
+        "checks_not_run": _unrun_counts(scored),
         "by_layout": _by_layout(scored),
         "first_check": _first_checks(scored),
         "codes_fired": _codes_fired(scored),
@@ -466,13 +486,13 @@ def _false_alarms(scored: list[Scored], population: str) -> list[dict]:
 
 
 def _unchecked(scored: list[Scored], population: str | None = None) -> list[dict]:
-    """Every item whose verdict is "could not check", and every item on which a check crashed
-    but a verdict stood, with the checks that crashed and the detector's own reasons."""
+    """Every item whose verdict is "could not check", and every item on which a check did not
+    run but a verdict stood, with the checks that did not run and the detector's reasons."""
     out = []
     for s in scored:
-        if s.crashed_checks:
+        if s.unrun_checks:
             case = _case(s, s.label, population)
-            case["crashed_checks"] = list(s.crashed_checks)
+            case["checks_not_run"] = list(s.unrun_checks)
             out.append(case)
     return out
 
@@ -575,8 +595,10 @@ def build_report(
             "tampered": "the verdict is 'tampered'",
             "tampered_or_suspicious": "the verdict is 'tampered' or 'suspicious'",
             "without_history": "the verdict recomputed with every file-history finding removed",
-            "could_not_check": "the detector crashed on the PDF: counted in the totals, never "
-            "as 'no evidence of tampering', never as flagged",
+            "could_not_check": "no evidence was found but an applicable check did not run: "
+            "counted in the totals, never as 'no evidence of tampering', never as flagged",
+            "checks_not_run": "per check, the PDFs on which it did not run (crashed or could "
+            "not run); the only exemption is the anomaly check on a statement with no transactions",
             "first_check": "the first non-info finding in verdict order (strong first, then "
             "check group, page, row)",
         },

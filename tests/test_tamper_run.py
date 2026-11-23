@@ -328,9 +328,8 @@ def test_test_pdfs_are_not_read_without_the_split_or_the_env_var(
     assert "STATEMENTSCREEN_OPEN_TEST=1" in capsys.readouterr().err
     assert not (tmp_path / "a").exists() and not (tmp_path / "b").exists()
     # No test may set the real open-test variable (tests/test_stress.py enforces it), so the
-    # allowed path is exercised with a stand-in variable name.
-    monkeypatch.setattr(driver, "OPEN_TEST_ENV", "STAND_IN_FOR_THE_GATE")
-    monkeypatch.setenv("STAND_IN_FOR_THE_GATE", "1")
+    # gate is patched as a function instead.
+    monkeypatch.setattr(driver, "open_gate_is_set", lambda: True)
     assert driver.main(as_test) == 0
 
 
@@ -352,3 +351,51 @@ def test_the_shift_batch_may_reuse_main_batch_ids_only_from_its_own_folder(
     # the same label on any other folder is not exempt
     assert driver.main(_argv(other, tmp_path / "b", "--population", "shift")) == 2
     assert not (tmp_path / "b").exists()
+
+
+def test_registered_runs_are_recognised(tmp_path):
+    assert driver.registered_run(tmp_path / "pdfs", "test", None) is True
+    assert driver.registered_run(tmp_path / "pdfs", None, "test") is True
+    assert driver.registered_run(tmp_path / "pdfs", None, "shift") is True
+    assert driver.registered_run(tmp_path / "pdfs", "dev", None) is False
+    assert driver.registered_run(tmp_path / "pdfs", None, "dev") is False
+    copies = tmp_path / "set" / "copies"
+    copies.mkdir(parents=True)
+    assert driver.registered_run(copies, None, None) is False  # no build record
+    (tmp_path / "set" / "build_run.json").write_text('{"set": "dev"}', encoding="utf-8")
+    assert driver.registered_run(copies, None, None) is False
+    (tmp_path / "set" / "build_run.json").write_text('{"set": "test"}', encoding="utf-8")
+    assert driver.registered_run(copies, None, None) is True  # the test copies' PDFs
+
+
+def test_a_registered_run_is_never_overwritten_but_can_be_redone_by_hand(tmp_path, fake, capsys):
+    folder, out = _pdfs(tmp_path / "pdfs", NAMES), tmp_path / "out"
+    assert driver.main(_argv(folder, out, "--population", "shift")) == 0
+    assert driver.main(_argv(folder, out, "--population", "shift", "--overwrite")) == 2
+    err = capsys.readouterr().err
+    assert "never overwritten" in err and "delete its partial folder by hand" in err
+    assert (out / "items.parquet").is_file()  # untouched
+    shutil.rmtree(out)  # the recovery rule: delete by hand, then re-run the identical command
+    assert driver.main(_argv(folder, out, "--population", "shift")) == 0
+
+
+def test_an_unregistered_run_may_still_be_overwritten(tmp_path, fake):
+    folder, out = _pdfs(tmp_path / "pdfs", NAMES), tmp_path / "out"
+    assert driver.main(_argv(folder, out, "--population", "dev")) == 0
+    assert driver.main(_argv(folder, out, "--population", "dev", "--overwrite")) == 0
+
+
+def test_a_finished_registered_run_is_kept_and_an_interrupted_one_resumes(
+    tmp_path, fake, monkeypatch, capsys
+):
+    monkeypatch.setattr(driver, "CHUNK", 2)
+    folder, out = _pdfs(tmp_path / "pdfs", NAMES), tmp_path / "out"
+    fake["interrupt_at"] = "x_04"
+    with pytest.raises(KeyboardInterrupt):
+        driver.main(_argv(folder, out, "--population", "shift"))
+    fake["interrupt_at"] = None
+    assert driver.main(_argv(folder, out, "--population", "shift", "--resume")) == 0
+    assert _items(out) == NAMES
+    assert driver.main(_argv(folder, out, "--population", "shift", "--resume")) == 2
+    err = capsys.readouterr().err
+    assert "kept as it is" in err and "use --overwrite" not in err

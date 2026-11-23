@@ -112,9 +112,9 @@ METRICS = [
     "false alarms on genuine test: 'tampered', and 'tampered or suspicious', with and "
     "without anomaly findings",
     "false alarms on genuine shift, and on the resaved_genuine copies",
-    "'could not check' (a check crashed and no evidence was found): its own count for every "
-    "group, tampered copies and genuine alike, never counted as no evidence; and per check, "
-    "on how many PDFs each check crashed",
+    "'could not check' (no evidence was found and at least one applicable check did not run): "
+    "its own count for every group, tampered copies and genuine alike, never counted as no "
+    "evidence; and 'checks that did not run': per check, on how many PDFs it did not run",
     "the per-copy CSV reports/week6_tamper_test_copies.csv (copy, type, layout, save mode, "
     "verdict, first check), committed",
     "overlay: reported separately, not pooled with the six types",
@@ -157,6 +157,17 @@ KNOWN_LIMITS = [
     "Populations are identified by statement id and by the PDF hash recorded by each run, "
     "not checked against the generator; shift PDFs copied to another folder would be caught "
     "only through their overlap with the test ids.",
+    "The rebuild check (reports/week6_rebuild_check_dev.json) covered only the 300 dev "
+    "statements; it was never run on the test statements, so a test source may fail to "
+    "build and be replaced (recorded, at most 5).",
+    "Nothing at step 6 can be hashed before it exists: a deleted and rebuilt data/tamper/test "
+    "is not detected before scoring, and a build that fails and is re-run once uses the same "
+    "seed.",
+    "The stand-ins in the test suite (the remote branch, the upstream commit) mean the full "
+    "remote flow is exercised only on a throwaway repository, not end to end.",
+    "The generator always prints every summary label, so a missing label here means it could "
+    "not be read. Real statements may omit totals by design; that will need a per-layout "
+    "list of expected labels.",
     "The pooled all-six-types rate hides the rerender_consistent gap and is not a headline.",
     "Dev copies are 60 per type; test is 100 per type, so test intervals are narrower.",
 ]
@@ -198,11 +209,31 @@ RULES = [
     "PDFs) cannot be hashed now: their seeds are recorded above, and their SHA-256 hashes, a "
     "combined hash of all PDFs per run, and the upstream commit hash are written into the "
     "test report.",
-    "Crashes, per check: a check that crashes on a PDF leaves only that check unrun. Any "
-    "strong finding still gives 'tampered' and a weak verdict stands; otherwise a crashed "
-    "check turns 'no evidence of tampering' into 'could not check', reported in its own "
-    "column for tampered copies and genuine PDFs. Crashes are counted per check. A PDF the "
-    "parser cannot parse keeps the earlier rule (PARSE_FAILED alone is 'suspicious').",
+    "Checks that did not run: 'could not check' means no evidence was found and at least one "
+    "applicable check did not run (it crashed, or it could not run: a layout not recognised, "
+    "a header field not read, an unparseable PDF). Any strong finding still gives 'tampered' "
+    "and a weak verdict stands; otherwise it turns 'no evidence of tampering' into 'could not "
+    "check', reported in its own column for tampered copies and genuine PDFs, and the checks "
+    "that did not run are counted per check. Every arithmetic 'not checked' note (a missing "
+    "closing balance, total, count, period or account number) counts as a check that did not "
+    "run; the only exemption is the anomaly check on a statement with no transactions to "
+    "measure. A PDF the parser cannot parse keeps the earlier rule (PARSE_FAILED alone is "
+    "'suspicious'), and a check that raises leaves only that check unrun, except in the "
+    "arithmetic stage, where an exception marks the whole PDF as not checkable.",
+    "A source that raises RebuildError or CopyError (a string or row that cannot be located) "
+    "is replaced by the next source by seed, like NotApplicable, except that its other "
+    "page_swap donors are not tried; each failed source id, donor and reason are recorded in "
+    "the build summary and in the report. If more than 5 sources fail across the test build, "
+    "the build ends, is marked incomplete, and we STOP and report. Any other error, "
+    "RuntimeError included, still fails loudly.",
+    "A registered command that fails with no output (a crash, not a result) is not a result: "
+    "its partial output is deleted by hand and the identical command is re-run once; a second "
+    "failure means STOP and report. Nothing about the seed, the counts or the code changes.",
+    "Any code change after this freeze needs a new pre-registration: delete this file, "
+    "re-run tamper.preregister and commit and push the new one (both versions stay in git "
+    "history and only the pushed one is used). The report discloses it as a post-freeze "
+    "change; a scoring is labelled post-hoc only if a first result already exists. "
+    "score_tamper refuses to score against code that differs from the pushed file.",
     "The final registered step logs the scoring run to the local MLflow store (detector "
     "fingerprint, pre-registration commit hash, all metrics, and the report and per-copy CSV "
     "as artifacts). It runs after scoring, only reads the report, and does not change any "

@@ -3,13 +3,15 @@ overlay only by the one-time command. Everything here is in temp folders."""
 
 import json
 from collections import Counter
+from pathlib import Path
 
 import pytest
 
 from statementscreen.batch import BatchConfig, plan_batch
-from statementscreen.splits import OPEN_TEST_ENV
+from statementscreen.splits import OPEN_TEST_ENV, SplitError
 from statementscreen.tamper import build
-from statementscreen.tamper.copy import HELD_OUT, TYPES
+from statementscreen.tamper.copy import HELD_OUT, TYPES, CopyError
+from statementscreen.tamper.rebuild import RebuildError
 from statementscreen.writer import write_batch
 
 
@@ -22,7 +24,14 @@ def built(tmp_path_factory) -> dict:
     out = tmp_path_factory.mktemp("tamper") / "dev"
     summary = build.build_set(batch / "pdfs", ids, layout, out, per_type=2, seed=1)
     keys = [json.loads(p.read_text()) for p in sorted((out / "keys").glob("*.json"))]
-    return {"out": out, "summary": summary, "keys": keys, "layout": layout}
+    return {
+        "out": out,
+        "summary": summary,
+        "keys": keys,
+        "layout": layout,
+        "batch": batch,
+        "ids": ids,
+    }
 
 
 def test_every_type_but_overlay_gets_its_copies(built) -> None:
@@ -78,3 +87,74 @@ def test_train_gets_no_copies_and_nothing_is_written(tmp_path) -> None:
 def test_a_test_set_is_never_overwritten(tmp_path) -> None:
     argv = [str(tmp_path), "--set", "test", "--per-type", "1", "--overwrite"]
     assert build.main(argv) == 2
+
+
+def _flaky_build(built, tmp_path, monkeypatch, fail_first, exc=RebuildError, per_type=2):
+    """build_set with tamper_copy raising `exc` on its first `fail_first` calls."""
+    real, calls = build.tamper_copy, []
+
+    def flaky(path, tamper_type, seed, donor=None, allow_held_out=False):
+        calls.append(Path(path).stem)
+        if len(calls) <= fail_first:
+            raise exc("boom")
+        return real(path, tamper_type, seed, donor, allow_held_out=allow_held_out)
+
+    monkeypatch.setattr(build, "tamper_copy", flaky)
+    summary = build.build_set(
+        built["batch"] / "pdfs", built["ids"], built["layout"], tmp_path / "out", per_type, seed=1
+    )
+    return summary, calls
+
+
+def test_a_source_that_cannot_be_rebuilt_is_replaced_and_recorded(built, tmp_path, monkeypatch):
+    summary, calls = _flaky_build(built, tmp_path, monkeypatch, fail_first=2)
+    errors = summary["build_errors"]
+    assert [e["source"] for e in errors] == calls[:2]  # each failed source id, in order
+    assert all(e["error"] == "RebuildError: boom" and e["type"] in TYPES for e in errors)
+    assert summary["stopped"] is None
+    assert sum(summary["sources_replaced"].values()) >= 2  # replaced by the next source
+    assert any((tmp_path / "out" / "keys").glob("*.json"))  # the build carried on
+
+
+def test_a_copy_error_is_treated_the_same_way_and_records_the_donor(built, tmp_path, monkeypatch):
+    summary, _ = _flaky_build(built, tmp_path, monkeypatch, fail_first=1, exc=CopyError)
+    assert [e["error"] for e in summary["build_errors"]] == ["CopyError: boom"]
+    assert "donor" in summary["build_errors"][0]
+
+
+def test_a_plain_runtime_error_or_a_project_error_fails_loudly(built, tmp_path, monkeypatch):
+    for exc in (
+        RuntimeError,
+        SplitError,
+        RecursionError,
+    ):  # all are RuntimeErrors, none is a build error
+        with pytest.raises(exc):
+            _flaky_build(built, tmp_path / exc.__name__, monkeypatch, fail_first=1, exc=exc)
+
+
+def test_more_than_five_failed_sources_is_a_stop(built, tmp_path, monkeypatch, capsys):
+    summary, calls = _flaky_build(built, tmp_path, monkeypatch, fail_first=99, per_type=1)
+    assert len(summary["build_errors"]) == build.MAX_BUILD_ERRORS + 1 == len(calls)
+    assert summary["stopped"].startswith("more than 5 sources failed")
+    assert summary["complete"] is False and summary["short"]
+    assert "STOP" in capsys.readouterr().out
+
+
+def test_exactly_five_failed_sources_is_not_a_stop(built, tmp_path, monkeypatch):
+    summary, _ = _flaky_build(built, tmp_path, monkeypatch, fail_first=5, per_type=1)
+    assert len(summary["build_errors"]) == 5 and summary["stopped"] is None
+
+
+def test_any_other_error_still_fails_loudly(built, tmp_path, monkeypatch):
+    with pytest.raises(KeyError):
+        _flaky_build(built, tmp_path, monkeypatch, fail_first=1, exc=KeyError)
+
+
+def test_a_non_empty_test_folder_says_how_to_recover_not_to_overwrite(tmp_path, capsys) -> None:
+    partial = tmp_path / "out" / "test"
+    (partial / "copies").mkdir(parents=True)
+    argv = [str(tmp_path), "--set", "test", "--per-type", "1", "--out", str(tmp_path / "out")]
+    assert build.main(argv) == 2
+    err = capsys.readouterr().err
+    assert "never overwritten" in err and "delete that folder by hand" in err
+    assert "pass --overwrite" not in err and (partial / "copies").is_dir()

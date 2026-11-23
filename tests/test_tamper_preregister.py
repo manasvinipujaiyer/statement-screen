@@ -95,8 +95,13 @@ def test_the_new_limits_are_stated():
 def test_the_one_time_and_crash_rules_are_stated():
     rules = " ".join(_built()["rules"])
     assert "never overwritten" in rules and "--post-hoc" in rules
-    assert "Crashes, per check" in rules and "Any strong finding still gives 'tampered'" in rules
+    assert "Checks that did not run" in rules
+    assert "Any strong finding still gives 'tampered'" in rules
     assert "turns 'no evidence of tampering' into 'could not check'" in rules
+    assert "the only exemption is the anomaly check" in rules
+    assert "Every arithmetic 'not checked' note" in rules
+    assert "PARSE_FAILED alone is 'suspicious'" in rules
+    assert "no printed closing balance" not in rules
     assert "identifies populations by what they contain" in rules and "seed 6" in rules
     assert "git has ever recorded" in rules and "combined hash of all PDFs" in rules
     assert "--split test (or --population test)" in rules
@@ -297,3 +302,29 @@ def test_no_upstream_means_no_upstream_commit(tmp_path):
     work, _ = _repo(tmp_path, push=False)
     with pytest.raises(pre.PreregError, match="no upstream"):
         pre.upstream_sha(work)
+
+
+def test_the_builder_recovery_and_post_freeze_rules_are_stated():
+    data = _built()
+    rules = " ".join(data["rules"])
+    assert "replaced by the next source by seed, like NotApplicable" in rules
+    assert "RebuildError or CopyError" in rules and "RuntimeError included" in rules
+    assert "If more than 5 sources fail across the test build" in rules and "STOP" in rules
+    assert "re-run once" in rules and "a second failure means STOP" in rules
+    assert "Any code change after this freeze needs a new pre-registration" in rules
+    assert "discloses it as a post-freeze change" in rules
+    assert "labelled post-hoc only if a first result already exists" in rules
+
+
+def test_the_metric_is_called_checks_that_did_not_run():
+    metrics = " ".join(_built()["metrics"])
+    assert "checks that did not run" in metrics and "at least one applicable check" in metrics
+
+
+def test_the_extra_limits_are_stated():
+    limits = " ".join(_built()["known_limits"])
+    assert "rebuild check" in limits and "300 dev statements" in limits
+    assert "deleted and rebuilt data/tamper/test" in limits
+    assert "stand-ins in the test suite" in limits
+    assert "The generator always prints every summary label" in limits
+    assert "per-layout list of expected labels" in limits

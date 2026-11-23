@@ -275,6 +275,6 @@ def test_a_crashed_pdf_is_shown_as_could_not_check_in_the_summary(tmp_path, caps
     assert cli.main(_argv(s)) == 0
     out = capsys.readouterr().out
     assert "could not check 1/5 (20.0%)" in out and "could not check 0/4" in out
-    assert "Crashed checks" in out and "parse 1" in out
+    assert "Checks that did not run" in out and "parse 1" in out
     report = json.loads(s["out"].read_text(encoding="utf-8"))
     assert [c["item"] for c in report["could_not_check_cases"]] == ["stmt_0002"]

@@ -25,10 +25,10 @@ shift and 800 copies (100 of each of eight types, seed 6, built without a shortf
 required, with a SHA-256 for every PDF. They need --preregistration (compared with the pushed
 version) and, for the copies, --table; they are scored once into the registered file (never
 overwritten, not even after deleting a committed one, --overwrite refused); a later run is
---post-hoc and goes to a file of its own. If a check crashed on a PDF, a verdict that would
-read "no evidence of tampering" reads "could not check" instead (strong findings and weak
-verdicts stand); those PDFs are counted in the totals, reported in their own column, and the
-crashes are counted per check.
+--post-hoc and goes to a file of its own. If an applicable check did not run on a PDF (it
+crashed, or could not run), a verdict that would read "no evidence of tampering" reads "could
+not check" instead (strong findings and weak verdicts stand); those PDFs are counted in the
+totals, reported in their own column, and the checks that did not run are counted per check.
 
 If any genuine PDF has a strong finding, the report is still written but the command prints
 a STOP message and exits with code 3: nothing should be changed before that is looked at.
@@ -36,6 +36,7 @@ a STOP message and exits with code 3: nothing should be changed before that is l
 
 import argparse
 import json
+import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -80,6 +81,17 @@ RUN_INFO = (
     "peak_memory_mb",
     "peak_memory_note",
     "fingerprint",
+)
+
+
+BUILD_INFO = (
+    "seed",
+    "per_type",
+    "made",
+    "complete",
+    "stopped",
+    "sources_replaced",
+    "build_errors",
 )
 
 
@@ -136,7 +148,9 @@ def load_inputs(
         copies = load_copies(Path(copies_dir), findings, crashed)
         _cover("copies", {c.item for c in copies}, ran)
         hashes = {**copies_hashes(Path(copies_dir)), "detect": run_hashes(run)}
-        inputs["copies"] = {**_info(summary), "sha256": hashes}
+        build = json.loads((Path(copies_dir) / "build_run.json").read_text(encoding="utf-8"))
+        build_info = {k: build.get(k) for k in BUILD_INFO}  # incl. every failed source and why
+        inputs["copies"] = {**_info(summary), "sha256": hashes, "build": build_info}
     own: dict[str, Path] = {}
     for spec in genuine_manifests:
         name, _, path = spec.partition("=")
@@ -173,6 +187,32 @@ def load_inputs(
     return copies, genuine, inputs
 
 
+def write_outputs(report: dict, out: Path, rows: list[dict] | None, table: Path | None) -> None:
+    """Write the report and the per-copy CSV all or nothing: both go to temporary names first
+    and are renamed only when both are complete, so a failure can never leave a registered
+    report without its CSV (the one-time guard would then refuse every later run)."""
+    out.parent.mkdir(parents=True, exist_ok=True)
+    pairs = [(out.with_name(out.name + ".tmp"), out)]
+    if table is not None and rows is not None:
+        table.parent.mkdir(parents=True, exist_ok=True)
+        pairs.insert(0, (table.with_name(table.name + ".tmp"), table))
+    done: list[Path] = []
+    try:
+        pairs[-1][0].write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", "utf-8")
+        if len(pairs) == 2:
+            write_copy_table(pairs[0][0], rows or [])
+        for tmp, final in pairs:  # the report last: it is what marks the result as written
+            os.replace(tmp, final)
+            done.append(final)
+    except BaseException:
+        for final in done:
+            final.unlink(missing_ok=True)
+        raise
+    finally:
+        for tmp, _ in pairs:
+            tmp.unlink(missing_ok=True)
+
+
 def guard_one_time(args: argparse.Namespace, registered: list[str]) -> None:
     """The test and shift populations are scored once. The first result goes to the registered
     file and is never overwritten; any later run is --post-hoc, in a file of its own."""
@@ -188,7 +228,16 @@ def guard_one_time(args: argparse.Namespace, registered: list[str]) -> None:
     outputs = [(args.out, first)] + ([(args.table, first_table)] if args.table else [])
     for path, registered_path in outputs:
         if path.exists():
-            raise ScoreError(f"{path} exists; the test and shift results are never overwritten")
+            orphan = path != args.out and not args.out.exists()
+            hint = (
+                "; it is an orphan of an interrupted write (no report beside it): it is not a "
+                "result, so delete it by hand and re-run"
+                if orphan
+                else ""
+            )
+            raise ScoreError(
+                f"{path} exists; the test and shift results are never overwritten{hint}"
+            )
         if pre.has_git_history(path):
             raise ScoreError(
                 f"{path} is in git's history: that result was already written (and committed), "
@@ -223,8 +272,8 @@ def _row(name: str, block: dict, extra_key: str, extra_label: str) -> str:
     )
 
 
-def crashed_checks_lines(report: dict) -> list[str]:
-    """Per group, the checks that crashed and on how many PDFs (whatever the PDF's verdict)."""
+def checks_not_run_lines(report: dict) -> list[str]:
+    """Per group, the checks that did not run and on how many PDFs (whatever the verdict)."""
     groups = {
         **report["detection"],
         "overlay": report["overlay_holdout"],
@@ -232,11 +281,14 @@ def crashed_checks_lines(report: dict) -> list[str]:
         **{f"genuine {n}": r for n, r in report["false_alarms"]["genuine"].items()},
     }
     rows = [
-        f"  {name:<26} " + ", ".join(f"{check} {n}" for check, n in rep["crashed_checks"].items())
+        f"  {name:<26} " + ", ".join(f"{check} {n}" for check, n in rep["checks_not_run"].items())
         for name, rep in groups.items()
-        if rep and rep["crashed_checks"]
+        if rep and rep["checks_not_run"]
     ]
-    return ["Crashed checks (PDFs on which each check crashed):", *(rows or ["  none"])]
+    return [
+        "Checks that did not run (PDFs on which each check did not run):",
+        *(rows or ["  none"]),
+    ]
 
 
 def summary_text(report: dict) -> str:
@@ -244,8 +296,8 @@ def summary_text(report: dict) -> str:
     lines = [
         ("POST-HOC RE-RUN (not the one-time result). " if report.get("post_hoc") else "")
         + f"Rule version {report['rule_version']}; intervals: 95% bootstrap over source "
-        "statements. 'flagged' = tampered or suspicious; 'could not check' = the detector "
-        "crashed on the PDF (counted in the totals, never as 'no evidence').",
+        "statements. 'flagged' = tampered or suspicious; 'could not check' = no evidence, but "
+        "an applicable check did not run (counted in the totals, never as 'no evidence').",
         "",
         "Detection per tamper type:",
     ]
@@ -265,7 +317,7 @@ def summary_text(report: dict) -> str:
     for name, rep in report["false_alarms"]["genuine"].items():
         lines.append(_row(f"genuine {name}", rep, "without_anomaly", "without anomaly"))
         lines.append(f"  {'':<26} ({rep['population']})")
-    lines += ["", *crashed_checks_lines(report)]
+    lines += ["", *checks_not_run_lines(report)]
     for title, notes in (
         ("File-history dependence (detection)", report["history_dependence"]["detection"]),
         ("File-history dependence (false alarms)", report["history_dependence"]["false_alarms"]),
@@ -355,15 +407,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         report["inputs"] = inputs
         if args.post_hoc:
             report["post_hoc"] = True
+        rows = copy_rows(copies, args.rule_version, args.table_extended) if args.table else None
     except (ScoreError, StaleFindings, PreregError, ProvenanceError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
 
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    if args.table:
-        rows = copy_rows(copies, args.rule_version, args.table_extended)
-        write_copy_table(args.table, rows)
+    write_outputs(report, args.out, rows, args.table)
     print(summary_text(report))
     print(f"\nWrote {args.out}" + (f" and {args.table}" if args.table else ""))
     strong = report["genuine_with_strong_findings"]
