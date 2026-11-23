@@ -1,0 +1,3159 @@
+{
+  "bootstrap": {
+    "interval": "2.5th to 97.5th percentile",
+    "resampled": "source statements",
+    "resamples": 1000,
+    "seed": 2026
+  },
+  "definitions": {
+    "first_check": "the first non-info finding in verdict order (strong first, then check group, page, row)",
+    "tampered": "the verdict is 'tampered'",
+    "tampered_or_suspicious": "the verdict is 'tampered' or 'suspicious'",
+    "without_history": "the verdict recomputed with every file-history finding removed"
+  },
+  "detection": {
+    "inplace_edit": {
+      "by_layout": {
+        "columns": {
+          "n": 30,
+          "tampered": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          }
+        },
+        "drcr": {
+          "n": 30,
+          "tampered": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          }
+        }
+      },
+      "by_save_mode": {
+        "full": {
+          "n": 35,
+          "tampered": {
+            "count": 35,
+            "rate": 1.0,
+            "text": "35/35 (100.0%)",
+            "total": 35
+          },
+          "tampered_or_suspicious": {
+            "count": 35,
+            "rate": 1.0,
+            "text": "35/35 (100.0%)",
+            "total": 35
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 35,
+            "rate": 1.0,
+            "text": "35/35 (100.0%)",
+            "total": 35
+          },
+          "tampered_without_history": {
+            "count": 35,
+            "rate": 1.0,
+            "text": "35/35 (100.0%)",
+            "total": 35
+          }
+        },
+        "incremental": {
+          "n": 25,
+          "tampered": {
+            "count": 25,
+            "rate": 1.0,
+            "text": "25/25 (100.0%)",
+            "total": 25
+          },
+          "tampered_or_suspicious": {
+            "count": 25,
+            "rate": 1.0,
+            "text": "25/25 (100.0%)",
+            "total": 25
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 25,
+            "rate": 1.0,
+            "text": "25/25 (100.0%)",
+            "total": 25
+          },
+          "tampered_without_history": {
+            "count": 25,
+            "rate": 1.0,
+            "text": "25/25 (100.0%)",
+            "total": 25
+          }
+        }
+      },
+      "codes_fired": {
+        "strong": {
+          "BALANCE_CHAIN": 60,
+          "PAGE_CARRYOVER": 2,
+          "SUMMARY_TOTALS": 60
+        },
+        "weak": {
+          "ANOMALY_SCORE": 2,
+          "INCREMENTAL_UPDATE": 25
+        }
+      },
+      "first_check": {
+        "suspicious": {},
+        "tampered": {
+          "arithmetic:SUMMARY_TOTALS": 60
+        }
+      },
+      "n": 60,
+      "with_history": {
+        "labels": {
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 60
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        }
+      },
+      "without_history": {
+        "labels": {
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 60
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        }
+      }
+    },
+    "inplace_edit_consistent": {
+      "by_layout": {
+        "columns": {
+          "n": 30,
+          "tampered": {
+            "count": 29,
+            "rate": 0.9667,
+            "text": "29/30 (96.7%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 29,
+            "rate": 0.9667,
+            "text": "29/30 (96.7%)",
+            "total": 30
+          }
+        },
+        "drcr": {
+          "n": 30,
+          "tampered": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          }
+        }
+      },
+      "by_save_mode": {
+        "full": {
+          "n": 29,
+          "tampered": {
+            "count": 29,
+            "rate": 1.0,
+            "text": "29/29 (100.0%)",
+            "total": 29
+          },
+          "tampered_or_suspicious": {
+            "count": 29,
+            "rate": 1.0,
+            "text": "29/29 (100.0%)",
+            "total": 29
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 29,
+            "rate": 1.0,
+            "text": "29/29 (100.0%)",
+            "total": 29
+          },
+          "tampered_without_history": {
+            "count": 29,
+            "rate": 1.0,
+            "text": "29/29 (100.0%)",
+            "total": 29
+          }
+        },
+        "incremental": {
+          "n": 31,
+          "tampered": {
+            "count": 30,
+            "rate": 0.9677,
+            "text": "30/31 (96.8%)",
+            "total": 31
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 0.9677,
+            "text": "30/31 (96.8%)",
+            "total": 31
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 30,
+            "rate": 0.9677,
+            "text": "30/31 (96.8%)",
+            "total": 31
+          },
+          "tampered_without_history": {
+            "count": 30,
+            "rate": 0.9677,
+            "text": "30/31 (96.8%)",
+            "total": 31
+          }
+        }
+      },
+      "codes_fired": {
+        "strong": {
+          "BALANCE_CHAIN": 59,
+          "PAGE_CARRYOVER": 59,
+          "SUMMARY_IDENTITY": 59
+        },
+        "weak": {
+          "ANOMALY_SCORE": 3,
+          "INCREMENTAL_UPDATE": 31
+        }
+      },
+      "first_check": {
+        "suspicious": {},
+        "tampered": {
+          "arithmetic:SUMMARY_IDENTITY": 59
+        }
+      },
+      "n": 60,
+      "with_history": {
+        "labels": {
+          "no evidence of tampering": 1,
+          "suspicious": 0,
+          "tampered": 59
+        },
+        "tampered": {
+          "ci95": [
+            0.95,
+            1.0
+          ],
+          "count": 59,
+          "rate": 0.9833,
+          "text": "59/60 (98.3%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.95,
+            1.0
+          ],
+          "count": 59,
+          "rate": 0.9833,
+          "text": "59/60 (98.3%)",
+          "total": 60
+        }
+      },
+      "without_history": {
+        "labels": {
+          "no evidence of tampering": 1,
+          "suspicious": 0,
+          "tampered": 59
+        },
+        "tampered": {
+          "ci95": [
+            0.95,
+            1.0
+          ],
+          "count": 59,
+          "rate": 0.9833,
+          "text": "59/60 (98.3%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.95,
+            1.0
+          ],
+          "count": 59,
+          "rate": 0.9833,
+          "text": "59/60 (98.3%)",
+          "total": 60
+        }
+      }
+    },
+    "page_remove": {
+      "by_layout": {
+        "columns": {
+          "n": 30,
+          "tampered": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          }
+        },
+        "drcr": {
+          "n": 30,
+          "tampered": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          }
+        }
+      },
+      "by_save_mode": {
+        "full": {
+          "n": 30,
+          "tampered": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_without_history": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          }
+        },
+        "incremental": {
+          "n": 30,
+          "tampered": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_without_history": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          }
+        }
+      },
+      "codes_fired": {
+        "strong": {
+          "BALANCE_CHAIN": 60,
+          "PAGE_CARRYOVER": 60,
+          "PAGE_NUMBER": 60,
+          "SUMMARY_COUNTS": 60,
+          "SUMMARY_TOTALS": 60
+        },
+        "weak": {
+          "ANOMALY_SCORE": 1,
+          "INCREMENTAL_UPDATE": 30
+        }
+      },
+      "first_check": {
+        "suspicious": {},
+        "tampered": {
+          "arithmetic:SUMMARY_COUNTS": 60
+        }
+      },
+      "n": 60,
+      "with_history": {
+        "labels": {
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 60
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        }
+      },
+      "without_history": {
+        "labels": {
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 60
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        }
+      }
+    },
+    "page_swap": {
+      "by_layout": {
+        "columns": {
+          "n": 31,
+          "tampered": {
+            "count": 31,
+            "rate": 1.0,
+            "text": "31/31 (100.0%)",
+            "total": 31
+          },
+          "tampered_or_suspicious": {
+            "count": 31,
+            "rate": 1.0,
+            "text": "31/31 (100.0%)",
+            "total": 31
+          }
+        },
+        "drcr": {
+          "n": 29,
+          "tampered": {
+            "count": 29,
+            "rate": 1.0,
+            "text": "29/29 (100.0%)",
+            "total": 29
+          },
+          "tampered_or_suspicious": {
+            "count": 29,
+            "rate": 1.0,
+            "text": "29/29 (100.0%)",
+            "total": 29
+          }
+        }
+      },
+      "by_save_mode": {
+        "full": {
+          "n": 27,
+          "tampered": {
+            "count": 27,
+            "rate": 1.0,
+            "text": "27/27 (100.0%)",
+            "total": 27
+          },
+          "tampered_or_suspicious": {
+            "count": 27,
+            "rate": 1.0,
+            "text": "27/27 (100.0%)",
+            "total": 27
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 27,
+            "rate": 1.0,
+            "text": "27/27 (100.0%)",
+            "total": 27
+          },
+          "tampered_without_history": {
+            "count": 27,
+            "rate": 1.0,
+            "text": "27/27 (100.0%)",
+            "total": 27
+          }
+        },
+        "incremental": {
+          "n": 33,
+          "tampered": {
+            "count": 33,
+            "rate": 1.0,
+            "text": "33/33 (100.0%)",
+            "total": 33
+          },
+          "tampered_or_suspicious": {
+            "count": 33,
+            "rate": 1.0,
+            "text": "33/33 (100.0%)",
+            "total": 33
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 33,
+            "rate": 1.0,
+            "text": "33/33 (100.0%)",
+            "total": 33
+          },
+          "tampered_without_history": {
+            "count": 33,
+            "rate": 1.0,
+            "text": "33/33 (100.0%)",
+            "total": 33
+          }
+        }
+      },
+      "codes_fired": {
+        "strong": {
+          "BALANCE_CHAIN": 60,
+          "HEADER_MISMATCH": 60,
+          "PAGE_CARRYOVER": 60,
+          "PAGE_NUMBER": 50,
+          "SUMMARY_COUNTS": 54,
+          "SUMMARY_TOTALS": 60
+        },
+        "weak": {
+          "ANOMALY_SCORE": 2,
+          "DATE_ORDER": 59,
+          "DATE_OUT_OF_PERIOD": 37,
+          "INCREMENTAL_UPDATE": 33
+        }
+      },
+      "first_check": {
+        "suspicious": {},
+        "tampered": {
+          "arithmetic:SUMMARY_COUNTS": 54,
+          "arithmetic:SUMMARY_TOTALS": 6
+        }
+      },
+      "n": 60,
+      "with_history": {
+        "labels": {
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 60
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        }
+      },
+      "without_history": {
+        "labels": {
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 60
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        }
+      }
+    },
+    "rerender_consistent": {
+      "by_layout": {
+        "columns": {
+          "n": 29,
+          "tampered": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/29 (0.0%)",
+            "total": 29
+          },
+          "tampered_or_suspicious": {
+            "count": 5,
+            "rate": 0.1724,
+            "text": "5/29 (17.2%)",
+            "total": 29
+          }
+        },
+        "drcr": {
+          "n": 31,
+          "tampered": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/31 (0.0%)",
+            "total": 31
+          },
+          "tampered_or_suspicious": {
+            "count": 2,
+            "rate": 0.0645,
+            "text": "2/31 (6.5%)",
+            "total": 31
+          }
+        }
+      },
+      "codes_fired": {
+        "strong": {},
+        "weak": {
+          "ANOMALY_SCORE": 7
+        }
+      },
+      "first_check": {
+        "suspicious": {
+          "anomaly:ANOMALY_SCORE": 7
+        },
+        "tampered": {}
+      },
+      "n": 60,
+      "with_history": {
+        "labels": {
+          "no evidence of tampering": 53,
+          "suspicious": 7,
+          "tampered": 0
+        },
+        "tampered": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/60 (0.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.05,
+            0.2
+          ],
+          "count": 7,
+          "rate": 0.1167,
+          "text": "7/60 (11.7%)",
+          "total": 60
+        }
+      },
+      "without_history": {
+        "labels": {
+          "no evidence of tampering": 53,
+          "suspicious": 7,
+          "tampered": 0
+        },
+        "tampered": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/60 (0.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.05,
+            0.2
+          ],
+          "count": 7,
+          "rate": 0.1167,
+          "text": "7/60 (11.7%)",
+          "total": 60
+        }
+      }
+    },
+    "rerender_inconsistent": {
+      "by_layout": {
+        "columns": {
+          "n": 30,
+          "tampered": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          }
+        },
+        "drcr": {
+          "n": 30,
+          "tampered": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 30,
+            "rate": 1.0,
+            "text": "30/30 (100.0%)",
+            "total": 30
+          }
+        }
+      },
+      "codes_fired": {
+        "strong": {
+          "BALANCE_CHAIN": 60,
+          "PAGE_CARRYOVER": 1,
+          "SUMMARY_IDENTITY": 60
+        },
+        "weak": {}
+      },
+      "first_check": {
+        "suspicious": {},
+        "tampered": {
+          "arithmetic:SUMMARY_IDENTITY": 60
+        }
+      },
+      "n": 60,
+      "with_history": {
+        "labels": {
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 60
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        }
+      },
+      "without_history": {
+        "labels": {
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 60
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 60,
+          "rate": 1.0,
+          "text": "60/60 (100.0%)",
+          "total": 60
+        }
+      }
+    }
+  },
+  "false_alarm_cases": [
+    {
+      "donor": null,
+      "fields_changed": 0,
+      "item": "copy_0289",
+      "layout": "drcr",
+      "outcome": "suspicious",
+      "pages_changed": [],
+      "population": "resaved_genuine",
+      "reasons": [
+        "the file was saved more than once: 2 end-of-file markers and an update section pointing back to an earlier one (/Prev)",
+        "the statement's money pattern is unusual (score 0.6346 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'pypdf' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "incremental",
+      "source": "stmt_0708",
+      "summary": "2 different weak signs: ANOMALY_SCORE, INCREMENTAL_UPDATE",
+      "type": "resaved_genuine"
+    },
+    {
+      "item": "stmt_0338",
+      "layout": "columns",
+      "outcome": "suspicious",
+      "population": "dev",
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6129 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0338",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "genuine"
+    },
+    {
+      "item": "stmt_0383",
+      "layout": "drcr",
+      "outcome": "suspicious",
+      "population": "dev",
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6402 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0383",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "genuine"
+    },
+    {
+      "item": "stmt_0639",
+      "layout": "drcr",
+      "outcome": "suspicious",
+      "population": "dev",
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6165 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0639",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "genuine"
+    },
+    {
+      "item": "stmt_0673",
+      "layout": "drcr",
+      "outcome": "suspicious",
+      "population": "dev",
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6126 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0673",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "genuine"
+    },
+    {
+      "item": "stmt_0708",
+      "layout": "drcr",
+      "outcome": "suspicious",
+      "population": "dev",
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6346 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0708",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "genuine"
+    },
+    {
+      "item": "stmt_0826",
+      "layout": "columns",
+      "outcome": "suspicious",
+      "population": "dev",
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6153 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0826",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "genuine"
+    }
+  ],
+  "false_alarms": {
+    "genuine": {
+      "dev": {
+        "by_layout": {
+          "columns": {
+            "n": 152,
+            "tampered": {
+              "count": 0,
+              "rate": 0.0,
+              "text": "0/152 (0.0%)",
+              "total": 152
+            },
+            "tampered_or_suspicious": {
+              "count": 2,
+              "rate": 0.0132,
+              "text": "2/152 (1.3%)",
+              "total": 152
+            }
+          },
+          "drcr": {
+            "n": 148,
+            "tampered": {
+              "count": 0,
+              "rate": 0.0,
+              "text": "0/148 (0.0%)",
+              "total": 148
+            },
+            "tampered_or_suspicious": {
+              "count": 4,
+              "rate": 0.027,
+              "text": "4/148 (2.7%)",
+              "total": 148
+            }
+          }
+        },
+        "codes_fired": {
+          "strong": {},
+          "weak": {
+            "ANOMALY_SCORE": 6
+          }
+        },
+        "first_check": {
+          "suspicious": {
+            "anomaly:ANOMALY_SCORE": 6
+          },
+          "tampered": {}
+        },
+        "n": 300,
+        "population": "genuine dev: the anomaly threshold was set on these statements, so the anomaly check's 2% holds here by construction",
+        "with_history": {
+          "labels": {
+            "no evidence of tampering": 294,
+            "suspicious": 6,
+            "tampered": 0
+          },
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/300 (0.0%)",
+            "total": 300
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0067,
+              0.0367
+            ],
+            "count": 6,
+            "rate": 0.02,
+            "text": "6/300 (2.0%)",
+            "total": 300
+          }
+        },
+        "without_anomaly": {
+          "labels": {
+            "no evidence of tampering": 300,
+            "suspicious": 0,
+            "tampered": 0
+          },
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/300 (0.0%)",
+            "total": 300
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/300 (0.0%)",
+            "total": 300
+          }
+        },
+        "without_history": {
+          "labels": {
+            "no evidence of tampering": 294,
+            "suspicious": 6,
+            "tampered": 0
+          },
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/300 (0.0%)",
+            "total": 300
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0067,
+              0.0367
+            ],
+            "count": 6,
+            "rate": 0.02,
+            "text": "6/300 (2.0%)",
+            "total": 300
+          }
+        }
+      }
+    },
+    "resaved_genuine": {
+      "by_layout": {
+        "columns": {
+          "n": 30,
+          "tampered": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/30 (0.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/30 (0.0%)",
+            "total": 30
+          }
+        },
+        "drcr": {
+          "n": 30,
+          "tampered": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/30 (0.0%)",
+            "total": 30
+          },
+          "tampered_or_suspicious": {
+            "count": 1,
+            "rate": 0.0333,
+            "text": "1/30 (3.3%)",
+            "total": 30
+          }
+        }
+      },
+      "by_save_mode": {
+        "full": {
+          "n": 35,
+          "tampered": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/35 (0.0%)",
+            "total": 35
+          },
+          "tampered_or_suspicious": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/35 (0.0%)",
+            "total": 35
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/35 (0.0%)",
+            "total": 35
+          },
+          "tampered_without_history": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/35 (0.0%)",
+            "total": 35
+          }
+        },
+        "incremental": {
+          "n": 25,
+          "tampered": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/25 (0.0%)",
+            "total": 25
+          },
+          "tampered_or_suspicious": {
+            "count": 1,
+            "rate": 0.04,
+            "text": "1/25 (4.0%)",
+            "total": 25
+          },
+          "tampered_or_suspicious_without_history": {
+            "count": 1,
+            "rate": 0.04,
+            "text": "1/25 (4.0%)",
+            "total": 25
+          },
+          "tampered_without_history": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/25 (0.0%)",
+            "total": 25
+          }
+        }
+      },
+      "codes_fired": {
+        "strong": {},
+        "weak": {
+          "ANOMALY_SCORE": 1,
+          "INCREMENTAL_UPDATE": 25
+        }
+      },
+      "first_check": {
+        "suspicious": {
+          "history:INCREMENTAL_UPDATE": 1
+        },
+        "tampered": {}
+      },
+      "n": 60,
+      "with_history": {
+        "labels": {
+          "no evidence of tampering": 59,
+          "suspicious": 1,
+          "tampered": 0
+        },
+        "tampered": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/60 (0.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.0,
+            0.05
+          ],
+          "count": 1,
+          "rate": 0.0167,
+          "text": "1/60 (1.7%)",
+          "total": 60
+        }
+      },
+      "without_history": {
+        "labels": {
+          "no evidence of tampering": 59,
+          "suspicious": 1,
+          "tampered": 0
+        },
+        "tampered": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/60 (0.0%)",
+          "total": 60
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.0,
+            0.05
+          ],
+          "count": 1,
+          "rate": 0.0167,
+          "text": "1/60 (1.7%)",
+          "total": 60
+        }
+      }
+    }
+  },
+  "genuine_with_strong_findings": [],
+  "history_dependence": {
+    "detection": [],
+    "false_alarms": [],
+    "overlay": []
+  },
+  "inputs": {
+    "copies": {
+      "crashed": [],
+      "findings": 4152,
+      "fingerprint": {
+        "code": "3dd2362819c5233d45e1a7f0c3615eb1d4b1c8ac53c2a6ff2f346187051300b3",
+        "config": "5b332b4b4ff8e5ef8dfee4dfe6e286d7db7e038ea3c72568da183fedfd95f0b8",
+        "model": "d1a8aff502819286c572ce5891008ce4f274317b8ec640cd181031bef2939ccb",
+        "uv_lock": "68f70d808c4c2377ab2fb651d3aedad4a10206f1dcda0915428c5a0a41f7b1c5"
+      },
+      "items_with_findings": 420,
+      "pdfs": 420,
+      "peak_memory_mb": 278.1,
+      "peak_memory_note": "the process's peak so far when each PDF finished, not its own",
+      "seconds_per_pdf": {
+        "max": 7.715,
+        "mean": 3.449,
+        "p95": 5.441
+      },
+      "seconds_total": 1448.4,
+      "source": "data/tamper/dev/copies",
+      "split": null
+    },
+    "genuine_dev": {
+      "crashed": [],
+      "findings": 306,
+      "fingerprint": {
+        "code": "3dd2362819c5233d45e1a7f0c3615eb1d4b1c8ac53c2a6ff2f346187051300b3",
+        "config": "5b332b4b4ff8e5ef8dfee4dfe6e286d7db7e038ea3c72568da183fedfd95f0b8",
+        "model": "d1a8aff502819286c572ce5891008ce4f274317b8ec640cd181031bef2939ccb",
+        "uv_lock": "68f70d808c4c2377ab2fb651d3aedad4a10206f1dcda0915428c5a0a41f7b1c5"
+      },
+      "items_with_findings": 300,
+      "pdfs": 300,
+      "peak_memory_mb": 289.2,
+      "peak_memory_note": "the process's peak so far when each PDF finished, not its own",
+      "seconds_per_pdf": {
+        "max": 9.612,
+        "mean": 3.638,
+        "p95": 5.812
+      },
+      "seconds_total": 1091.4,
+      "source": "data/week1_n2000/pdfs",
+      "split": "dev"
+    }
+  },
+  "layout_notes": [],
+  "misses": [
+    {
+      "donor": null,
+      "fields_changed": 299,
+      "item": "copy_0002",
+      "layout": "columns",
+      "outcome": "only suspicious",
+      "pages_changed": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6303 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0826",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 5,
+      "item": "copy_0005",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        14
+      ],
+      "reasons": [
+        "the file was saved more than once: 2 end-of-file markers and an update section pointing back to an earlier one (/Prev)",
+        "producer 'pypdf' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "incremental",
+      "source": "stmt_0044",
+      "summary": "only one weak sign (INCREMENTAL_UPDATE), which is not enough on its own",
+      "type": "inplace_edit_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 625,
+      "item": "copy_0007",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0284",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 427,
+      "item": "copy_0020",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1886",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 525,
+      "item": "copy_0047",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0002",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 300,
+      "item": "copy_0048",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0853",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 588,
+      "item": "copy_0049",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0244",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 296,
+      "item": "copy_0057",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0972",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 1081,
+      "item": "copy_0058",
+      "layout": "columns",
+      "outcome": "only suspicious",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6502 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0743",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 885,
+      "item": "copy_0068",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0878",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 721,
+      "item": "copy_0070",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0645",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 709,
+      "item": "copy_0074",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1251",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 545,
+      "item": "copy_0079",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1785",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 580,
+      "item": "copy_0082",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1651",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 612,
+      "item": "copy_0085",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1346",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 491,
+      "item": "copy_0087",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0530",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 570,
+      "item": "copy_0095",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0901",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 544,
+      "item": "copy_0096",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0574",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 357,
+      "item": "copy_0116",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0386",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 652,
+      "item": "copy_0119",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1942",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 696,
+      "item": "copy_0120",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1483",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 714,
+      "item": "copy_0123",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1309",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 507,
+      "item": "copy_0124",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0339",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 479,
+      "item": "copy_0136",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1523",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 453,
+      "item": "copy_0137",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1252",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 721,
+      "item": "copy_0139",
+      "layout": "drcr",
+      "outcome": "only suspicious",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6896 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0383",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 864,
+      "item": "copy_0142",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0492",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 501,
+      "item": "copy_0151",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0776",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 688,
+      "item": "copy_0160",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1934",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 539,
+      "item": "copy_0168",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1866",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 878,
+      "item": "copy_0172",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1774",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 701,
+      "item": "copy_0185",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0332",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 522,
+      "item": "copy_0188",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0456",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 542,
+      "item": "copy_0190",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0471",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 426,
+      "item": "copy_0191",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1063",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 466,
+      "item": "copy_0196",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0060",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 348,
+      "item": "copy_0198",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0639",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 766,
+      "item": "copy_0201",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0393",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 621,
+      "item": "copy_0207",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0633",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 486,
+      "item": "copy_0209",
+      "layout": "columns",
+      "outcome": "only suspicious",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6235 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0917",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 651,
+      "item": "copy_0215",
+      "layout": "columns",
+      "outcome": "only suspicious",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6123 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1220",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 545,
+      "item": "copy_0219",
+      "layout": "columns",
+      "outcome": "only suspicious",
+      "pages_changed": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.5992 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1371",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 711,
+      "item": "copy_0223",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1981",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 330,
+      "item": "copy_0228",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0353",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 391,
+      "item": "copy_0234",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0147",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 669,
+      "item": "copy_0241",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0527",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 431,
+      "item": "copy_0245",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0140",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 602,
+      "item": "copy_0246",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0864",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 358,
+      "item": "copy_0259",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1751",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 951,
+      "item": "copy_0261",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0837",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 493,
+      "item": "copy_0278",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1797",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 460,
+      "item": "copy_0295",
+      "layout": "drcr",
+      "outcome": "only suspicious",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "reasons": [
+        "the statement's money pattern is unusual (score 0.6480 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1065",
+      "summary": "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 316,
+      "item": "copy_0297",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0588",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 418,
+      "item": "copy_0304",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0595",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 446,
+      "item": "copy_0322",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0410",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 432,
+      "item": "copy_0323",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0988",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 600,
+      "item": "copy_0330",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_1564",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 326,
+      "item": "copy_0335",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0522",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 923,
+      "item": "copy_0363",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0228",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 389,
+      "item": "copy_0364",
+      "layout": "columns",
+      "outcome": "not flagged",
+      "pages_changed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0953",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    },
+    {
+      "donor": null,
+      "fields_changed": 648,
+      "item": "copy_0420",
+      "layout": "drcr",
+      "outcome": "not flagged",
+      "pages_changed": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "reasons": [
+        "producer 'ReportLab PDF Library - (opensource)' differs from creator 'StatementScreen synthetic generator' (listed only, never counted) [not counted]"
+      ],
+      "save_mode": "n/a",
+      "source": "stmt_0760",
+      "summary": "no strong or weak finding",
+      "type": "rerender_consistent"
+    }
+  ],
+  "overlay_holdout": null,
+  "overlay_misses": [],
+  "pooled_detection": {
+    "with_history": {
+      "labels": {
+        "no evidence of tampering": 54,
+        "suspicious": 7,
+        "tampered": 299
+      },
+      "tampered": {
+        "ci95": [
+          0.7937,
+          0.8639
+        ],
+        "count": 299,
+        "rate": 0.8306,
+        "text": "299/360 (83.1%)",
+        "total": 360
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          0.816,
+          0.882
+        ],
+        "count": 306,
+        "rate": 0.85,
+        "text": "306/360 (85.0%)",
+        "total": 360
+      }
+    },
+    "without_history": {
+      "labels": {
+        "no evidence of tampering": 54,
+        "suspicious": 7,
+        "tampered": 299
+      },
+      "tampered": {
+        "ci95": [
+          0.7937,
+          0.8639
+        ],
+        "count": 299,
+        "rate": 0.8306,
+        "text": "299/360 (83.1%)",
+        "total": 360
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          0.816,
+          0.882
+        ],
+        "count": 306,
+        "rate": 0.85,
+        "text": "306/360 (85.0%)",
+        "total": 360
+      }
+    }
+  },
+  "rule_version": "v2"
+}

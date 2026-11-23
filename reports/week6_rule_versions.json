@@ -15,7 +15,74 @@
         "weak findings count by distinct code, not by instance",
         "PARSE_FAILED stays a weak finding; the third rule is what makes it suspicious"
       ],
-      "dev_results": null
+      "dev_results": {
+        "scored": "dev copies (60 per type, detector findings cached) and genuine dev (300)",
+        "tampered": {
+          "rerender_inconsistent": "60/60",
+          "rerender_consistent": "0/60",
+          "inplace_edit": "60/60",
+          "inplace_edit_consistent": "59/60",
+          "page_swap": "60/60",
+          "page_remove": "60/60"
+        },
+        "tampered_or_suspicious": "identical to tampered for every type (no copy was only suspicious)",
+        "false_alarms": {
+          "resaved_genuine": {"tampered": "0/60", "tampered_or_suspicious": "1/60"},
+          "genuine_dev": {"tampered": "0/300", "tampered_or_suspicious": "0/300"}
+        },
+        "without_file_history": "identical rates for every type; the one re-save false alarm disappears",
+        "notes": [
+          "rerender_consistent: no strong finding on any copy, so the only possible signal is the anomaly score, and one weak sign alone is not enough under v1",
+          "inplace_edit_consistent miss: an edit on the last page of a multi-page statement saved incrementally; only INCREMENTAL_UPDATE fired (one weak sign)",
+          "resaved_genuine false alarm: a statement the anomaly check flags, re-saved incrementally (ANOMALY_SCORE + INCREMENTAL_UPDATE)"
+        ]
+      }
+    },
+    {
+      "version": "v2",
+      "defined": "step 5, after the v1 dev results and before v2 was run on any copy",
+      "rules": [
+        "v1, plus: an ANOMALY_SCORE finding on its own (with no strong finding) -> suspicious"
+      ],
+      "notes": [
+        "an anomaly score is a weak finding, so it can never produce 'tampered'",
+        "the dev false-alarm rate of the anomaly check is IN-SAMPLE: its threshold was set on the genuine dev statements, so 2% of them exceed it by construction"
+      ],
+      "adoption_rule": {
+        "written": "before v2 was run; applied exactly as written; otherwise v1 is kept",
+        "adopt_v2_only_if_all_of": [
+          "(a) rerender_consistent detection, counted as tampered or suspicious, on dev rises by at least 10 percentage points over v1",
+          "(b) an anomaly score alone can never produce 'tampered'",
+          "(c) the 'tampered' false-alarm rate on genuine dev and on resaved_genuine is unchanged from v1"
+        ]
+      },
+      "dev_results": {
+        "scored": "same cached dev findings as v1 (60 per type), resaved_genuine (60), genuine dev (300); reports/week6_rule_comparison_dev.json",
+        "tampered": "identical to v1 for every type",
+        "tampered_or_suspicious": {
+          "rerender_inconsistent": "60/60",
+          "rerender_consistent": "7/60 (v1: 0/60)",
+          "inplace_edit": "60/60",
+          "inplace_edit_consistent": "59/60",
+          "page_swap": "60/60",
+          "page_remove": "60/60"
+        },
+        "false_alarms": {
+          "resaved_genuine": {"tampered": "0/60", "tampered_or_suspicious": "1/60 (unchanged)"},
+          "genuine_dev": {"tampered": "0/300", "tampered_or_suspicious": "6/300 (v1: 0/300), in-sample"}
+        },
+        "adoption_conditions": {
+          "a": "PASS: rerender_consistent 0/60 -> 7/60, gain 11.7 points (needed 10)",
+          "b": "PASS",
+          "c": "PASS"
+        },
+        "notes": [
+          "the (a) margin is 1.7 points, 7 copies of 60",
+          "the 6/300 suspicious on genuine dev is the anomaly threshold's 2% by construction, not an independent estimate",
+          "rerender_consistent is still mostly missed: 53/60 get no flag"
+        ]
+      },
+      "decision": "v2 adopted: all three conditions held, applied as written"
     }
   ]
 }

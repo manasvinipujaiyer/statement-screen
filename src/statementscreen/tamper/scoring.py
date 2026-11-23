@@ -17,7 +17,11 @@ Reported (build_report):
   false_alarms      resaved_genuine copies, and each genuine population (dev, test, shift),
                     counted the same two ways
   first_check       for each flagged copy, the first non-info finding in verdict order
-                    (strong first, then check group, page, row), counted per type
+                    (strong first, then check group, page, row), counted per type. A
+                    ranking, not a time: whole-statement findings and earlier check groups
+                    rank first, so read codes_fired for what actually caught a copy
+  codes_fired       per type, on how many copies each strong and each weak finding code
+                    fired at least once
   by_layout         counts as count/total and percent, no intervals; layout gaps over 15
                     points are flagged in plain words
   by_save_mode      for types a PDF library wrote, incremental save vs full rewrite
@@ -308,6 +312,17 @@ def _first_checks(scored: list[Scored]) -> dict:
     return {k: dict(sorted(v.items())) for k, v in out.items()}
 
 
+def _codes_fired(scored: list[Scored]) -> dict:
+    """On how many copies each strong and each weak finding code fired at least once. Unlike
+    first_check (a ranking), this shows every check that caught or flagged a copy."""
+    out: dict[str, Counter] = {"strong": Counter(), "weak": Counter()}
+    for s in scored:
+        seen = {(f["strength"], f["code"]) for f in s.verdict["findings"] if f["strength"] in out}
+        for strength, code in seen:
+            out[strength][code] += 1
+    return {strength: dict(sorted(counts.items())) for strength, counts in out.items()}
+
+
 def _history_notes(name: str, pair: dict, subject: str) -> list[str]:
     """Notes where removing file-history findings cuts a count by more than half."""
     verb = (
@@ -332,6 +347,7 @@ def _group_report(scored: list[Scored]) -> dict:
         **_pair(scored),
         "by_layout": _by_layout(scored),
         "first_check": _first_checks(scored),
+        "codes_fired": _codes_fired(scored),
     }
     if any(s.item.save_mode != "n/a" for s in scored):
         out["by_save_mode"] = _by_save_mode(scored)

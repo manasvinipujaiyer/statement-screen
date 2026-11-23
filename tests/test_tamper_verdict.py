@@ -6,6 +6,7 @@ import random
 from statementscreen.tamper.detect.findings import Finding
 from statementscreen.tamper.detect.verdict import (
     NONE,
+    RULE_VERSION,
     SUSPICIOUS,
     TAMPERED,
     decide,
@@ -102,6 +103,44 @@ def test_the_verdict_does_not_depend_on_the_order_findings_arrive_in():
     assert order(found) == order(list(reversed(found)))
 
 
+def test_v2_calls_a_lone_anomaly_score_suspicious_and_v1_does_not():
+    anomaly = _f("ANOMALY_SCORE", "weak", "anomaly")
+    assert decide([anomaly], "v1")["label"] == NONE
+    v2 = decide([anomaly], "v2")
+    assert v2["label"] == SUSPICIOUS and "ANOMALY_SCORE" in v2["summary"]
+
+
+def test_v2_never_gives_tampered_without_a_strong_finding():
+    weak = [
+        _f("ANOMALY_SCORE", "weak", "anomaly"),
+        _f("DIGIT_SPACING", "weak", "layout"),
+        _f("INCREMENTAL_UPDATE", "weak", "history"),
+        _f("PARSE_FAILED", "weak", "parse"),
+    ]
+    for n in range(1, len(weak) + 1):
+        assert decide(weak[:n], "v2")["label"] != TAMPERED
+    assert decide([*weak, _f("BALANCE_CHAIN", "strong", "arithmetic")], "v2")["label"] == TAMPERED
+
+
+def test_v2_matches_v1_on_everything_but_a_lone_anomaly_score():
+    cases = [
+        [],
+        [_f("DIGIT_SPACING", "weak")],
+        [_f("DIGIT_SPACING", "weak"), _f("INCREMENTAL_UPDATE", "weak", "history")],
+        [_f("PARSE_FAILED", "weak", "parse")],
+        [_f("BALANCE_CHAIN", "strong", "arithmetic")],
+        [_f("CHECK_NOT_RUN", "info"), _f("PRODUCER_CREATOR_DIFFER", "info", "history")],
+    ]
+    for findings in cases:
+        assert decide(findings, "v2")["label"] == decide(findings, "v1")["label"]
+
+
+def test_the_default_rule_version_is_v2_after_adoption():
+    assert RULE_VERSION == "v2"
+    assert decide([_f("ANOMALY_SCORE", "weak", "anomaly")])["label"] == SUSPICIOUS
+    assert decide([_f("ANOMALY_SCORE", "weak", "anomaly")], "v1")["label"] == NONE
+
+
 def test_the_verdict_json_round_trips_and_carries_the_rule_version():
     v = decide([_f("BALANCE_CHAIN", "strong", "arithmetic")])
-    assert json.loads(to_json(v)) == v and v["rule_version"] == "v1"
+    assert json.loads(to_json(v)) == v and v["rule_version"] == RULE_VERSION == "v2"

@@ -10,6 +10,10 @@ reports/week6_rule_versions.json):
     parsed at all)
     else                                      -> no evidence of tampering
 
+Rule version v2 (adopted: the version log records that all three adoption conditions held on
+dev): v1, plus an ANOMALY_SCORE finding on its own -> suspicious. It can never give
+"tampered". RULE_VERSION is v2.
+
 Info findings (a check that couldn't run, producer differs from creator) are listed last
 and never counted. Weak findings count by distinct code, not by instance: one cause can
 fire on many cells, and "two weak findings" must not depend on how many cells share it.
@@ -23,7 +27,7 @@ import json
 
 from statementscreen.tamper.detect.findings import GROUPS, Finding
 
-RULE_VERSION = "v1"
+RULE_VERSION = "v2"
 NONE, SUSPICIOUS, TAMPERED = "no evidence of tampering", "suspicious", "tampered"
 LABELS = (NONE, SUSPICIOUS, TAMPERED)
 _STRENGTH = {"strong": 0, "weak": 1, "info": 2}
@@ -60,7 +64,17 @@ def rules_v1(findings: list[Finding]) -> tuple[str, str]:
     return NONE, "no strong or weak finding"
 
 
-RULES = {"v1": rules_v1}
+def rules_v2(findings: list[Finding]) -> tuple[str, str]:
+    """v1, plus: an ANOMALY_SCORE finding on its own is enough for "suspicious". An anomaly
+    score is a weak finding, so it can never produce "tampered"."""
+    label, why = rules_v1(findings)
+    anomaly = any(f.code == "ANOMALY_SCORE" and f.strength == "weak" for f in findings)
+    if label == NONE and anomaly:
+        return SUSPICIOUS, "an unusual money pattern (ANOMALY_SCORE) is suspicious under v2"
+    return label, why
+
+
+RULES = {"v1": rules_v1, "v2": rules_v2}
 
 
 def reasons(ordered: list[Finding]) -> list[dict]:

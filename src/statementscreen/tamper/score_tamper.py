@@ -30,6 +30,7 @@ from statementscreen.tamper.detect.findings import Finding
 from statementscreen.tamper.detect.verdict import RULE_VERSION
 from statementscreen.tamper.fingerprint import StaleFindings, check
 from statementscreen.tamper.scoring import (
+    Item,
     build_report,
     copy_rows,
     genuine_items,
@@ -86,6 +87,38 @@ def _cover(what: str, expected: set[str], ran: list[str]) -> None:
 
 def _info(summary: dict) -> dict:
     return {k: summary.get(k) for k in RUN_INFO}
+
+
+def load_inputs(
+    copies_dir: Path | None,
+    copies_run: Path | None,
+    genuine_specs: list[str],
+    manifest: Path,
+) -> tuple[list[Item], dict[str, list[Item]], dict[str, dict]]:
+    """(copies, genuine populations, run info) from the keys, the manifest and the cached
+    detector runs. Refuses a stale or incomplete run (ScoreError, StaleFindings)."""
+    inputs: dict[str, dict] = {}
+    copies: list[Item] = []
+    if copies_dir:
+        summary, findings, ran = read_run(copies_run or Path(copies_dir) / "detect")
+        copies = load_copies(Path(copies_dir), findings)
+        _cover("copies", {c.item for c in copies}, ran)
+        inputs["copies"] = _info(summary)
+    layouts = layouts_from_manifest(manifest)
+    genuine: dict[str, list[Item]] = {}
+    for spec in genuine_specs:
+        name, _, folder = spec.partition("=")
+        if not name or not folder:
+            raise ScoreError(f"--genuine wants NAME=RUN_DIR, got {spec!r}")
+        summary, findings, ran = read_run(Path(folder))
+        unknown = sorted(set(ran) - set(layouts))
+        if unknown:
+            raise ScoreError(f"genuine {name}: not in the manifest, e.g. {unknown[:3]}")
+        genuine[name] = genuine_items(ran, layouts, findings)
+        inputs[f"genuine_{name}"] = _info(summary)
+    if not copies and not genuine:
+        raise ScoreError("nothing to score: give --copies and/or --genuine")
+    return copies, genuine, inputs
 
 
 def _fmt(metric: dict) -> str:
@@ -169,28 +202,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         if args.out.exists() and not args.overwrite:
             raise ScoreError(f"{args.out} exists; pass --overwrite to replace it")
-        inputs: dict[str, dict] = {}
-        copies = []
-        if args.copies:
-            run_dir = args.copies_run or args.copies / "detect"
-            summary, findings, ran = read_run(run_dir)
-            copies = load_copies(args.copies, findings)
-            _cover("copies", {c.item for c in copies}, ran)
-            inputs["copies"] = _info(summary)
-        layouts = layouts_from_manifest(args.manifest)
-        genuine = {}
-        for spec in args.genuine:
-            name, _, folder = spec.partition("=")
-            if not name or not folder:
-                raise ScoreError(f"--genuine wants NAME=RUN_DIR, got {spec!r}")
-            summary, findings, ran = read_run(Path(folder))
-            unknown = sorted(set(ran) - set(layouts))
-            if unknown:
-                raise ScoreError(f"genuine {name}: not in the manifest, e.g. {unknown[:3]}")
-            genuine[name] = genuine_items(ran, layouts, findings)
-            inputs[f"genuine_{name}"] = _info(summary)
-        if not copies and not genuine:
-            raise ScoreError("nothing to score: give --copies and/or --genuine")
+        copies, genuine, inputs = load_inputs(
+            args.copies, args.copies_run, args.genuine, args.manifest
+        )
         report = build_report(copies, genuine, args.rule_version)
         report["inputs"] = inputs
     except (ScoreError, StaleFindings) as e:

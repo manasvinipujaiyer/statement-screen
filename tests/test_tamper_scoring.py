@@ -130,6 +130,15 @@ def test_a_strong_finding_on_a_genuine_pdf_is_listed_for_the_stop_rule():
     assert _report([], {"dev": good})["genuine_with_strong_findings"] == []
 
 
+def test_codes_fired_counts_copies_per_strong_and_weak_code():
+    copies = _items("inplace_edit", ["tampered"] * 3 + ["suspicious"] * 2 + ["none"])
+    fired = _report(copies)["detection"]["inplace_edit"]["codes_fired"]
+    assert fired == {
+        "strong": {"BALANCE_CHAIN": 3},
+        "weak": {"DIGIT_SPACING": 2, "INCREMENTAL_UPDATE": 2},
+    }
+
+
 def test_false_alarms_that_come_from_file_history_are_called_out():
     resaved = _items("resaved_genuine", ["suspicious"] * 4, mode="incremental")
     notes = _report(resaved)["history_dependence"]["false_alarms"]

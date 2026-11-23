@@ -1,0 +1,477 @@
+{
+  "adoption_rule": [
+    "(a) rerender_consistent detection, counted as tampered or suspicious, on dev rises by at least 10 percentage points over the old version",
+    "(b) an anomaly score alone can never produce 'tampered'",
+    "(c) the 'tampered' false-alarm rate on genuine dev and on resaved_genuine is unchanged from the old version"
+  ],
+  "conditions": {
+    "a_rerender_consistent_gain": {
+      "gain_percentage_points": 11.7,
+      "needed_percentage_points": 10,
+      "new": "7/60 (11.7%)",
+      "old": "0/60 (0.0%)",
+      "passed": true
+    },
+    "all_passed": true,
+    "b_anomaly_alone_never_tampered": {
+      "lone_anomaly_score_gives": "suspicious",
+      "passed": true,
+      "tampered_without_a_strong_finding": []
+    },
+    "c_tampered_false_alarms_unchanged": {
+      "genuine_dev": [
+        "0/300 (0.0%)",
+        "0/300 (0.0%)"
+      ],
+      "passed": true,
+      "resaved_genuine": [
+        "0/60 (0.0%)",
+        "0/60 (0.0%)"
+      ]
+    }
+  },
+  "decision": "v2 is adopted: all three conditions hold",
+  "inputs": {
+    "copies": {
+      "crashed": [],
+      "findings": 4152,
+      "fingerprint": {
+        "code": "3dd2362819c5233d45e1a7f0c3615eb1d4b1c8ac53c2a6ff2f346187051300b3",
+        "config": "5b332b4b4ff8e5ef8dfee4dfe6e286d7db7e038ea3c72568da183fedfd95f0b8",
+        "model": "d1a8aff502819286c572ce5891008ce4f274317b8ec640cd181031bef2939ccb",
+        "uv_lock": "68f70d808c4c2377ab2fb651d3aedad4a10206f1dcda0915428c5a0a41f7b1c5"
+      },
+      "items_with_findings": 420,
+      "pdfs": 420,
+      "peak_memory_mb": 278.1,
+      "peak_memory_note": "the process's peak so far when each PDF finished, not its own",
+      "seconds_per_pdf": {
+        "max": 7.715,
+        "mean": 3.449,
+        "p95": 5.441
+      },
+      "seconds_total": 1448.4,
+      "source": "data/tamper/dev/copies",
+      "split": null
+    },
+    "genuine_dev": {
+      "crashed": [],
+      "findings": 306,
+      "fingerprint": {
+        "code": "3dd2362819c5233d45e1a7f0c3615eb1d4b1c8ac53c2a6ff2f346187051300b3",
+        "config": "5b332b4b4ff8e5ef8dfee4dfe6e286d7db7e038ea3c72568da183fedfd95f0b8",
+        "model": "d1a8aff502819286c572ce5891008ce4f274317b8ec640cd181031bef2939ccb",
+        "uv_lock": "68f70d808c4c2377ab2fb651d3aedad4a10206f1dcda0915428c5a0a41f7b1c5"
+      },
+      "items_with_findings": 300,
+      "pdfs": 300,
+      "peak_memory_mb": 289.2,
+      "peak_memory_note": "the process's peak so far when each PDF finished, not its own",
+      "seconds_per_pdf": {
+        "max": 9.612,
+        "mean": 3.638,
+        "p95": 5.812
+      },
+      "seconds_total": 1091.4,
+      "source": "data/week1_n2000/pdfs",
+      "split": "dev"
+    }
+  },
+  "new": "v2",
+  "notes": [
+    "The anomaly check's false-alarm rate on genuine dev is in-sample: its threshold was set on these statements, so about 2% of them exceed it by construction. Under a rule that flags an anomaly score alone, that 2% is the 'suspicious' rate on genuine dev; it is not an independent estimate."
+  ],
+  "old": "v1",
+  "populations": "dev copies (60 per type), resaved_genuine, genuine dev",
+  "selected": "v2",
+  "side_by_side": {
+    "v1": {
+      "detection": {
+        "inplace_edit": {
+          "tampered": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          }
+        },
+        "inplace_edit_consistent": {
+          "tampered": {
+            "ci95": [
+              0.95,
+              1.0
+            ],
+            "count": 59,
+            "rate": 0.9833,
+            "text": "59/60 (98.3%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.95,
+              1.0
+            ],
+            "count": 59,
+            "rate": 0.9833,
+            "text": "59/60 (98.3%)",
+            "total": 60
+          }
+        },
+        "page_remove": {
+          "tampered": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          }
+        },
+        "page_swap": {
+          "tampered": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          }
+        },
+        "rerender_consistent": {
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/60 (0.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/60 (0.0%)",
+            "total": 60
+          }
+        },
+        "rerender_inconsistent": {
+          "tampered": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          }
+        }
+      },
+      "false_alarms": {
+        "genuine_dev": {
+          "suspicious": {
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/300 (0.0%)",
+            "total": 300
+          },
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/300 (0.0%)",
+            "total": 300
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/300 (0.0%)",
+            "total": 300
+          }
+        },
+        "resaved_genuine": {
+          "suspicious": {
+            "count": 1,
+            "rate": 0.0167,
+            "text": "1/60 (1.7%)",
+            "total": 60
+          },
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/60 (0.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0,
+              0.05
+            ],
+            "count": 1,
+            "rate": 0.0167,
+            "text": "1/60 (1.7%)",
+            "total": 60
+          }
+        }
+      }
+    },
+    "v2": {
+      "detection": {
+        "inplace_edit": {
+          "tampered": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          }
+        },
+        "inplace_edit_consistent": {
+          "tampered": {
+            "ci95": [
+              0.95,
+              1.0
+            ],
+            "count": 59,
+            "rate": 0.9833,
+            "text": "59/60 (98.3%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.95,
+              1.0
+            ],
+            "count": 59,
+            "rate": 0.9833,
+            "text": "59/60 (98.3%)",
+            "total": 60
+          }
+        },
+        "page_remove": {
+          "tampered": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          }
+        },
+        "page_swap": {
+          "tampered": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          }
+        },
+        "rerender_consistent": {
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/60 (0.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.05,
+              0.2
+            ],
+            "count": 7,
+            "rate": 0.1167,
+            "text": "7/60 (11.7%)",
+            "total": 60
+          }
+        },
+        "rerender_inconsistent": {
+          "tampered": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "count": 60,
+            "rate": 1.0,
+            "text": "60/60 (100.0%)",
+            "total": 60
+          }
+        }
+      },
+      "false_alarms": {
+        "genuine_dev": {
+          "suspicious": {
+            "count": 6,
+            "rate": 0.02,
+            "text": "6/300 (2.0%)",
+            "total": 300
+          },
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/300 (0.0%)",
+            "total": 300
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0067,
+              0.0367
+            ],
+            "count": 6,
+            "rate": 0.02,
+            "text": "6/300 (2.0%)",
+            "total": 300
+          }
+        },
+        "resaved_genuine": {
+          "suspicious": {
+            "count": 1,
+            "rate": 0.0167,
+            "text": "1/60 (1.7%)",
+            "total": 60
+          },
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/60 (0.0%)",
+            "total": 60
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0,
+              0.05
+            ],
+            "count": 1,
+            "rate": 0.0167,
+            "text": "1/60 (1.7%)",
+            "total": 60
+          }
+        }
+      }
+    }
+  }
+}
