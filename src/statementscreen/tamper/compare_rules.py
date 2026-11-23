@@ -6,7 +6,9 @@
         --old v1 --new v2 --out reports/week6_rule_comparison_dev.json
 
 Both versions are scored from the same cached findings (no PDF is read), so the only thing
-that differs is the rules. The adoption rule was written into reports/week6_rule_versions.json
+that differs is the rules. This is a development tool: it refuses the test and shift
+populations (recognised from each run's own record, not from the name typed) and prints
+nothing for them. The adoption rule was written into reports/week6_rule_versions.json
 before v2 was run, and is applied here exactly as written. v2 is adopted only if ALL hold:
 
   (a) rerender_consistent detection, counted as tampered or suspicious, on dev rises by at
@@ -29,6 +31,7 @@ from pathlib import Path
 from statementscreen.tamper.detect.findings import Finding
 from statementscreen.tamper.detect.verdict import RULES, TAMPERED, decide
 from statementscreen.tamper.fingerprint import StaleFindings
+from statementscreen.tamper.provenance import ProvenanceError, check_populations
 from statementscreen.tamper.score_tamper import ScoreError, load_inputs
 from statementscreen.tamper.scoring import Item, build_report, score_item
 
@@ -225,12 +228,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         if args.out.exists() and not args.overwrite:
             raise ScoreError(f"{args.out} exists; pass --overwrite to replace it")
+        registered = check_populations(args.copies, args.copies_run, args.genuine)
+        if registered:
+            raise ScoreError(
+                f"compare_rules is a development tool and never reads test or shift "
+                f"({', '.join(registered)}): those are scored once, by score_tamper, "
+                "against the pre-registration"
+            )
         copies, genuine, inputs = load_inputs(
             args.copies, args.copies_run, args.genuine, args.manifest
         )
         result = compare(copies, genuine, args.old, args.new)
         result["inputs"] = inputs
-    except (ScoreError, StaleFindings) as e:
+    except (ScoreError, StaleFindings, ProvenanceError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
     args.out.parent.mkdir(parents=True, exist_ok=True)

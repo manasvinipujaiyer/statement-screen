@@ -3,10 +3,14 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from statementscreen.tamper import fingerprint as fp
 from statementscreen.tamper import log_run as lr
 from statementscreen.tamper import preregister as pre
 from statementscreen.tracking import TrackingRefused
+
+pytestmark = pytest.mark.usefixtures("pushed")  # the pre-registration counts as pushed
 
 REPORT = {
     "rule_version": "v2",
@@ -81,8 +85,8 @@ def test_the_run_records_the_commit_the_fingerprint_and_the_files(tmp_path, monk
     p = _files(tmp_path)
     seen = {}
 
-    def fake_log(params, metrics, artifacts, tracking_dir):
-        seen.update(params=params, metrics=metrics, artifacts=artifacts)
+    def fake_log(params, metrics, artifacts, tracking_dir, run_name):
+        seen.update(params=params, metrics=metrics, artifacts=artifacts, run_name=run_name)
         return "run123", []
 
     monkeypatch.setattr(lr, "log", fake_log)
@@ -95,6 +99,20 @@ def test_the_run_records_the_commit_the_fingerprint_and_the_files(tmp_path, monk
     assert params["copies_csv_sha256"] == lr.sha256(p["csv"])
     assert seen["metrics"] == lr.report_metrics(REPORT)
     assert seen["artifacts"] == [p["report"], p["csv"], p["prereg"]]
+    assert seen["run_name"] == "tamper_test_once" and params["post_hoc"] == "False"
+
+
+def test_a_post_hoc_report_is_logged_under_its_own_label(tmp_path, monkeypatch):
+    p = _files(tmp_path, {**REPORT, "post_hoc": True})
+    seen = {}
+
+    def fake_log(params, metrics, artifacts, tracking_dir, run_name):
+        seen.update(params=params, run_name=run_name)
+        return "run123", []
+
+    monkeypatch.setattr(lr, "log", fake_log)
+    assert lr.main(_argv(p)) == 0
+    assert seen["run_name"] == "tamper_test_post_hoc" and seen["params"]["post_hoc"] == "True"
 
 
 def test_it_reads_the_report_and_changes_nothing(tmp_path, monkeypatch):

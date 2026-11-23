@@ -17,6 +17,14 @@ match the current code, config, model file and uv.lock; there is no override), a
 run that doesn't cover exactly the copies in the keys. Each --genuine population is its own
 row and is never combined with another. A report is not overwritten without --overwrite.
 
+The test and shift populations are recognised from each run's own record (tamper/provenance.py),
+not from the name typed here: the recorded population must match the --genuine name, a --limit
+trial run is never scored, and 300 genuine test, 300 shift and 800 copies (100 of each of eight
+types, built without a shortfall) are required. They need --preregistration, are scored once
+into the registered file (never overwritten, --overwrite refused); a later run is --post-hoc
+and goes to a file of its own. A PDF the detector crashed on is "could not check": counted in
+the totals, reported in its own column, never as "no evidence of tampering".
+
 If any genuine PDF has a strong finding, the report is still written but the command prints
 a STOP message and exits with code 3: nothing should be changed before that is looked at.
 """
@@ -29,10 +37,18 @@ from pathlib import Path
 
 import polars as pl
 
+from statementscreen.tamper import preregister as pre
 from statementscreen.tamper.detect.findings import Finding
 from statementscreen.tamper.detect.verdict import RULE_VERSION
 from statementscreen.tamper.fingerprint import StaleFindings, check
-from statementscreen.tamper.preregister import PreregError, load_and_verify, needs_preregistration
+from statementscreen.tamper.preregister import PreregError, load_and_verify
+from statementscreen.tamper.provenance import (
+    ProvenanceError,
+    check_populations,
+    copies_hashes,
+    file_sha256,
+    run_hashes,
+)
 from statementscreen.tamper.scoring import (
     Item,
     build_report,
@@ -48,6 +64,8 @@ RUN_FILES = ("findings.parquet", "items.parquet", "detect_run.json")
 RUN_INFO = (
     "source",
     "split",
+    "population",
+    "limit",
     "pdfs",
     "findings",
     "items_with_findings",
@@ -107,10 +125,13 @@ def load_inputs(
     inputs: dict[str, dict] = {}
     copies: list[Item] = []
     if copies_dir:
-        summary, findings, ran = read_run(copies_run or Path(copies_dir) / "detect")
-        copies = load_copies(Path(copies_dir), findings)
+        run = Path(copies_run) if copies_run else Path(copies_dir) / "detect"
+        summary, findings, ran = read_run(run)
+        crashed = frozenset(summary.get("crashed", []))
+        copies = load_copies(Path(copies_dir), findings, crashed)
         _cover("copies", {c.item for c in copies}, ran)
-        inputs["copies"] = _info(summary)
+        hashes = {**copies_hashes(Path(copies_dir)), "detect": run_hashes(run)}
+        inputs["copies"] = {**_info(summary), "sha256": hashes}
     own: dict[str, Path] = {}
     for spec in genuine_manifests:
         name, _, path = spec.partition("=")
@@ -138,11 +159,41 @@ def load_inputs(
         unknown = sorted(set(ran) - set(layouts))
         if unknown:
             raise ScoreError(f"genuine {name}: not in the manifest {used}, e.g. {unknown[:3]}")
-        genuine[name] = genuine_items(ran, layouts, findings)
-        inputs[f"genuine_{name}"] = {**_info(summary), "manifest": str(used)}
+        crashed = frozenset(summary.get("crashed", []))
+        genuine[name] = genuine_items(ran, layouts, findings, crashed)
+        hashes = {"manifest": file_sha256(used), "detect": run_hashes(Path(folder))}
+        inputs[f"genuine_{name}"] = {**_info(summary), "manifest": str(used), "sha256": hashes}
     if not copies and not genuine:
         raise ScoreError("nothing to score: give --copies and/or --genuine")
     return copies, genuine, inputs
+
+
+def guard_one_time(args: argparse.Namespace, registered: list[str]) -> None:
+    """The test and shift populations are scored once. The first result goes to the registered
+    file and is never overwritten; any later run is --post-hoc, in a file of its own."""
+    if not registered:
+        if args.post_hoc:
+            raise ScoreError("--post-hoc applies only to the test and shift populations")
+        return
+    if args.overwrite:
+        raise ScoreError("--overwrite is not allowed for the test and shift populations")
+    first, first_table = Path(pre.FIRST_REPORT), Path(pre.FIRST_TABLE)
+    outputs = [(args.out, first)] + ([(args.table, first_table)] if args.table else [])
+    for path, registered_path in outputs:
+        if path.exists():
+            raise ScoreError(f"{path} exists; the test and shift results are never overwritten")
+        if args.post_hoc:
+            if "post_hoc" not in path.name:
+                raise ScoreError(f"a post-hoc result goes to its own file: {path} needs post_hoc")
+        elif path.resolve() != registered_path.resolve():
+            raise ScoreError(f"the one-time scoring writes {registered_path}, not {path}")
+    if args.post_hoc and not first.exists():
+        raise ScoreError(f"--post-hoc needs the first result ({first}) to exist")
+    if not args.post_hoc and first.exists():
+        raise ScoreError(
+            f"{first} exists: the test and shift populations were already scored once; "
+            "a later run needs --post-hoc and its own file"
+        )
 
 
 def _fmt(metric: dict) -> str:
@@ -154,6 +205,7 @@ def _row(name: str, block: dict, extra_key: str, extra_label: str) -> str:
     w, wo = block["with_history"], block[extra_key]
     return (
         f"  {name:<26} tampered {_fmt(w['tampered'])}  flagged {_fmt(w['tampered_or_suspicious'])}"
+        f"  could not check {block['could_not_check']['text']}"
         f"\n  {'':<26} {extra_label}: tampered {wo['tampered']['text']}, "
         f"flagged {wo['tampered_or_suspicious']['text']}"
     )
@@ -162,8 +214,10 @@ def _row(name: str, block: dict, extra_key: str, extra_label: str) -> str:
 def summary_text(report: dict) -> str:
     """The report's headline numbers, for the terminal."""
     lines = [
-        f"Rule version {report['rule_version']}; intervals: 95% bootstrap over source "
-        "statements. 'flagged' = tampered or suspicious.",
+        ("POST-HOC RE-RUN (not the one-time result). " if report.get("post_hoc") else "")
+        + f"Rule version {report['rule_version']}; intervals: 95% bootstrap over source "
+        "statements. 'flagged' = tampered or suspicious; 'could not check' = the detector "
+        "crashed on the PDF (counted in the totals, never as 'no evidence').",
         "",
         "Detection per tamper type:",
     ]
@@ -238,24 +292,40 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument("--table", type=Path, help="per-copy table (CSV)")
     p.add_argument("--table-extended", action="store_true", help="add the no-history verdict")
     p.add_argument("--overwrite", action="store_true", help="replace an existing report")
+    p.add_argument(
+        "--post-hoc",
+        action="store_true",
+        help="a re-run of the test and shift scoring: written to its own file (its name must "
+        "contain post_hoc) and labelled post-hoc; the first result is never overwritten",
+    )
     args = p.parse_args(argv)
 
     try:
-        if args.out.exists() and not args.overwrite:
-            raise ScoreError(f"{args.out} exists; pass --overwrite to replace it")
+        registered = check_populations(args.copies, args.copies_run, args.genuine)
         if args.preregistration:
             load_and_verify(args.preregistration, args.rule_version)
-        elif needs_preregistration(args.copies, args.genuine):
+        elif registered:
             raise ScoreError(
-                "the test and shift populations are scored once, against the "
-                "pre-registration: pass --preregistration reports/week6_preregistration.json"
+                f"{', '.join(registered)}: the test and shift populations are scored once, "
+                "against the pre-registration: pass --preregistration "
+                "reports/week6_preregistration.json"
             )
+        guard_one_time(args, registered)
+        if not registered and args.out.exists() and not args.overwrite:
+            raise ScoreError(f"{args.out} exists; pass --overwrite to replace it")
         copies, genuine, inputs = load_inputs(
             args.copies, args.copies_run, args.genuine, args.manifest, args.genuine_manifest
         )
         report = build_report(copies, genuine, args.rule_version)
+        if args.preregistration:
+            inputs["preregistration"] = {
+                "file": str(args.preregistration),
+                "sha256": file_sha256(args.preregistration),
+            }
         report["inputs"] = inputs
-    except (ScoreError, StaleFindings, PreregError) as e:
+        if args.post_hoc:
+            report["post_hoc"] = True
+    except (ScoreError, StaleFindings, PreregError, ProvenanceError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
 

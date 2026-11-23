@@ -149,7 +149,9 @@ def test_unknown_versions_and_missing_populations_are_refused():
 # ---------------------------------------------------------------- the command
 
 
-def _write_run(folder: Path, items: list[str], findings: dict[str, list[Finding]]) -> None:
+def _write_run(
+    folder: Path, items: list[str], findings: dict[str, list[Finding]], **extra: str
+) -> None:
     folder.mkdir(parents=True)
     rows = [{"item": i, **f.to_dict()} for i, fs in findings.items() for f in fs]
     pl.DataFrame(rows, schema=driver.FINDING_SCHEMA).write_parquet(folder / "findings.parquet")
@@ -164,7 +166,7 @@ def _write_run(folder: Path, items: list[str], findings: dict[str, list[Finding]
         },
         schema=driver.ITEM_SCHEMA,
     ).write_parquet(folder / "items.parquet")
-    summary = {"fingerprint": fp.fingerprint(), "pdfs": n}
+    summary = {"fingerprint": fp.fingerprint(), "pdfs": n} | extra
     (folder / "detect_run.json").write_text(json.dumps(summary), encoding="utf-8")
 
 
@@ -186,9 +188,11 @@ def _write_set(tmp_path: Path) -> dict:
             "donor": None,
         }
         (set_dir / "keys" / f"{copy_id}.json").write_text(json.dumps(key), encoding="utf-8")
+    build = {"set": "dev", "per_type": 10, "made": {}, "short": {}, "complete": True}
+    (set_dir / "build_run.json").write_text(json.dumps(build), encoding="utf-8")
     _write_run(set_dir / "detect", ids, {ids[n]: [ANOMALY] for n in range(3)})
     statements = [f"stmt_{n:04d}" for n in range(1, 7)]
-    _write_run(tmp_path / "genuine_dev", statements, {"stmt_0001": [ANOMALY]})
+    _write_run(tmp_path / "genuine_dev", statements, {"stmt_0001": [ANOMALY]}, split="dev")
     manifest = tmp_path / "manifest.csv"
     rows = ["statement_id,layout,customer_type", *[f"{s},columns,salaried" for s in statements]]
     manifest.write_text("\n".join(rows) + "\n", encoding="utf-8")

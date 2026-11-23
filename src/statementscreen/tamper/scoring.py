@@ -30,6 +30,10 @@ Reported (build_report):
   misses            every tamper copy that was not called "tampered", with the detector's
                     own reasons and the key's facts
   false_alarm_cases every genuine or re-saved item that was flagged, with reasons
+  could_not_check   a PDF the detector crashed on gets its own verdict, "could not check": it
+                    is counted in every total, reported in its own column (could_not_check in
+                    each group) and listed in could_not_check_cases, and is never counted as
+                    "no evidence of tampering", as flagged or as a miss that was not reported
 
 Intervals: 1,000 bootstrap resamples with a fixed seed, resampling SOURCE STATEMENTS (a
 statement can appear in several types; its copies stay together), 2.5th to 97.5th
@@ -59,6 +63,8 @@ from statementscreen.tamper.detect.verdict import (
     decide,
 )
 
+COULD_NOT_CHECK = "could not check"  # the detector crashed on the PDF: no verdict was possible
+SCORED_LABELS = (*LABELS, COULD_NOT_CHECK)
 BOOTSTRAP_SEED = 2026
 RESAMPLES = 1000
 LAYOUT_GAP = 0.15  # flag a type whose two layouts differ by more than this (in rate)
@@ -80,6 +86,7 @@ class Item:
     save_mode: str = "n/a"  # "incremental" | "full" for PDFs a library wrote, else "n/a"
     findings: tuple[Finding, ...] = ()
     facts: dict = field(default_factory=dict)  # from the key: pages, fields changed, donor
+    crashed: bool = False  # the detector crashed on this PDF (its run lists it as crashed)
 
 
 @dataclass(frozen=True)
@@ -108,8 +115,11 @@ def _save_mode(incremental: bool | None) -> str:
     return "n/a" if incremental is None else ("incremental" if incremental else "full")
 
 
-def load_copies(set_dir: Path, findings: dict[str, list[Finding]]) -> list[Item]:
-    """The set's copies, from its answer keys, with the findings cached for each."""
+def load_copies(
+    set_dir: Path, findings: dict[str, list[Finding]], crashed: frozenset[str] = frozenset()
+) -> list[Item]:
+    """The set's copies, from its answer keys, with the findings cached for each. `crashed`
+    are the copies the detector crashed on."""
     items = []
     for path in sorted((Path(set_dir) / "keys").glob("copy_*.json")):
         key = json.loads(path.read_text(encoding="utf-8"))
@@ -127,6 +137,7 @@ def load_copies(set_dir: Path, findings: dict[str, list[Finding]]) -> list[Item]
                 save_mode=_save_mode(key["incremental_save"]),
                 findings=tuple(findings.get(key["copy_id"], ())),
                 facts=facts,
+                crashed=key["copy_id"] in crashed,
             )
         )
     return items
@@ -137,10 +148,20 @@ def layouts_from_manifest(manifest: Path) -> dict[str, str]:
 
 
 def genuine_items(
-    ids: list[str], layout_of: dict[str, str], findings: dict[str, list[Finding]]
+    ids: list[str],
+    layout_of: dict[str, str],
+    findings: dict[str, list[Finding]],
+    crashed: frozenset[str] = frozenset(),
 ) -> list[Item]:
     return [
-        Item(sid, sid, "genuine", layout_of[sid], findings=tuple(findings.get(sid, ())))
+        Item(
+            sid,
+            sid,
+            "genuine",
+            layout_of[sid],
+            findings=tuple(findings.get(sid, ())),
+            crashed=sid in crashed,
+        )
         for sid in sorted(ids)
     ]
 
@@ -162,6 +183,9 @@ def score_item(item: Item, version: str = RULE_VERSION) -> Scored:
     without = decide([f for f in found if f.group != "history"], version)
     no_anomaly = decide([f for f in found if f.group != "anomaly"], version)
     first = first_check(verdict)
+    if item.crashed:  # the CHECK_NOT_RUN finding is info only: don't let it read as "no evidence"
+        label = COULD_NOT_CHECK
+        return Scored(item, verdict, label, label, label, first)
     return Scored(item, verdict, verdict["label"], without["label"], no_anomaly["label"], first)
 
 
@@ -204,8 +228,15 @@ def _tampered(s: Scored) -> bool:
     return s.label == TAMPERED
 
 
+FLAGGED = (SUSPICIOUS, TAMPERED)  # "could not check" is neither flagged nor "no evidence"
+
+
 def _flagged(s: Scored) -> bool:
-    return s.label != NONE
+    return s.label in FLAGGED
+
+
+def _could_not_check(s: Scored) -> bool:
+    return s.label == COULD_NOT_CHECK
 
 
 def _tampered_nh(s: Scored) -> bool:
@@ -213,7 +244,7 @@ def _tampered_nh(s: Scored) -> bool:
 
 
 def _flagged_nh(s: Scored) -> bool:
-    return s.label_without_history != NONE
+    return s.label_without_history in FLAGGED
 
 
 def _tampered_na(s: Scored) -> bool:
@@ -221,14 +252,14 @@ def _tampered_na(s: Scored) -> bool:
 
 
 def _flagged_na(s: Scored) -> bool:
-    return s.label_without_anomaly != NONE
+    return s.label_without_anomaly in FLAGGED
 
 
 def _without_anomaly(scored: list[Scored]) -> dict:
     """The verdicts recomputed with every anomaly finding removed."""
     count = Counter(s.label_without_anomaly for s in scored)
     return {
-        "labels": {label: count.get(label, 0) for label in LABELS},
+        "labels": {label: count.get(label, 0) for label in SCORED_LABELS},
         "tampered": _with_ci(scored, _tampered_na),
         "tampered_or_suspicious": _with_ci(scored, _flagged_na),
     }
@@ -236,7 +267,7 @@ def _without_anomaly(scored: list[Scored]) -> dict:
 
 def _labels(scored: list[Scored], without_history: bool) -> dict[str, int]:
     count = Counter(s.label_without_history if without_history else s.label for s in scored)
-    return {label: count.get(label, 0) for label in LABELS}
+    return {label: count.get(label, 0) for label in SCORED_LABELS}
 
 
 def _pair(scored: list[Scored]) -> dict:
@@ -345,6 +376,7 @@ def _group_report(scored: list[Scored]) -> dict:
     out = {
         "n": len(scored),
         **_pair(scored),
+        "could_not_check": _plain(scored, _could_not_check),
         "by_layout": _by_layout(scored),
         "first_check": _first_checks(scored),
         "codes_fired": _codes_fired(scored),
@@ -382,15 +414,22 @@ def _misses(scored: list[Scored]) -> list[dict]:
             out.append(_case(s, "not flagged"))
         elif s.label == SUSPICIOUS:
             out.append(_case(s, "only suspicious"))
+        elif s.label == COULD_NOT_CHECK:
+            out.append(_case(s, "could not check"))
     return out
 
 
 def _false_alarms(scored: list[Scored], population: str) -> list[dict]:
     out = []
     for s in scored:
-        if s.label != NONE:
+        if s.label in FLAGGED:
             out.append(_case(s, "tampered" if s.label == TAMPERED else "suspicious", population))
     return out
+
+
+def _unchecked(scored: list[Scored], population: str | None = None) -> list[dict]:
+    """Every item the detector crashed on, with the detector's own reason."""
+    return [_case(s, "could not check", population) for s in scored if _could_not_check(s)]
 
 
 # ---------------------------------------------------------------- genuine populations
@@ -491,11 +530,17 @@ def build_report(
             "tampered": "the verdict is 'tampered'",
             "tampered_or_suspicious": "the verdict is 'tampered' or 'suspicious'",
             "without_history": "the verdict recomputed with every file-history finding removed",
+            "could_not_check": "the detector crashed on the PDF: counted in the totals, never "
+            "as 'no evidence of tampering', never as flagged",
             "first_check": "the first non-info finding in verdict order (strong first, then "
             "check group, page, row)",
         },
         "detection": detection,
-        "pooled_detection": _pair(pooled) if pooled else None,
+        "pooled_detection": (
+            {**_pair(pooled), "could_not_check": _plain(pooled, _could_not_check)}
+            if pooled
+            else None
+        ),
         "overlay_holdout": overlay,
         "false_alarms": false_alarms,
         "history_dependence": notes,
@@ -505,6 +550,8 @@ def build_report(
         "genuine_with_strong_findings": strong_on_genuine,
         "false_alarm_cases": _false_alarms(by_kind[CONTROL], CONTROL)
         + [c for name, sc in genuine_scored.items() for c in _false_alarms(sc, name)],
+        "could_not_check_cases": _unchecked(scored)
+        + [c for name, sc in genuine_scored.items() for c in _unchecked(sc, name)],
     }
 
 

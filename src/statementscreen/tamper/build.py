@@ -135,6 +135,7 @@ def build_set(
         "types": types,
         "made": dict(made),
         "short": {t: per_type - made[t] for t in types if made[t] < per_type},
+        "complete": all(made[t] >= per_type for t in types),  # scoring refuses an incomplete set
         "sources_replaced": dict(replaced),
         "donor_retries": dict(donor_retries),
         "not_applicable_examples": {t: v[:10] for t, v in failures.items()},

@@ -29,6 +29,7 @@ def test_every_type_but_overlay_gets_its_copies(built) -> None:
     s = built["summary"]
     assert s["types"] == [t for t in TYPES if t != HELD_OUT]
     assert s["made"] == {t: 2 for t in s["types"]} and s["short"] == {}
+    assert s["complete"] is True
     assert not any(k["tamper_type"] == HELD_OUT for k in built["keys"])
     assert set(s["applies_to"]) == set(s["types"])
 

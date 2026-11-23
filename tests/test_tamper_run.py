@@ -277,3 +277,22 @@ def test_nothing_in_detect_imports_the_driver_or_the_split_loader():
                 continue
             for name in names:
                 assert not name.startswith(forbidden), f"{path.name} imports {name}"
+
+
+def test_the_run_records_its_population_and_any_limit(tmp_path, fake):
+    folder = _pdfs(tmp_path / "pdfs", NAMES)
+    out = tmp_path / "out"
+    assert driver.main(_argv(folder, out, "--population", "shift")) == 0
+    run = json.loads((out / "detect_run.json").read_text(encoding="utf-8"))
+    assert run["population"] == "shift" and run["limit"] is None and run["split"] is None
+    trial = tmp_path / "trial"
+    assert driver.main(_argv(folder, trial, "--population", "shift", "--limit", "2")) == 0
+    run = json.loads((trial / "detect_run.json").read_text(encoding="utf-8"))
+    assert run["limit"] == 2 and run["pdfs"] == 2
+
+
+def test_a_population_that_contradicts_the_split_is_refused(tmp_path, fake, capsys):
+    folder = _pdfs(tmp_path / "pdfs", NAMES)
+    argv = _argv(folder, tmp_path / "out", "--split", "dev", "--population", "shift")
+    assert driver.main(argv) == 2
+    assert "contradicts" in capsys.readouterr().err

@@ -2,13 +2,13 @@
 Detector runs, keys and manifests are written by hand into temp folders."""
 
 import csv
+import hashlib
 import json
 from pathlib import Path
 
 import polars as pl
 
 from statementscreen.tamper import fingerprint as fp
-from statementscreen.tamper import preregister as pre
 from statementscreen.tamper import run as driver
 from statementscreen.tamper import score_tamper as cli
 from statementscreen.tamper.detect.findings import Finding
@@ -67,12 +67,21 @@ def _manifest(path: Path) -> Path:
     return path
 
 
-def _setup(tmp_path: Path, genuine_findings: dict | None = None) -> dict:
+def _write_build(set_dir: Path, name: str) -> None:
+    """The build's own record (build_run.json), as tamper.build would have written it."""
+    build = {"set": name, "per_type": 4, "made": {"inplace_edit": 4}, "short": {}}
+    (set_dir / "build_run.json").write_text(json.dumps(build | {"complete": True}), "utf-8")
+
+
+def _setup(
+    tmp_path: Path, genuine_findings: dict | None = None, genuine_split: str = "dev"
+) -> dict:
     """copies 1-3 caught (strong), copy 4 missed; five genuine statements."""
     set_dir = tmp_path / "dev"
     _write_keys(set_dir)
+    _write_build(set_dir, "dev")
     _write_run(set_dir / "detect", COPIES, {c: [STRONG] for c in COPIES[:3]})
-    _write_run(tmp_path / "genuine_dev", STATEMENTS, genuine_findings or {})
+    _write_run(tmp_path / "genuine_dev", STATEMENTS, genuine_findings or {}, split=genuine_split)
     return {
         "set": set_dir,
         "genuine": tmp_path / "genuine_dev",
@@ -179,7 +188,7 @@ def test_a_strong_finding_on_a_genuine_pdf_stops_with_exit_code_3(tmp_path, caps
 
 
 def test_the_genuine_train_row_is_labelled_in_sample(tmp_path, capsys):
-    s = _setup(tmp_path)
+    s = _setup(tmp_path, genuine_split="train")
     argv = _argv(s)
     argv[argv.index(f"dev={s['genuine']}")] = f"train={s['genuine']}"
     assert cli.main(argv) == 0
@@ -187,13 +196,12 @@ def test_the_genuine_train_row_is_labelled_in_sample(tmp_path, capsys):
     assert "genuine train (in-sample for anomaly)" in out and "without anomaly" in out
 
 
-def _add_shift(tmp_path: Path, s: dict) -> Path:
+def _add_extra(tmp_path: Path) -> Path:
     """A second genuine population whose statements are only in its own manifest."""
-    shift = ["shift_0001", "shift_0002"]
-    _write_run(tmp_path / "genuine_shift", shift, {})
-    manifest = tmp_path / "shift_manifest.csv"
+    _write_run(tmp_path / "genuine_extra", ["extra_0001", "extra_0002"], {}, population="extra")
+    manifest = tmp_path / "extra_manifest.csv"
     manifest.write_text(
-        "statement_id,layout,customer_type\nshift_0001,columns,x\nshift_0002,drcr,x\n",
+        "statement_id,layout,customer_type\nextra_0001,columns,x\nextra_0002,drcr,x\n",
         encoding="utf-8",
     )
     return manifest
@@ -201,29 +209,24 @@ def _add_shift(tmp_path: Path, s: dict) -> Path:
 
 def test_each_population_can_have_its_own_manifest(tmp_path):
     s = _setup(tmp_path)
-    shift_manifest = _add_shift(tmp_path, s)
+    extra_manifest = _add_extra(tmp_path)
     argv = _argv(
         s,
-        *("--genuine", f"shift={tmp_path / 'genuine_shift'}"),
-        *("--genuine-manifest", f"shift={shift_manifest}"),
-        *("--preregistration", str(_prereg_file(tmp_path))),  # "shift" is a registered population
+        *("--genuine", f"extra={tmp_path / 'genuine_extra'}"),
+        *("--genuine-manifest", f"extra={extra_manifest}"),
     )
     assert cli.main(argv) == 0
     report = json.loads(s["out"].read_text(encoding="utf-8"))
     assert report["inputs"]["genuine_dev"]["manifest"] == str(s["manifest"])
-    assert report["inputs"]["genuine_shift"]["manifest"] == str(shift_manifest)
-    assert report["false_alarms"]["genuine"]["shift"]["with_history"]["tampered"]["total"] == 2
+    assert report["inputs"]["genuine_extra"]["manifest"] == str(extra_manifest)
+    assert report["false_alarms"]["genuine"]["extra"]["with_history"]["tampered"]["total"] == 2
     assert report["false_alarms"]["genuine"]["dev"]["with_history"]["tampered"]["total"] == 5
 
 
 def test_a_population_is_not_found_in_another_populations_manifest(tmp_path, capsys):
     s = _setup(tmp_path)
-    _add_shift(tmp_path, s)  # shift ids are not in the default manifest
-    argv = _argv(
-        s,
-        *("--genuine", f"shift={tmp_path / 'genuine_shift'}"),
-        *("--preregistration", str(_prereg_file(tmp_path))),
-    )
+    _add_extra(tmp_path)  # these ids are not in the default manifest
+    argv = _argv(s, "--genuine", f"extra={tmp_path / 'genuine_extra'}")
     assert cli.main(argv) == 2
     assert "not in the manifest" in capsys.readouterr().err
 
@@ -248,46 +251,27 @@ def test_bad_genuine_manifest_arguments_are_refused(tmp_path, capsys):
         assert message in capsys.readouterr().err
 
 
-def _prereg_file(tmp_path: Path, **change) -> Path:
-    """A pre-registration of the current code, as tamper.preregister would write it."""
-    data = pre.build(head=pre.git("rev-parse", "HEAD"), dirty="") | change
-    path = tmp_path / "prereg.json"
-    path.write_text(json.dumps(data), encoding="utf-8")
-    return path
-
-
-def _as_test_population(s: dict, *extra: str) -> list[str]:
-    argv = _argv(s, *extra)
-    argv[argv.index(f"dev={s['genuine']}")] = f"test={s['genuine']}"
-    return argv
-
-
-def test_the_test_population_is_refused_without_a_preregistration(tmp_path, capsys):
+def test_the_report_records_the_hashes_of_its_inputs(tmp_path):
     s = _setup(tmp_path)
-    assert cli.main(_as_test_population(s)) == 2
-    assert "pre-registration" in capsys.readouterr().err
-    assert not s["out"].exists()
+    assert cli.main(_argv(s)) == 0
+    inputs = json.loads(s["out"].read_text(encoding="utf-8"))["inputs"]
+    assert set(inputs["copies"]["sha256"]) == {"keys", "build_run.json", "detect"}
+    assert set(inputs["copies"]["sha256"]["detect"]) == set(driver.OUTPUTS)
+    assert set(inputs["genuine_dev"]["sha256"]) == {"manifest", "detect"}
+    assert (
+        inputs["genuine_dev"]["sha256"]["manifest"]
+        == hashlib.sha256(s["manifest"].read_bytes()).hexdigest()
+    )
 
 
-def test_the_test_population_is_scored_against_a_matching_preregistration(tmp_path):
+def test_a_crashed_pdf_is_shown_as_could_not_check_in_the_summary(tmp_path, capsys):
     s = _setup(tmp_path)
-    argv = _as_test_population(s, "--preregistration", str(_prereg_file(tmp_path)))
-    assert cli.main(argv) == 0
-
-
-def test_scoring_refuses_a_detector_that_differs_from_the_preregistration(tmp_path, capsys):
-    s = _setup(tmp_path)
-    changed = {**fp.fingerprint(), "model": "a different model"}
-    path = _prereg_file(tmp_path, detector_fingerprint=changed)
-    assert cli.main(_as_test_population(s, "--preregistration", str(path))) == 2
-    err = capsys.readouterr().err
-    assert "model differs" in err and "code differs" not in err
-    assert not s["out"].exists()
-
-
-def test_scoring_refuses_a_rule_version_that_differs_from_the_preregistration(tmp_path, capsys):
-    s = _setup(tmp_path)
-    path = _prereg_file(tmp_path)
-    argv = _as_test_population(s, "--preregistration", str(path), "--rule-version", "v1")
-    assert cli.main(argv) == 2
-    assert "rule version" in capsys.readouterr().err
+    run_file = s["genuine"] / "detect_run.json"
+    run = json.loads(run_file.read_text(encoding="utf-8"))
+    run["crashed"] = ["stmt_0002"]
+    run_file.write_text(json.dumps(run), encoding="utf-8")
+    assert cli.main(_argv(s)) == 0
+    out = capsys.readouterr().out
+    assert "could not check 1/5 (20.0%)" in out and "could not check 0/4" in out
+    report = json.loads(s["out"].read_text(encoding="utf-8"))
+    assert [c["item"] for c in report["could_not_check_cases"]] == ["stmt_0002"]

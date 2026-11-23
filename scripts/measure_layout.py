@@ -13,12 +13,12 @@ Genuine train only: no tampered copies, no dev or test statements.
 
 import argparse
 import json
-import resource
 import sys
 import time
 from pathlib import Path
 
 from statementscreen.splits import load_split
+from statementscreen.summary import peak_memory_bytes
 from statementscreen.tamper.detect.layout import measure, read_layout
 
 METRICS = ("cells_off_usual_font", "max_alignment_off", "max_spacing_spread",
@@ -53,7 +53,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {n}/{len(ids)} statements, {time.perf_counter() - start:.0f} s", flush=True)
 
     seconds = time.perf_counter() - start
-    peak_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6  # bytes on macOS
+    peak_mb = peak_memory_bytes() / 1024**2  # bytes on macOS, kilobytes on Linux: the helper knows
     by_layout = {}
     for name, agg in sorted(per_layout.items()):
         by_layout[name] = agg | {m: round(agg[m], 4) for m in METRICS}

@@ -9,12 +9,20 @@ uncommitted changes, so the recorded commit really is the code that will run):
     detector_fingerprint  the four-part detector fingerprint (tamper/fingerprint.py)
     rule_version          the verdict rule version, frozen here
     hashes                SHA-256 of every source file under src/statementscreen (parser,
-                          detector, verdict rules, scoring) and of the frozen artefacts
+                          detector, verdict rules, scoring) and of the frozen artefacts,
+                          including the split files and the two manifests
+    expected_inputs       the counts and source folders the scoring requires
     seeds, commands, metrics, expectations, known_limits, stop_rule, rules   in plain text
 
-score_tamper recomputes everything with verify() and refuses to score if anything differs:
-a different commit history, a different detector fingerprint (it names the part), a
-different hash or a different rule version. There is no override.
+score_tamper recomputes everything with verify() and refuses to score if anything differs: a
+commit that is not in the branch history or not pushed, a different detector fingerprint (it
+names the part), a different hash or a different rule version. The file it checks is the
+PUSHED version (git show @{u}:<path>), and the working-tree copy must be identical to it, so
+an uncommitted edit changes nothing. There is no override.
+
+What cannot be hashed now, because it does not exist until step 6 (the test keys, the build
+summary, the detector runs), is covered by the seeds recorded here and by its SHA-256, which
+score_tamper writes into the test report's `inputs`.
 """
 
 import argparse
@@ -27,9 +35,12 @@ from pathlib import Path
 
 from statementscreen.tamper import fingerprint as fp
 from statementscreen.tamper.detect.verdict import RULE_VERSION
+from statementscreen.tamper.provenance import COPIES_PER_TYPE, EXPECTED_COUNTS, EXPECTED_SOURCES
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_OUT = Path("reports/week6_preregistration.json")
+FIRST_REPORT = "reports/week6_tamper_test.json"  # written once, never replaced
+FIRST_TABLE = "reports/week6_tamper_test_copies.csv"
 CODE_DIR = Path("src/statementscreen")
 ARTEFACTS = (
     "models/week6_iforest.pkl",
@@ -37,11 +48,12 @@ ARTEFACTS = (
     "splits/split_v1.csv",
     "splits/split_v1.json",
     "splits/eval_shift_karan_v1.json",
+    "data/week1_n2000/manifest.csv",
+    "data/week4_shift_n300/manifest.csv",
     "reports/week6_rule_versions.json",
     "reports/week6_rule_comparison_dev.json",
 )
 COMPARISON = Path("reports/week6_rule_comparison_dev.json")
-REGISTERED_POPULATIONS = ("test", "shift")  # scoring these needs this file
 
 TEST_BATCH = "data/week1_n2000"
 SHIFT_BATCH = "data/week4_shift_n300"
@@ -64,7 +76,7 @@ COMMANDS = [
     "data/week1_n2000/pdfs --split test --manifest data/week1_n2000/manifest.csv "
     "--out data/tamper/genuine_test/detect",
     "uv run python -m statementscreen.tamper.run data/week4_shift_n300/pdfs "
-    "--out data/tamper/genuine_shift/detect",
+    "--population shift --out data/tamper/genuine_shift/detect",
     "uv run python -m statementscreen.tamper.score_tamper --copies data/tamper/test "
     "--genuine test=data/tamper/genuine_test/detect "
     "--genuine shift=data/tamper/genuine_shift/detect "
@@ -99,6 +111,8 @@ METRICS = [
     "false alarms on genuine test: 'tampered', and 'tampered or suspicious', with and "
     "without anomaly findings",
     "false alarms on genuine shift, and on the resaved_genuine copies",
+    "'could not check' (the detector crashed on the PDF): its own count for every group, "
+    "tampered copies and genuine alike, never counted as no evidence",
     "the per-copy CSV reports/week6_tamper_test_copies.csv (copy, type, layout, save mode, "
     "verdict, first check), committed",
     "overlay: reported separately, not pooled with the six types",
@@ -126,8 +140,18 @@ KNOWN_LIMITS = [
     "independent.",
     "v2 was adopted on dev with a thin margin on condition (a): rerender_consistent rose "
     "from 0/60 to 7/60, 11.7 points against 10 needed.",
+    "All of v2's rerender_consistent gains come from the anomaly score alone, whose "
+    "threshold is in-sample on dev.",
+    "Two anomaly features (income_to_debits and salary_to_spending) depend indirectly on the "
+    "Week 3 salary rule, through the profile; the anomaly check can never give 'tampered' on "
+    "its own.",
     "The layout tolerances and the font baseline were measured on genuine train, so the "
     "zero strong findings on genuine dev and train are not independent evidence.",
+    "The in-table character-overlap maximum on genuine PDFs was never recorded; only that no "
+    "genuine dev or train PDF produced a strong finding, so the margin to the 0.30 "
+    "threshold is not shown. This measurement cannot change a verdict.",
+    "There is no test for a header mismatch on the drcr layout (only on columns). A missing "
+    "test cannot change a verdict.",
     "The pooled all-six-types rate hides the rerender_consistent gap and is not a headline.",
     "Dev copies are 60 per type; test is 100 per type, so test intervals are narrower.",
 ]
@@ -139,7 +163,8 @@ STOP_RULE = (
 RULES = [
     "test and shift are each scored once, after this file is committed and pushed",
     "nothing in src/statementscreen, the model, uv.lock or the verdict rules changes after "
-    "this commit; score_tamper refuses to score if anything differs",
+    "this commit; score_tamper refuses to score if anything differs, and it compares with "
+    "the pushed version of this file, not the working-tree copy",
     "no retuning after seeing test results; a bug found is reported as a finding, not "
     "fixed silently",
     "test numbers are reported next to the dev numbers, never blended with them",
@@ -147,11 +172,25 @@ RULES = [
     "If the builder cannot reach 100 copies for any type, it exits and we STOP and report "
     "the shortfall. No change to seed, count or code. Any re-run with a reduced count is "
     "labelled post-hoc.",
+    "score_tamper reads each detector run's own record, not the name typed on the command "
+    "line: the recorded population must match, a --limit run is never scored, and 300 "
+    "genuine test, 300 shift and 800 copies (100 of each of eight types) are required; an "
+    "incomplete build is refused.",
+    "The test report and the per-copy CSV are written once and never overwritten "
+    "(--overwrite is refused). Any later run uses --post-hoc, writes its own file with "
+    "post_hoc in its name, and is labelled post-hoc.",
+    "Inputs created at step 6 (the test keys, the build summary, the detector runs) cannot be "
+    "hashed now: their seeds are recorded above, and their SHA-256 hashes are written into "
+    "the test report.",
+    "A PDF the detector crashes on is 'could not check': reported in its own column for "
+    "tampered copies and genuine PDFs, never counted as no evidence.",
     "The final registered step logs the scoring run to the local MLflow store (detector "
     "fingerprint, pre-registration commit hash, all metrics, and the report and per-copy CSV "
     "as artifacts). It runs after scoring, only reads the report, and does not change any "
     "result.",
-    "dev was used for development; test and shift were not looked at before scoring",
+    "Test statements were opened in Week 5 for profile and label scoring, and the shift batch "
+    "was scored in Weeks 4 and 5. The Week 6 detector has never been run on either, and no "
+    "tampered copies of them exist before step 6.",
 ]
 
 
@@ -163,24 +202,48 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def git(*args: str) -> str:
-    done = subprocess.run(["git", *args], capture_output=True, text=True, check=True, cwd=ROOT)
+def git(*args: str, root: Path = ROOT) -> str:
+    done = subprocess.run(["git", *args], capture_output=True, text=True, check=True, cwd=root)
     return done.stdout.strip()
 
 
 def dirty_files() -> str:
     """Uncommitted changes: any change to a tracked file, and any untracked file in the code
-    or frozen-artefact folders (so no code that is not in the commit can run)."""
-    tracked = git("status", "--porcelain", "--untracked-files=no")
-    frozen = git("status", "--porcelain", "--", "src", "models", "splits", "uv.lock")
+    or frozen-artefact folders (so no code that is not in the commit can run). The
+    pre-registration itself is excluded: replacing it (delete, regenerate, commit) must not
+    block its own regeneration."""
+    skip = f":(exclude){DEFAULT_OUT.as_posix()}"
+    tracked = git("status", "--porcelain", "--untracked-files=no", "--", ".", skip)
+    frozen = git("status", "--porcelain", "--", "src", "models", "splits", "uv.lock", skip)
     return "\n".join(sorted(set(tracked.splitlines()) | set(frozen.splitlines())))
 
 
-def is_ancestor(commit: str) -> bool:
+def is_ancestor(commit: str, ref: str = "HEAD", root: Path = ROOT) -> bool:
     done = subprocess.run(
-        ["git", "merge-base", "--is-ancestor", commit, "HEAD"], capture_output=True, cwd=ROOT
+        ["git", "merge-base", "--is-ancestor", commit, ref], capture_output=True, cwd=root
     )
     return done.returncode == 0
+
+
+def pushed_text(path: Path, root: Path = ROOT) -> str:
+    """The file as it is on the pushed branch (git's last-known upstream state), exactly."""
+    rel = Path(path).resolve().relative_to(Path(root).resolve()).as_posix()
+    upstream = subprocess.run(
+        ["git", "rev-parse", "--abbrev-ref", "@{u}"], capture_output=True, text=True, cwd=root
+    )
+    if upstream.returncode != 0:
+        raise PreregError(
+            "the branch has no upstream: commit and push the pre-registration first "
+            "(git push --set-upstream origin <branch>)"
+        )
+    shown = subprocess.run(
+        ["git", "show", f"@{{u}}:{rel}"], capture_output=True, text=True, cwd=root
+    )
+    if shown.returncode != 0:
+        raise PreregError(
+            f"{rel} is not on the pushed branch {upstream.stdout.strip()}: commit and push it"
+        )
+    return shown.stdout
 
 
 def frozen_hashes(root: Path = ROOT) -> dict:
@@ -220,6 +283,11 @@ def build(
         "detector_fingerprint": fp.fingerprint() if detector is None else detector,
         "rule_version": RULE_VERSION,
         "hashes": frozen_hashes(root),
+        "expected_inputs": {
+            "counts": EXPECTED_COUNTS,
+            "sources": EXPECTED_SOURCES,
+            "copies_per_type": COPIES_PER_TYPE,
+        },
         "dev_adoption": dev_adoption(root),
         "sets": SETS,
         "seeds": SEEDS,
@@ -232,25 +300,21 @@ def build(
     }
 
 
-def needs_preregistration(copies_dir: Path | None, genuine_specs: Sequence[str]) -> bool:
-    """True when scoring touches the test or shift populations (the one-time scoring)."""
-    names = {spec.partition("=")[0] for spec in genuine_specs}
-    return bool(names & set(REGISTERED_POPULATIONS)) or (
-        copies_dir is not None and Path(copies_dir).name == "test"
-    )
-
-
 def verify(
     prereg: dict,
     rule_version: str = RULE_VERSION,
     root: Path = ROOT,
     ancestor: bool | None = None,
     detector: dict | None = None,
+    pushed: bool | None = None,
 ) -> None:
-    """Raise PreregError (or StaleFindings, naming the part) if anything differs."""
+    """Raise PreregError (or StaleFindings, naming the part) if anything differs. `ancestor`:
+    the frozen commit is in this branch's history; `pushed`: it is on the pushed branch."""
     commit = prereg.get("frozen_commit", "")
-    if not (is_ancestor(commit) if ancestor is None else ancestor):
+    if not (is_ancestor(commit, root=root) if ancestor is None else ancestor):
         raise PreregError(f"pre-registered commit {commit[:12]} is not in this branch's history")
+    if not (is_ancestor(commit, "@{u}", root) if pushed is None else pushed):
+        raise PreregError(f"pre-registered commit {commit[:12]} has not been pushed")
     fp.check(prereg.get("detector_fingerprint"), detector)  # raises StaleFindings
     if rule_version != prereg.get("rule_version"):
         raise PreregError(
@@ -267,12 +331,21 @@ def verify(
         raise PreregError("changed since the pre-registration:\n  " + "\n  ".join(problems))
 
 
-def load_and_verify(path: Path, rule_version: str = RULE_VERSION) -> dict:
+def load_and_verify(path: Path, rule_version: str = RULE_VERSION, root: Path = ROOT) -> dict:
+    """Read the pre-registration, check that it is what was pushed, and verify it against the
+    current code. Returns the pushed version."""
     path = Path(path)
     if not path.is_file():
         raise PreregError(f"no pre-registration at {path}; run tamper.preregister first")
-    prereg = json.loads(path.read_text(encoding="utf-8"))
-    verify(prereg, rule_version)
+    local = path.read_text(encoding="utf-8")
+    pushed = pushed_text(path, root)
+    if pushed != local:
+        raise PreregError(
+            f"{path} differs from the pushed version: scoring uses what was pushed, so an "
+            "uncommitted edit changes nothing"
+        )
+    prereg = json.loads(pushed)
+    verify(prereg, rule_version, root)
     return prereg
 
 

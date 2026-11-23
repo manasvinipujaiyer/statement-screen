@@ -68,6 +68,7 @@ def run_params(prereg: dict, report: dict, report_path: Path, csv_path: Path) ->
     params = {
         "frozen_commit": prereg["frozen_commit"],
         "rule_version": str(report.get("rule_version", prereg["rule_version"])),
+        "post_hoc": str(bool(report.get("post_hoc"))),
         "report_sha256": sha256(report_path),
         "copies_csv_sha256": sha256(csv_path),
     }
@@ -80,12 +81,13 @@ def log(
     metrics: dict[str, float],
     artifacts: Sequence[Path],
     tracking_dir: Path = DEFAULT_DIR,
+    run_name: str = "tamper_test_once",
 ) -> tuple[str, list[str]]:
     """One MLflow run: (run id, other warnings seen). Raises TrackingRefused, before anything
     is logged, if MLflow warns about the local store."""
     mlflow, messages = _open_store(tracking_dir, EXPERIMENT)
     items = sorted(metrics.items())
-    with mlflow.start_run(run_name="tamper_test_once") as run:
+    with mlflow.start_run(run_name=run_name) as run:
         mlflow.log_params(params)
         for start in range(0, len(items), CHUNK):
             mlflow.log_metrics(dict(items[start : start + CHUNK]))
@@ -121,9 +123,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     except (FileNotFoundError, ValueError, PreregError, StaleFindings) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
+    name = "tamper_test_post_hoc" if report.get("post_hoc") else "tamper_test_once"
     try:
         run_id, seen = log(
-            params, metrics, [args.report, args.csv, args.preregistration], args.tracking_dir
+            params,
+            metrics,
+            [args.report, args.csv, args.preregistration],
+            args.tracking_dir,
+            run_name=name,
         )
     except TrackingRefused as e:
         print(f"MLflow: {e}", file=sys.stderr)

@@ -1,6 +1,8 @@
 """The Week 6 pre-registration (tamper/preregister.py): what it records and what it refuses."""
 
 import json
+import subprocess
+from pathlib import Path
 
 import pytest
 
@@ -11,6 +13,12 @@ from statementscreen.tamper.detect.verdict import RULE_VERSION
 
 def _built() -> dict:
     return pre.build(head="abc123", dirty="", detector=fp.fingerprint())
+
+
+def _verify(data: dict, **kwargs) -> None:
+    """verify() with the git questions answered: in this branch's history and pushed."""
+    kwargs = {"ancestor": True, "pushed": True, "detector": fp.fingerprint()} | kwargs
+    pre.verify(data, **kwargs)
 
 
 def test_a_dirty_tree_is_refused():
@@ -28,12 +36,31 @@ def test_the_preregistration_records_what_the_scoring_will_check():
     assert data["dev_adoption"]["decision"].startswith("v2 is adopted")
 
 
+def test_the_manifests_and_split_files_are_frozen_too():
+    artefacts = _built()["hashes"]["artefacts"]
+    for name in (
+        "data/week1_n2000/manifest.csv",
+        "data/week4_shift_n300/manifest.csv",
+        "splits/split_v1.csv",
+        "splits/split_v1.json",
+        "splits/eval_shift_karan_v1.json",
+    ):
+        assert name in artefacts
+
+
+def test_the_required_counts_and_sources_are_recorded():
+    expected = _built()["expected_inputs"]
+    assert expected["counts"] == {"test": 300, "shift": 300, "copies": 800}
+    assert expected["copies_per_type"] == 100
+    assert expected["sources"]["shift"] == "data/week4_shift_n300/pdfs"
+
+
 def test_the_plain_text_fields_say_what_was_agreed():
     data = _built()
     commands = " ".join(data["commands"])
     assert "--per-type 100" in commands and "--include-overlay" in commands
     assert "--seed 6" in commands and "--preregistration" in commands
-    assert "--genuine-manifest shift=" in commands
+    assert "--genuine-manifest shift=" in commands and "--population shift" in commands
     assert "2026" in data["seeds"]["bootstrap"] and "1,000" in data["seeds"]["bootstrap"]
     assert any("overlay: no expectation" in line for line in data["expectations"])
     assert "post-hoc" in data["stop_rule"] and "change nothing" in data["stop_rule"]
@@ -48,24 +75,52 @@ def test_the_plain_text_fields_say_what_was_agreed():
     assert any("reports/week6_tamper_test_copies.csv" in m for m in data["metrics"])
 
 
+def test_the_week_5_history_is_stated_and_the_false_line_is_gone():
+    rules = _built()["rules"]
+    week5 = [r for r in rules if r.startswith("Test statements were opened in Week 5")]
+    assert week5 and "shift batch was scored in Weeks 4 and 5" in week5[0]
+    assert "never been run on either" in week5[0]
+    assert not any("were not looked at before scoring" in r for r in rules)
+
+
+def test_the_new_limits_are_stated():
+    limits = " ".join(_built()["known_limits"])
+    assert "come from the anomaly score alone" in limits and "in-sample on dev" in limits
+    assert "income_to_debits and salary_to_spending" in limits
+    assert "can never give 'tampered' on its own" in limits
+    assert "in-table character-overlap maximum" in limits and "drcr" in limits
+
+
+def test_the_one_time_and_crash_rules_are_stated():
+    rules = " ".join(_built()["rules"])
+    assert "never overwritten" in rules and "--post-hoc" in rules
+    assert "could not check" in rules and "never counted as no evidence" in rules
+    assert "the pushed version of this file" in rules
+
+
 def test_a_matching_preregistration_verifies():
-    pre.verify(_built(), ancestor=True, detector=fp.fingerprint())
+    _verify(_built())
 
 
 def test_a_commit_that_is_not_in_history_is_refused():
     with pytest.raises(pre.PreregError, match="not in this branch"):
-        pre.verify(_built(), ancestor=False, detector=fp.fingerprint())
+        _verify(_built(), ancestor=False)
+
+
+def test_a_commit_that_is_not_pushed_is_refused():
+    with pytest.raises(pre.PreregError, match="has not been pushed"):
+        _verify(_built(), pushed=False)
 
 
 def test_a_different_detector_is_refused_naming_the_part():
     other = {**fp.fingerprint(), "config": "different"}
     with pytest.raises(fp.StaleFindings, match="config differs"):
-        pre.verify(_built(), ancestor=True, detector=other)
+        _verify(_built(), detector=other)
 
 
 def test_a_different_rule_version_is_refused():
     with pytest.raises(pre.PreregError, match="rule version"):
-        pre.verify(_built(), rule_version="v1", ancestor=True, detector=fp.fingerprint())
+        _verify(_built(), rule_version="v1")
 
 
 def test_a_changed_source_file_or_artefact_is_refused():
@@ -73,28 +128,24 @@ def test_a_changed_source_file_or_artefact_is_refused():
     first = sorted(data["hashes"]["code"])[0]
     data["hashes"]["code"][first] = "0" * 64
     data["hashes"]["artefacts"]["uv.lock"] = "0" * 64
+    data["hashes"]["artefacts"]["data/week4_shift_n300/manifest.csv"] = "0" * 64
     with pytest.raises(pre.PreregError) as err:
-        pre.verify(data, ancestor=True, detector=fp.fingerprint())
-    assert f"{first} changed" in str(err.value) and "uv.lock changed" in str(err.value)
+        _verify(data)
+    message = str(err.value)
+    assert f"{first} changed" in message and "uv.lock changed" in message
+    assert "data/week4_shift_n300/manifest.csv changed" in message
 
 
 def test_a_new_source_file_is_refused():
     data = _built()
     del data["hashes"]["code"][sorted(data["hashes"]["code"])[0]]
     with pytest.raises(pre.PreregError, match="is new"):
-        pre.verify(data, ancestor=True, detector=fp.fingerprint())
+        _verify(data)
 
 
 def test_a_missing_file_is_refused(tmp_path):
     with pytest.raises(pre.PreregError, match="no pre-registration"):
         pre.load_and_verify(tmp_path / "nope.json")
-
-
-def test_which_scoring_runs_need_a_preregistration(tmp_path):
-    assert pre.needs_preregistration(None, ["test=x"])
-    assert pre.needs_preregistration(None, ["dev=a", "shift=b"])
-    assert pre.needs_preregistration(tmp_path / "test", [])
-    assert not pre.needs_preregistration(tmp_path / "dev", ["dev=a", "train=b"])
 
 
 def test_an_existing_preregistration_is_never_overwritten(tmp_path, capsys):
@@ -103,3 +154,73 @@ def test_an_existing_preregistration_is_never_overwritten(tmp_path, capsys):
     assert pre.main(["--out", str(path)]) == 2
     assert json.loads(path.read_text(encoding="utf-8")) == {"keep": "me"}
     assert "never overwritten" in capsys.readouterr().err
+
+
+# ---------------------------------------------------------------- the pushed version (real git)
+
+
+def _git(cwd: Path, *args: str) -> None:
+    subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True)
+
+
+def _repo(tmp_path: Path, push: bool = True) -> tuple[Path, Path]:
+    """A throwaway repository with a bare remote and one committed pre-registration."""
+    remote, work = tmp_path / "remote.git", tmp_path / "work"
+    subprocess.run(["git", "init", "--bare", str(remote)], check=True, capture_output=True)
+    subprocess.run(["git", "init", str(work)], check=True, capture_output=True)
+    _git(work, "config", "user.email", "test@example.com")
+    _git(work, "config", "user.name", "Test")
+    (work / "reports").mkdir()
+    prereg = work / "reports" / "prereg.json"
+    prereg.write_text('{"a": 1}\n', encoding="utf-8")
+    _git(work, "add", ".")
+    _git(work, "commit", "-m", "pre-registration")
+    _git(work, "remote", "add", "origin", str(remote))
+    if push:
+        _git(work, "push", "-u", "origin", "HEAD")
+    return work, prereg
+
+
+def test_the_pushed_version_is_read_from_the_remote_branch(tmp_path):
+    work, prereg = _repo(tmp_path)
+    assert pre.pushed_text(prereg, work) == '{"a": 1}\n'
+    prereg.write_text('{"a": 2}\n', encoding="utf-8")  # an uncommitted edit changes nothing
+    assert pre.pushed_text(prereg, work) == '{"a": 1}\n'
+
+
+def test_a_working_tree_edit_is_refused_against_the_pushed_version(tmp_path):
+    work, prereg = _repo(tmp_path)
+    prereg.write_text('{"a": 2}\n', encoding="utf-8")
+    with pytest.raises(pre.PreregError, match="differs from the pushed version"):
+        pre.load_and_verify(prereg, root=work)
+
+
+def test_a_branch_with_no_upstream_is_refused(tmp_path):
+    work, prereg = _repo(tmp_path, push=False)
+    with pytest.raises(pre.PreregError, match="no upstream"):
+        pre.pushed_text(prereg, work)
+
+
+def test_a_file_that_is_committed_but_not_pushed_is_refused(tmp_path):
+    work, _ = _repo(tmp_path)
+    later = work / "reports" / "later.json"
+    later.write_text("{}\n", encoding="utf-8")
+    _git(work, "add", ".")
+    _git(work, "commit", "-m", "not pushed")
+    with pytest.raises(pre.PreregError, match="not on the pushed branch"):
+        pre.pushed_text(later, work)
+
+
+def test_a_commit_is_pushed_only_when_it_is_on_the_upstream_branch(tmp_path):
+    work, _ = _repo(tmp_path)
+    first = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=work, check=True, capture_output=True, text=True
+    ).stdout.strip()
+    (work / "reports" / "later.json").write_text("{}\n", encoding="utf-8")
+    _git(work, "add", ".")
+    _git(work, "commit", "-m", "not pushed")
+    second = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=work, check=True, capture_output=True, text=True
+    ).stdout.strip()
+    assert pre.is_ancestor(first, "@{u}", work) is True
+    assert pre.is_ancestor(second, "@{u}", work) is False

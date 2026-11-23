@@ -167,8 +167,12 @@ def run(
     split: str | None = None,
     resume: bool = False,
     overwrite: bool = False,
+    population: str | None = None,
+    limit: int | None = None,
 ) -> dict:
-    """Run the detector on every PDF; write the three outputs; return the run summary."""
+    """Run the detector on every PDF; write the three outputs; return the run summary. The
+    summary records the population (--population, else the split) and any --limit, so scoring
+    can check a run against the name it is scored under."""
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     parts = _prepare(out, resume, overwrite)
@@ -197,6 +201,8 @@ def run(
         "what": "Week 6 detector findings, one PDF at a time (verdicts: see scoring.py)",
         "source": str(source),
         "split": split,
+        "population": population or split,
+        "limit": limit,
         "pdfs": len(pdfs),
         "findings": findings.height,
         "items_with_findings": findings["item"].n_unique(),
@@ -230,13 +236,29 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument("--split", help="only this split's statements (needs --manifest)")
     p.add_argument("--manifest", type=Path, help="the batch's manifest.csv (for --split)")
     p.add_argument("--splits-dir", type=Path, default=SPLITS_DIR)
-    p.add_argument("--limit", type=int, help="first N PDFs only (a trial: use another --out)")
+    p.add_argument(
+        "--population",
+        help="what this run covers (e.g. shift), recorded so scoring can check it; a run with "
+        "--split records the split",
+    )
+    p.add_argument("--limit", type=int, help="first N PDFs only (a trial: never scored)")
     p.add_argument("--resume", action="store_true", help="continue an interrupted run")
     p.add_argument("--overwrite", action="store_true", help="replace a finished run")
     args = p.parse_args(argv)
     try:
+        if args.split and args.population and args.population != args.split:
+            raise RunError(f"--population {args.population!r} contradicts --split {args.split!r}")
         pdfs = pdf_list(args.pdfs, args.split, args.manifest, args.splits_dir, args.limit)
-        summary = run(pdfs, args.out, args.pdfs, args.split, args.resume, args.overwrite)
+        summary = run(
+            pdfs,
+            args.out,
+            args.pdfs,
+            args.split,
+            args.resume,
+            args.overwrite,
+            args.population,
+            args.limit,
+        )
     except (RunError, SplitError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2

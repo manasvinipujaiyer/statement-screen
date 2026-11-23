@@ -59,6 +59,7 @@ def test_detection_rates_are_exact_on_a_hand_built_type():
         "no evidence of tampering": 2,
         "suspicious": 2,
         "tampered": 6,
+        "could not check": 0,
     }
     assert (w["tampered"]["count"], w["tampered"]["rate"]) == (6, 0.6)
     assert (w["tampered_or_suspicious"]["count"], w["tampered_or_suspicious"]["rate"]) == (8, 0.8)
@@ -296,3 +297,72 @@ def test_the_per_copy_table_has_the_audit_columns(tmp_path):
     with out.open(newline="", encoding="utf-8") as f:
         read = list(csv.DictReader(f))
     assert read == rows and [r["copy"] for r in read] == ["inplace_edit_00", "inplace_edit_01"]
+
+
+CRASH = Finding("CHECK_NOT_RUN", "parse", None, None, "info", "the detector crashed: ValueError")
+
+
+def _crashed(item, kind, layout="columns"):
+    return Item(item, f"src_{item}", kind, layout, findings=(CRASH,), crashed=True)
+
+
+def test_a_crashed_pdf_is_could_not_check_and_never_no_evidence():
+    copies = _items("inplace_edit", ["tampered"] * 3 + ["none"]) + [
+        _crashed("crash_01", "inplace_edit")
+    ]
+    report = _report(copies)
+    group = report["detection"]["inplace_edit"]
+    w = group["with_history"]
+    assert w["labels"]["could not check"] == 1 and w["labels"]["no evidence of tampering"] == 1
+    assert group["could_not_check"]["count"] == 1 and group["could_not_check"]["total"] == 5
+    assert w["tampered"]["count"] == 3 and w["tampered"]["total"] == 5
+    assert w["tampered_or_suspicious"]["count"] == 3  # could not check is not flagged
+    assert group["without_history"]["labels"]["could not check"] == 1
+    outcomes = {c["item"]: c["outcome"] for c in report["misses"]}
+    assert outcomes["crash_01"] == "could not check"
+    assert [c["item"] for c in report["could_not_check_cases"]] == ["crash_01"]
+
+
+def test_a_crashed_genuine_pdf_is_not_a_clean_one_and_not_a_false_alarm():
+    clean = Item("stmt_1", "stmt_1", "genuine", "columns")
+    genuine = {"dev": [clean, _crashed("stmt_2", "genuine")]}
+    report = _report([], genuine)
+    row = report["false_alarms"]["genuine"]["dev"]
+    assert row["could_not_check"]["text"] == "1/2 (50.0%)"
+    assert row["with_history"]["labels"]["no evidence of tampering"] == 1
+    assert row["without_anomaly"]["labels"]["could not check"] == 1
+    assert report["false_alarm_cases"] == []
+    assert [(c["population"], c["item"]) for c in report["could_not_check_cases"]] == [
+        ("dev", "stmt_2")
+    ]
+
+
+def test_the_pooled_row_and_the_table_carry_could_not_check():
+    copies = _items("inplace_edit", ["tampered"]) + [_crashed("crash_01", "page_swap")]
+    report = _report(copies)
+    assert report["pooled_detection"]["could_not_check"]["count"] == 1
+    rows = {r["copy"]: r for r in copy_rows(copies)}
+    assert rows["crash_01"]["verdict"] == "could not check"
+    assert rows["inplace_edit_00"]["verdict"] == "tampered"
+
+
+def test_the_crashed_flag_comes_from_the_runs_crashed_list(tmp_path):
+    keys = tmp_path / "keys"
+    keys.mkdir()
+    for n in (1, 2):
+        key = {
+            "copy_id": f"copy_{n:04d}",
+            "source": f"stmt_{n:04d}",
+            "source_layout": "columns",
+            "tamper_type": "inplace_edit",
+            "incremental_save": None,
+            "pages_changed": [1],
+            "changes": [],
+            "donor": None,
+        }
+        (keys / f"copy_{n:04d}.json").write_text(json.dumps(key), encoding="utf-8")
+    copies = load_copies(tmp_path, {}, frozenset({"copy_0002"}))
+    assert [(c.item, c.crashed) for c in copies] == [("copy_0001", False), ("copy_0002", True)]
+    items = genuine_items(["stmt_b", "stmt_a"], {"stmt_a": "drcr", "stmt_b": "columns"}, {},
+                          frozenset({"stmt_b"}))  # fmt: skip
+    assert [(i.item, i.crashed) for i in items] == [("stmt_a", False), ("stmt_b", True)]
