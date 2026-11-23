@@ -84,6 +84,7 @@ class Scored:
     verdict: dict
     label: str
     label_without_history: str
+    label_without_anomaly: str
     first: str | None  # "group:code" of the first non-info finding, if any
 
 
@@ -155,7 +156,9 @@ def score_item(item: Item, version: str = RULE_VERSION) -> Scored:
     found = list(item.findings)
     verdict = decide(found, version)
     without = decide([f for f in found if f.group != "history"], version)
-    return Scored(item, verdict, verdict["label"], without["label"], first_check(verdict))
+    no_anomaly = decide([f for f in found if f.group != "anomaly"], version)
+    first = first_check(verdict)
+    return Scored(item, verdict, verdict["label"], without["label"], no_anomaly["label"], first)
 
 
 # ---------------------------------------------------------------- rates and intervals
@@ -207,6 +210,24 @@ def _tampered_nh(s: Scored) -> bool:
 
 def _flagged_nh(s: Scored) -> bool:
     return s.label_without_history != NONE
+
+
+def _tampered_na(s: Scored) -> bool:
+    return s.label_without_anomaly == TAMPERED
+
+
+def _flagged_na(s: Scored) -> bool:
+    return s.label_without_anomaly != NONE
+
+
+def _without_anomaly(scored: list[Scored]) -> dict:
+    """The verdicts recomputed with every anomaly finding removed."""
+    count = Counter(s.label_without_anomaly for s in scored)
+    return {
+        "labels": {label: count.get(label, 0) for label in LABELS},
+        "tampered": _with_ci(scored, _tampered_na),
+        "tampered_or_suspicious": _with_ci(scored, _flagged_na),
+    }
 
 
 def _labels(scored: list[Scored], without_history: bool) -> dict[str, int]:
@@ -356,6 +377,47 @@ def _false_alarms(scored: list[Scored], population: str) -> list[dict]:
     return out
 
 
+# ---------------------------------------------------------------- genuine populations
+
+# Each genuine population is reported on its own row and never combined with another. The
+# label says how the population relates to the anomaly model, so nobody reads a number as
+# more independent than it is.
+POPULATIONS = {
+    "dev": "genuine dev: the anomaly threshold was set on these statements, so the anomaly "
+    "check's 2% holds here by construction",
+    "train": "genuine train (in-sample for anomaly): the IsolationForest was trained on these "
+    "statements",
+    "test": "genuine test: seen by neither the anomaly model nor its threshold",
+    "shift": "genuine shift batch (another collaborator's narration formats): seen by neither "
+    "the anomaly model nor its threshold",
+}
+
+
+def _genuine_report(name: str, scored: list[Scored]) -> dict:
+    """A genuine population: the usual rates, plus the rates with anomaly findings removed."""
+    report = _group_report(scored)
+    report["population"] = POPULATIONS.get(name, f"genuine {name}")
+    report["without_anomaly"] = _without_anomaly(scored)
+    return report
+
+
+def _strong_cases(scored: list[Scored]) -> list[dict]:
+    """Genuine items with any strong finding: the stop condition (never expected)."""
+    out = []
+    for s in scored:
+        strong = [f for f in s.verdict["findings"] if f["strength"] == "strong"]
+        if strong:
+            out.append(
+                {
+                    "item": s.item.item,
+                    "layout": s.item.layout,
+                    "codes": sorted({f["code"] for f in strong}),
+                    "reasons": [f["reason"] for f in strong],
+                }
+            )
+    return out
+
+
 # ---------------------------------------------------------------- the report
 
 
@@ -380,8 +442,13 @@ def build_report(
     }
     false_alarms = {
         "resaved_genuine": resaved,
-        "genuine": {name: _group_report(sc) for name, sc in genuine_scored.items()},
+        "genuine": {name: _genuine_report(name, sc) for name, sc in genuine_scored.items()},
     }
+    strong_on_genuine = [
+        {"population": name, **case}
+        for name, sc in genuine_scored.items()
+        for case in _strong_cases(sc)
+    ]
 
     notes = {"detection": [], "false_alarms": [], "overlay": []}
     layout_notes = []
@@ -419,6 +486,7 @@ def build_report(
         "layout_notes": layout_notes,
         "misses": _misses([s for s in scored if s.item.kind in TAMPER_TYPES]),
         "overlay_misses": _misses(by_kind[HELD_OUT]),
+        "genuine_with_strong_findings": strong_on_genuine,
         "false_alarm_cases": _false_alarms(by_kind[CONTROL], CONTROL)
         + [c for name, sc in genuine_scored.items() for c in _false_alarms(sc, name)],
     }

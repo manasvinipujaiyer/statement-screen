@@ -102,6 +102,34 @@ def test_false_alarms_on_genuine_pdfs_and_resaved_copies():
     assert case["summary"].strip() and case["reasons"]
 
 
+WEAK_ANOMALY = Finding("ANOMALY_SCORE", "anomaly", None, None, "weak", "unusual money pattern")
+
+
+def test_genuine_populations_get_their_own_row_label_and_a_no_anomaly_recount():
+    # two genuine statements look suspicious only because of the anomaly score plus one weak sign
+    flagged = [
+        Item(f"stmt_{n}", f"stmt_{n}", "genuine", "columns", findings=(WEAK_ANOMALY, WEAK_LAYOUT))
+        for n in (1, 2)
+    ]
+    clean = _items("genuine", ["none"] * 8, prefix="stmt_c")
+    rep = _report([], {"train": flagged + clean, "dev": clean})["false_alarms"]["genuine"]
+    train, dev = rep["train"], rep["dev"]
+    assert train["with_history"]["tampered_or_suspicious"]["text"] == "2/10 (20.0%)"
+    assert train["without_anomaly"]["tampered_or_suspicious"]["text"] == "0/10 (0.0%)"
+    assert "in-sample for anomaly" in train["population"]
+    assert "by construction" in dev["population"] and dev["n"] == 8  # never combined with train
+
+
+def test_a_strong_finding_on_a_genuine_pdf_is_listed_for_the_stop_rule():
+    bad = Item("stmt_9", "stmt_9", "genuine", "drcr", findings=(STRONG, WEAK_LAYOUT))
+    good = _items("genuine", ["none"] * 3, prefix="stmt_g")
+    rep = _report([], {"dev": good + [bad]})
+    (case,) = rep["genuine_with_strong_findings"]
+    assert (case["population"], case["item"], case["codes"]) == ("dev", "stmt_9", ["BALANCE_CHAIN"])
+    assert case["reasons"] == ["balance broken"]
+    assert _report([], {"dev": good})["genuine_with_strong_findings"] == []
+
+
 def test_false_alarms_that_come_from_file_history_are_called_out():
     resaved = _items("resaved_genuine", ["suspicious"] * 4, mode="incremental")
     notes = _report(resaved)["history_dependence"]["false_alarms"]
