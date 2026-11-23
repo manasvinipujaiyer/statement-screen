@@ -184,3 +184,59 @@ def test_the_genuine_train_row_is_labelled_in_sample(tmp_path, capsys):
     assert cli.main(argv) == 0
     out = capsys.readouterr().out
     assert "genuine train (in-sample for anomaly)" in out and "without anomaly" in out
+
+
+def _add_shift(tmp_path: Path, s: dict) -> Path:
+    """A second genuine population whose statements are only in its own manifest."""
+    shift = ["shift_0001", "shift_0002"]
+    _write_run(tmp_path / "genuine_shift", shift, {})
+    manifest = tmp_path / "shift_manifest.csv"
+    manifest.write_text(
+        "statement_id,layout,customer_type\nshift_0001,columns,x\nshift_0002,drcr,x\n",
+        encoding="utf-8",
+    )
+    return manifest
+
+
+def test_each_population_can_have_its_own_manifest(tmp_path):
+    s = _setup(tmp_path)
+    shift_manifest = _add_shift(tmp_path, s)
+    argv = _argv(
+        s,
+        *("--genuine", f"shift={tmp_path / 'genuine_shift'}"),
+        *("--genuine-manifest", f"shift={shift_manifest}"),
+    )
+    assert cli.main(argv) == 0
+    report = json.loads(s["out"].read_text(encoding="utf-8"))
+    assert report["inputs"]["genuine_dev"]["manifest"] == str(s["manifest"])
+    assert report["inputs"]["genuine_shift"]["manifest"] == str(shift_manifest)
+    assert report["false_alarms"]["genuine"]["shift"]["with_history"]["tampered"]["total"] == 2
+    assert report["false_alarms"]["genuine"]["dev"]["with_history"]["tampered"]["total"] == 5
+
+
+def test_a_population_is_not_found_in_another_populations_manifest(tmp_path, capsys):
+    s = _setup(tmp_path)
+    _add_shift(tmp_path, s)  # shift ids are not in the default manifest
+    argv = _argv(s, "--genuine", f"shift={tmp_path / 'genuine_shift'}")
+    assert cli.main(argv) == 2
+    assert "not in the manifest" in capsys.readouterr().err
+
+
+def test_a_population_with_no_manifest_at_all_is_refused(tmp_path, capsys):
+    s = _setup(tmp_path)
+    argv = ["--genuine", f"dev={s['genuine']}", "--out", str(s["out"])]
+    assert cli.main(argv) == 2
+    assert "no manifest" in capsys.readouterr().err
+
+
+def test_bad_genuine_manifest_arguments_are_refused(tmp_path, capsys):
+    s = _setup(tmp_path)
+    m = str(s["manifest"])
+    for extra, message in (
+        (["--genuine-manifest", "nopath"], "NAME=PATH"),
+        (["--genuine-manifest", f"ghost={m}"], "not given with --genuine"),
+        (["--genuine-manifest", f"dev={m}", "--genuine-manifest", f"dev={m}"], "twice"),
+        (["--genuine", f"dev={s['genuine']}"], "twice"),
+    ):
+        assert cli.main(_argv(s, *extra)) == 2
+        assert message in capsys.readouterr().err

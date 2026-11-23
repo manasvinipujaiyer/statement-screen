@@ -6,8 +6,11 @@
         --out reports/week6_tamper_dev.json \\
         --table data/tamper/dev/copies_table.csv --table-extended
 
-Reads, and only here: the answer keys (<copies>/keys), the manifest (each genuine
+Reads, and only here: the answer keys (<copies>/keys), the manifests (each genuine
 statement's layout) and the findings that tamper/run.py cached. It never opens a PDF.
+--manifest is the default manifest for every genuine population; --genuine-manifest NAME=PATH
+gives one population its own (the shift batch has its own manifest). The manifest used for
+each population is recorded in the report.
 
 Refuses findings made by a different detector (the fingerprint in each detect_run.json must
 match the current code, config, model file and uv.lock; there is no override), and refuses a
@@ -93,10 +96,13 @@ def load_inputs(
     copies_dir: Path | None,
     copies_run: Path | None,
     genuine_specs: list[str],
-    manifest: Path,
+    manifest: Path | None,
+    genuine_manifests: Sequence[str] = (),
 ) -> tuple[list[Item], dict[str, list[Item]], dict[str, dict]]:
-    """(copies, genuine populations, run info) from the keys, the manifest and the cached
-    detector runs. Refuses a stale or incomplete run (ScoreError, StaleFindings)."""
+    """(copies, genuine populations, run info) from the keys, the manifests and the cached
+    detector runs. Each genuine population is looked up in its own manifest
+    (genuine_manifests, NAME=PATH) or else the default `manifest`; a population with neither
+    is refused. Refuses a stale or incomplete run (ScoreError, StaleFindings)."""
     inputs: dict[str, dict] = {}
     copies: list[Item] = []
     if copies_dir:
@@ -104,18 +110,35 @@ def load_inputs(
         copies = load_copies(Path(copies_dir), findings)
         _cover("copies", {c.item for c in copies}, ran)
         inputs["copies"] = _info(summary)
-    layouts = layouts_from_manifest(manifest)
+    own: dict[str, Path] = {}
+    for spec in genuine_manifests:
+        name, _, path = spec.partition("=")
+        if not name or not path:
+            raise ScoreError(f"--genuine-manifest wants NAME=PATH, got {spec!r}")
+        if name in own:
+            raise ScoreError(f"--genuine-manifest given twice for {name!r}")
+        own[name] = Path(path)
+    named = [spec.partition("=")[0] for spec in genuine_specs]
+    stray = sorted(set(own) - set(named))
+    if stray:
+        raise ScoreError(f"--genuine-manifest for a population not given with --genuine: {stray}")
     genuine: dict[str, list[Item]] = {}
     for spec in genuine_specs:
         name, _, folder = spec.partition("=")
         if not name or not folder:
             raise ScoreError(f"--genuine wants NAME=RUN_DIR, got {spec!r}")
+        if name in genuine:
+            raise ScoreError(f"--genuine given twice for {name!r}")
+        used = own.get(name, manifest)
+        if used is None:
+            raise ScoreError(f"genuine {name}: no manifest; give --manifest or --genuine-manifest")
+        layouts = layouts_from_manifest(used)
         summary, findings, ran = read_run(Path(folder))
         unknown = sorted(set(ran) - set(layouts))
         if unknown:
-            raise ScoreError(f"genuine {name}: not in the manifest, e.g. {unknown[:3]}")
+            raise ScoreError(f"genuine {name}: not in the manifest {used}, e.g. {unknown[:3]}")
         genuine[name] = genuine_items(ran, layouts, findings)
-        inputs[f"genuine_{name}"] = _info(summary)
+        inputs[f"genuine_{name}"] = {**_info(summary), "manifest": str(used)}
     if not copies and not genuine:
         raise ScoreError("nothing to score: give --copies and/or --genuine")
     return copies, genuine, inputs
@@ -191,7 +214,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         metavar="NAME=RUN_DIR",
         help="a genuine population (dev, train, test, shift) and its detector run",
     )
-    p.add_argument("--manifest", type=Path, required=True, help="manifest.csv, for layouts")
+    p.add_argument(
+        "--manifest",
+        type=Path,
+        help="manifest.csv for layouts: the default for every genuine population",
+    )
+    p.add_argument(
+        "--genuine-manifest",
+        action="append",
+        default=[],
+        metavar="NAME=PATH",
+        help="this population's own manifest.csv (e.g. the shift batch), instead of --manifest",
+    )
     p.add_argument("--rule-version", default=RULE_VERSION)
     p.add_argument("--out", type=Path, required=True, help="the report (JSON)")
     p.add_argument("--table", type=Path, help="per-copy table (CSV)")
@@ -203,7 +237,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.out.exists() and not args.overwrite:
             raise ScoreError(f"{args.out} exists; pass --overwrite to replace it")
         copies, genuine, inputs = load_inputs(
-            args.copies, args.copies_run, args.genuine, args.manifest
+            args.copies, args.copies_run, args.genuine, args.manifest, args.genuine_manifest
         )
         report = build_report(copies, genuine, args.rule_version)
         report["inputs"] = inputs
