@@ -1,0 +1,197 @@
+{
+  "commands": [
+    "STATEMENTSCREEN_OPEN_TEST=1 uv run python -m statementscreen.tamper data/week1_n2000/ --set test --per-type 100 --seed 6 --include-overlay",
+    "uv run python -m statementscreen.tamper.run data/tamper/test/copies --out data/tamper/test/detect",
+    "STATEMENTSCREEN_OPEN_TEST=1 uv run python -m statementscreen.tamper.run data/week1_n2000/pdfs --split test --manifest data/week1_n2000/manifest.csv --out data/tamper/genuine_test/detect",
+    "uv run python -m statementscreen.tamper.run data/week4_shift_n300/pdfs --out data/tamper/genuine_shift/detect",
+    "uv run python -m statementscreen.tamper.score_tamper --copies data/tamper/test --genuine test=data/tamper/genuine_test/detect --genuine shift=data/tamper/genuine_shift/detect --manifest data/week1_n2000/manifest.csv --genuine-manifest shift=data/week4_shift_n300/manifest.csv --preregistration reports/week6_preregistration.json --out reports/week6_tamper_test.json --table reports/week6_tamper_test_copies.csv",
+    "uv run python -m statementscreen.tamper.log_run --report reports/week6_tamper_test.json --csv reports/week6_tamper_test_copies.csv --preregistration reports/week6_preregistration.json"
+  ],
+  "detector_fingerprint": {
+    "code": "3dd2362819c5233d45e1a7f0c3615eb1d4b1c8ac53c2a6ff2f346187051300b3",
+    "config": "5b332b4b4ff8e5ef8dfee4dfe6e286d7db7e038ea3c72568da183fedfd95f0b8",
+    "model": "d1a8aff502819286c572ce5891008ce4f274317b8ec640cd181031bef2939ccb",
+    "uv_lock": "68f70d808c4c2377ab2fb651d3aedad4a10206f1dcda0915428c5a0a41f7b1c5"
+  },
+  "dev_adoption": {
+    "adoption_rule": [
+      "(a) rerender_consistent detection, counted as tampered or suspicious, on dev rises by at least 10 percentage points over the old version",
+      "(b) an anomaly score alone can never produce 'tampered'",
+      "(c) the 'tampered' false-alarm rate on genuine dev and on resaved_genuine is unchanged from the old version"
+    ],
+    "conditions": {
+      "a_rerender_consistent_gain": {
+        "gain_percentage_points": 11.7,
+        "needed_percentage_points": 10,
+        "new": "7/60 (11.7%)",
+        "old": "0/60 (0.0%)",
+        "passed": true
+      },
+      "all_passed": true,
+      "b_anomaly_alone_never_tampered": {
+        "lone_anomaly_score_gives": "suspicious",
+        "passed": true,
+        "tampered_without_a_strong_finding": []
+      },
+      "c_tampered_false_alarms_unchanged": {
+        "genuine_dev": [
+          "0/300 (0.0%)",
+          "0/300 (0.0%)"
+        ],
+        "passed": true,
+        "resaved_genuine": [
+          "0/60 (0.0%)",
+          "0/60 (0.0%)"
+        ]
+      }
+    },
+    "decision": "v2 is adopted: all three conditions hold",
+    "source": "reports/week6_rule_comparison_dev.json"
+  },
+  "expectations": [
+    "These are what dev showed, written down before test is opened. They are not targets and nothing is tuned to them.",
+    "dev, rule v2: rerender_inconsistent, inplace_edit, page_swap and page_remove 60/60 flagged each; inplace_edit_consistent 59/60; rerender_consistent 7/60 (11.7%, interval 5-20%), tampered 0/60.",
+    "dev false alarms: 'tampered' 0/300 on genuine dev and 0/60 on resaved_genuine; 'tampered or suspicious' 6/300 (2.0%) on genuine dev and 1/60 on resaved_genuine; 0/300 flagged on genuine dev without anomaly findings.",
+    "So on test: most types expected near 100% flagged, rerender_consistent expected low, tampered false alarms expected near zero, and 'suspicious' on genuine expected near 2% (the anomaly threshold's rate).",
+    "overlay: no expectation. It is held out and dev has no overlay data.",
+    "shift: 'tampered' expected near 0; flagged (tampered or suspicious) rate may exceed 2% because the anomaly model never saw this distribution; no number pre-stated.",
+    "Anything far from this is reported as it is."
+  ],
+  "frozen_commit": "77f13d7d1d044c5988cf34bba6de762b95a692c6",
+  "hashes": {
+    "artefacts": {
+      "models/week6_iforest.pkl": "623419f37b5f6f6b30d489378b266dcfae0663e315b25e3951f8576cc75dda88",
+      "reports/week6_rule_comparison_dev.json": "8a8983c417b998db71376757fba09fad5ef88020d4e07baea223492215440596",
+      "reports/week6_rule_versions.json": "0ff0e43b0347408921ab408e67452cbadc72c57e321626fd49d7e9aa9fda18ec",
+      "splits/eval_shift_karan_v1.json": "5e725d39ed982f6df0d4244ba9dac30635daeb241fce7bb994270aeaf9a30f8c",
+      "splits/split_v1.csv": "291d85111367b312b97268b74e06d7fbfd1770eda4b8e5731a60d740a0ceccc6",
+      "splits/split_v1.json": "d1b78b82a54a80a3775ea70df5388ce084859e90c08fccd14bd13ef93ffcd85c",
+      "uv.lock": "67fa84a357199a7cfe400b40b0b3588e5cd4ed3b5b5242f6c46d95548f7231b4"
+    },
+    "code": {
+      "src/statementscreen/__init__.py": "415b8222a9c56314699ebff2bda248650efb4d9596d7f596c50ec3fc423f4ef6",
+      "src/statementscreen/batch.py": "156326c140926e22aba49855e63312c7d05de5758d752ee1f053e821068d63ef",
+      "src/statementscreen/batch_hash.py": "91985bfe9dca08acbc9060910e1a73c98dad5b2d93ac4e9dcd09246e254a36ab",
+      "src/statementscreen/compare.py": "ae8005982d7981d380460489ec03ec72c1080bbde70f5d1292895186a0f562ab",
+      "src/statementscreen/dialect_report.py": "d243a9813af521b3728abe783eb5ec6c4c69b2309ef32443b8568682bbf06beb",
+      "src/statementscreen/eval_batches.py": "68fca7dbbcdd3e4f9dbd6b3bed08a2f4c66d063fa489110f4776b16d1a3f66cb",
+      "src/statementscreen/features.py": "0413ea411d9a4fce440b6196039fe5b5380eb7d8204229c65660db7158816442",
+      "src/statementscreen/generate.py": "298457834fa291ae5346cc42065990cb5e83ae658a05131cb50c8e2817a4eb4d",
+      "src/statementscreen/holdout.py": "676e1630d67ceb1e1398734ab2fb3b121185646a98339d3d2be7e704a0278d82",
+      "src/statementscreen/parse.py": "d6dfa0bd5a6cc9bf36c16549c7fa92347713301ce95a1c4e3aa6da2560db7c18",
+      "src/statementscreen/parsing/__init__.py": "fa612e6807171fa5718bcea39b98d245d0f2ab8befd5864892a3ec70af780868",
+      "src/statementscreen/parsing/checks.py": "e80915eb28b05d367f1ab2ec1373809e48d9a912845b27c7bfe54271b6ba8f49",
+      "src/statementscreen/parsing/layouts.py": "d29f168548dc6f6352e47bb7e72cbac651d264433b386ee38e7a73d4aff881ce",
+      "src/statementscreen/parsing/models.py": "1563698bad5c84959dcf970dd1351f5ddf160cf6968b69c10b86df6bed8b001a",
+      "src/statementscreen/parsing/pdf.py": "dde83cf215df69a5659ba5eb3be1efc1f4f1abf09aeb6e0dbc33cfc960517c76",
+      "src/statementscreen/parsing/tables.py": "9f6cff4393a952ba0dce78facdbabbd3402b84cf3787f3c84adf08cb9e83644f",
+      "src/statementscreen/parsing/values.py": "1ab0f566b21f7a686c0a5ff8e412fa1441ac7c46d845a4a702411ca986a69045",
+      "src/statementscreen/parsing/words.py": "ae542e955f56fb2a28648328d0c16d53ba13960748b807fdbede6cb4ce664b78",
+      "src/statementscreen/pattern_scoring.py": "1b59bd77a2b92ba8cf13c654944a0cbd097e42969b93577ff2b856324feefe0d",
+      "src/statementscreen/patterns/__init__.py": "622bedd38159bbc22df53e560ba0dbc1c96ccf34c083c16af270c0df0f0fe6fd",
+      "src/statementscreen/patterns/__main__.py": "0cef4dd7fce2192a5cc01226f6720a6d9df299878176609660c0828d73771493",
+      "src/statementscreen/patterns/clean.py": "af378a604dad447d491b72fc419839225b8b37513ce7f1a752499ab38b9eafc9",
+      "src/statementscreen/patterns/cli.py": "4ed7beb039e64283f58b379d56cd8262e4e4fb20f5e3b23f2b16e9cfa53eec02",
+      "src/statementscreen/patterns/config.py": "4e0b918486f24b604130f7e9351e050006a9cf79106967f2a22aaae40fcdf2a0",
+      "src/statementscreen/patterns/features.py": "eadf717ee5b78726c76b0430a906e221944530fb9535371c355b320e74da9f20",
+      "src/statementscreen/patterns/group.py": "c63b939c22da88fa1a9d6558fee98f01120ed05d4697c67f3681303741c3ca48",
+      "src/statementscreen/patterns/rules.py": "903fae80418e20453c1a0cec0feb6e4fe940c37af7bcda4459f41258910ed9d8",
+      "src/statementscreen/preregister.py": "9b692bc2a3272bb13c8b58e67bc451d053071c7f21ae86a74cf22b25c96166bb",
+      "src/statementscreen/profile/__init__.py": "cc818613c9b588ed50b071f4f2f210a7aa99fca81e935f587c0e4088bfd5a2f9",
+      "src/statementscreen/profile/__main__.py": "6f93cf4b8e552dc39a49ac324d739c1a9fe4d77cbe3dc5b4fbccf290b2347922",
+      "src/statementscreen/profile/build.py": "bdcbbe7147c8bea135ca5eda55ab1ba5e521a6234ab684f0daa94f9298272cc5",
+      "src/statementscreen/profile/cli.py": "c239ae5a0fabb8e1dafcc769e8a1cc3c22151ba7323db6a3be75f45543decc5b",
+      "src/statementscreen/profile/config.py": "4a5c2b7d162fdf5a1a77f0fb6ae41da307d9462ec1810186bd8ceb3dc7ba1741",
+      "src/statementscreen/profile/pdf.py": "43ef0134495787107e1b5d7898495852796a3f7df1c8498d90a24ed5c3339c39",
+      "src/statementscreen/score.py": "b7000f56e061aca1d6c2c7f65b57f041ffae7f4f9af3ec5effd8521211b6d172",
+      "src/statementscreen/score_once.py": "03ed3813a372d8a41908c4faffad718e1841f64d8e642e85dcf3d79541f9b86e",
+      "src/statementscreen/score_patterns.py": "fd1d920f0e51607859d8c87085dc5f613d36bacc3f4d3b0d7af9934640e61985",
+      "src/statementscreen/score_profile.py": "466875977759b585b125842d58631f5c02763797e2aa261ee0686019357541cd",
+      "src/statementscreen/scoring.py": "a4aae8a54dd6960cfeb23abb07fa243c350449ded4153ec76332a8bf73321a3b",
+      "src/statementscreen/splits.py": "d1081cd2eed7184dbb97b39f40830db4625f097ad09b917499da2f7e8bfae317",
+      "src/statementscreen/stress.py": "90ab149e39c862bc5438373a11cd3a649d557471c96f50a6b07256896f61ad5b",
+      "src/statementscreen/summary.py": "77d1de18d777835f59a242d203ac64a6394eddbbe7e9d7db9be0b6b5a3444a3c",
+      "src/statementscreen/sweep_grouping.py": "25fb8b51ebe71eefeaba2402646c3963e2a2861eb707077a42076d877595e0eb",
+      "src/statementscreen/sweep_rules.py": "b8804f40555ee51bff9042a3c794dc6e67cfc416651bff77242ea23047793410",
+      "src/statementscreen/synth/__init__.py": "b8b549bcd6e0f6e7c96c563703a223140054d48d59ca25964afc159cdda60e89",
+      "src/statementscreen/synth/banks.py": "201eaa511fd6e30c7be84e043de117f2440aaa296086d9e55e8dc8478a350f6b",
+      "src/statementscreen/synth/descriptions.py": "651e9afd7f0945f20b8d3730fcda5165bec60672ad4769c623eef33bf2527b44",
+      "src/statementscreen/synth/dialect.py": "969f696a5b96685e2aac2deb0f416b0982aede959382435f06881e3a78204bee",
+      "src/statementscreen/synth/generator.py": "d35204566a9a9ea3a7c4d4cb3d5ae2cc2954e8b27bfbfe62823006a12c87463e",
+      "src/statementscreen/synth/hard_cases.py": "65d8787d523dd331a0889f89007354d083690ff77a41a92830deb5c87a805e8d",
+      "src/statementscreen/synth/labels.py": "94680a8f9e81882518a68d12dafa111c4d820567d8dabdade67e9f121989a8ee",
+      "src/statementscreen/synth/models.py": "6264e78b622f9a8cb871762b8479762ee701ce0cb34429712dd76428232760f9",
+      "src/statementscreen/synth/names.py": "ba1fb282c9546b36b912d2ba34639622a0a714fb395f5f4e393647d48bc68047",
+      "src/statementscreen/synth/render.py": "f8aadb35058b115fe38c87f83e07ebc199b99a03b19ac062ff167c7c7d2c6fbd",
+      "src/statementscreen/synth/util.py": "715ebd4f1e63a8a350d0f2b8fcd55a39620ca2159d71e0fc0206cba6ff32be60",
+      "src/statementscreen/tamper/__init__.py": "10bc3650510a03bd7274adc8de992b94d58b007719c83ca03429cf1ef2289eed",
+      "src/statementscreen/tamper/__main__.py": "b011bed906629b367c270cc77271ec86cafb2bf8d4d59ef3b85858d2ef17ca2b",
+      "src/statementscreen/tamper/build.py": "95706cd88093119afec85d12c881b9a593fb2be841cca655c75ec8149981789d",
+      "src/statementscreen/tamper/compare_rules.py": "f90504d1734da10b1e66d022c4dc949bcd93c32c3431c3c85e37e63196d20269",
+      "src/statementscreen/tamper/copy.py": "c5a1e5440ab10e38ee74cdfbe848cab9a02ed37565e554e226ec69a818556941",
+      "src/statementscreen/tamper/detect/__init__.py": "e3afb822eb32f773df678554c5173c3169166c9bbf2c17b2d9d00317fee1d3df",
+      "src/statementscreen/tamper/detect/anomaly.py": "6aeef0b771cd7f4d4c96d35684e8b23a0d147ac68cbb79e04ada79ddd5a58ab0",
+      "src/statementscreen/tamper/detect/arithmetic.py": "eb1b4cfc3945cf868d2aeac3cc671e004ce16cb16c799a26615c0753098c5ef4",
+      "src/statementscreen/tamper/detect/config.py": "b913c87dcf9b422d37d4b3cdfe5d215ec979297d6a659f9e4495df27e40cf010",
+      "src/statementscreen/tamper/detect/findings.py": "331df391d51156df13cedf68c65350cb42ac984570be0335428fc1bd32b96404",
+      "src/statementscreen/tamper/detect/history.py": "fa70fd14edfab1107c37004a2a5625a5087b74b46766c78ca0ad4215c88a0faa",
+      "src/statementscreen/tamper/detect/layout.py": "e0ac8a4abd456b3d050cdfefc7cb6270fa61aeb5677d833b499e4dbff49abe11",
+      "src/statementscreen/tamper/detect/pdf.py": "43db470118b46e17b46424c0d6057206b01d51e8c70a900ab47b72661be92dff",
+      "src/statementscreen/tamper/detect/structure.py": "0d871655233da035f6d9ef6d14d4bdb89ababedb4c8beca5b311a45ac271c8ac",
+      "src/statementscreen/tamper/detect/verdict.py": "dbb942072060fbe6eae00440ac97af07080dac6db1ff7fb489ba607e428fa549",
+      "src/statementscreen/tamper/fingerprint.py": "e5b2be50eac08c2c7d877daee451c58ddeafe2f01f8377f303f1a891debb5999",
+      "src/statementscreen/tamper/log_run.py": "a6d8a5ec415f166fcf4f573838a835e83a09811807745cf1dd42c3d9d6dfab7a",
+      "src/statementscreen/tamper/preregister.py": "3072307b1ebfe97b6ec644b11d68e7baebdaa392bca371b2904b98ee82850ee2",
+      "src/statementscreen/tamper/rebuild.py": "04602998485d9c2f5decf33a390679424075b470e2e80cb2338ef6bb2b176d65",
+      "src/statementscreen/tamper/rebuild_check.py": "ce18480846605b76f4ea2e0dbee48c3b630cacac87db088985d790e197d48964",
+      "src/statementscreen/tamper/run.py": "dc25d524316dfe214e3ed863949aa7bd07dc55ee41cb81edb4efba9fd6b2ba07",
+      "src/statementscreen/tamper/score_tamper.py": "affbfa0bb2c561d6c0488c83cb8c67f9394e51cf7ec09ece84817d44a709af0a",
+      "src/statementscreen/tamper/scoring.py": "ec2440997267a2a028f8f93a9c8102f303a0b8cce7f97cd0238b71c1d4195b3e",
+      "src/statementscreen/tracking.py": "fa9887e40556cae231a54d66a02898c1410008ca854f1cb114fdf90d385175eb",
+      "src/statementscreen/train.py": "4601fde0bb0c5091aded8853a879894e6c1093599a7cfee80cc5cf75d11f68ee",
+      "src/statementscreen/verify.py": "019250724770c26583b3eb6a2d70895b14b41722d7917a732e08e6751082053f",
+      "src/statementscreen/writer.py": "0a8eb1f50cee20aa07495b622161af1903cc325570f1ff084e09bd3d21e15d7d"
+    }
+  },
+  "known_limits": [
+    "The anomaly check's false-alarm rate on genuine dev and genuine train is in-sample (its threshold and model came from those statements); only test and shift are independent.",
+    "v2 was adopted on dev with a thin margin on condition (a): rerender_consistent rose from 0/60 to 7/60, 11.7 points against 10 needed.",
+    "The layout tolerances and the font baseline were measured on genuine train, so the zero strong findings on genuine dev and train are not independent evidence.",
+    "The pooled all-six-types rate hides the rerender_consistent gap and is not a headline.",
+    "Dev copies are 60 per type; test is 100 per type, so test intervals are narrower."
+  ],
+  "metrics": [
+    "detection per tamper type, counted as 'tampered' and as 'tampered or suspicious', each with a 95% bootstrap interval (1,000 resamples over source statements)",
+    "the same two counts with every file-history finding removed",
+    "the save-mode breakdown (incremental vs full rewrite) for the types a PDF library wrote, including resaved_genuine",
+    "per-type finding-code counts: on how many copies each strong and each weak code fired",
+    "the layout breakdown (columns vs drcr) as count/total and percent, no intervals; gaps over 15 points flagged, small counts noted",
+    "false alarms on genuine test: 'tampered', and 'tampered or suspicious', with and without anomaly findings",
+    "false alarms on genuine shift, and on the resaved_genuine copies",
+    "the per-copy CSV reports/week6_tamper_test_copies.csv (copy, type, layout, save mode, verdict, first check), committed",
+    "overlay: reported separately, not pooled with the six types"
+  ],
+  "rule_version": "v2",
+  "rules": [
+    "test and shift are each scored once, after this file is committed and pushed",
+    "nothing in src/statementscreen, the model, uv.lock or the verdict rules changes after this commit; score_tamper refuses to score if anything differs",
+    "no retuning after seeing test results; a bug found is reported as a finding, not fixed silently",
+    "test numbers are reported next to the dev numbers, never blended with them",
+    "a re-run is reported next to the first result and labelled post-hoc",
+    "If the builder cannot reach 100 copies for any type, it exits and we STOP and report the shortfall. No change to seed, count or code. Any re-run with a reduced count is labelled post-hoc.",
+    "The final registered step logs the scoring run to the local MLflow store (detector fingerprint, pre-registration commit hash, all metrics, and the report and per-copy CSV as artifacts). It runs after scoring, only reads the report, and does not change any result.",
+    "dev was used for development; test and shift were not looked at before scoring"
+  ],
+  "seeds": {
+    "anomaly_model": "IsolationForest seed 42, already fitted and frozen (models/week6_iforest.pkl)",
+    "bootstrap": "numpy default_rng(2026), 1,000 resamples over source statements (scoring.BOOTSTRAP_SEED)",
+    "source_draw": "numpy default_rng([6, 0]): the seeded order of source statements, alternating layouts (--seed 6, the same seed as the dev set)",
+    "tamper": "numpy default_rng([6, 1 + the type's position in TYPES]) per type draws each copy's seed; tamper_copy then uses default_rng([copy seed, type position])"
+  },
+  "sets": {
+    "genuine_shift": "the registered shift batch data/week4_shift_n300 (its own manifest), unmodified",
+    "genuine_test": "the split_v1 test statements of data/week1_n2000, unmodified",
+    "test_copies": "800 tampered copies built from the split_v1 test statements of data/week1_n2000: 100 per type for the six types (rerender_inconsistent, rerender_consistent, inplace_edit, inplace_edit_consistent, page_swap, page_remove), 100 resaved_genuine (the re-save control) and 100 overlay (held out)"
+  },
+  "stop_rule": "STOP means: if any genuine PDF has a strong finding, score_tamper prints STOP and exits with code 3. Stop, report it, and change nothing. Any later re-run is labelled post-hoc and reported next to the first result."
+}
