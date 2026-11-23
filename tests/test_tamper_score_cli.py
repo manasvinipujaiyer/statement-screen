@@ -8,6 +8,7 @@ from pathlib import Path
 import polars as pl
 
 from statementscreen.tamper import fingerprint as fp
+from statementscreen.tamper import preregister as pre
 from statementscreen.tamper import run as driver
 from statementscreen.tamper import score_tamper as cli
 from statementscreen.tamper.detect.findings import Finding
@@ -205,6 +206,7 @@ def test_each_population_can_have_its_own_manifest(tmp_path):
         s,
         *("--genuine", f"shift={tmp_path / 'genuine_shift'}"),
         *("--genuine-manifest", f"shift={shift_manifest}"),
+        *("--preregistration", str(_prereg_file(tmp_path))),  # "shift" is a registered population
     )
     assert cli.main(argv) == 0
     report = json.loads(s["out"].read_text(encoding="utf-8"))
@@ -217,7 +219,11 @@ def test_each_population_can_have_its_own_manifest(tmp_path):
 def test_a_population_is_not_found_in_another_populations_manifest(tmp_path, capsys):
     s = _setup(tmp_path)
     _add_shift(tmp_path, s)  # shift ids are not in the default manifest
-    argv = _argv(s, "--genuine", f"shift={tmp_path / 'genuine_shift'}")
+    argv = _argv(
+        s,
+        *("--genuine", f"shift={tmp_path / 'genuine_shift'}"),
+        *("--preregistration", str(_prereg_file(tmp_path))),
+    )
     assert cli.main(argv) == 2
     assert "not in the manifest" in capsys.readouterr().err
 
@@ -240,3 +246,48 @@ def test_bad_genuine_manifest_arguments_are_refused(tmp_path, capsys):
     ):
         assert cli.main(_argv(s, *extra)) == 2
         assert message in capsys.readouterr().err
+
+
+def _prereg_file(tmp_path: Path, **change) -> Path:
+    """A pre-registration of the current code, as tamper.preregister would write it."""
+    data = pre.build(head=pre.git("rev-parse", "HEAD"), dirty="") | change
+    path = tmp_path / "prereg.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    return path
+
+
+def _as_test_population(s: dict, *extra: str) -> list[str]:
+    argv = _argv(s, *extra)
+    argv[argv.index(f"dev={s['genuine']}")] = f"test={s['genuine']}"
+    return argv
+
+
+def test_the_test_population_is_refused_without_a_preregistration(tmp_path, capsys):
+    s = _setup(tmp_path)
+    assert cli.main(_as_test_population(s)) == 2
+    assert "pre-registration" in capsys.readouterr().err
+    assert not s["out"].exists()
+
+
+def test_the_test_population_is_scored_against_a_matching_preregistration(tmp_path):
+    s = _setup(tmp_path)
+    argv = _as_test_population(s, "--preregistration", str(_prereg_file(tmp_path)))
+    assert cli.main(argv) == 0
+
+
+def test_scoring_refuses_a_detector_that_differs_from_the_preregistration(tmp_path, capsys):
+    s = _setup(tmp_path)
+    changed = {**fp.fingerprint(), "model": "a different model"}
+    path = _prereg_file(tmp_path, detector_fingerprint=changed)
+    assert cli.main(_as_test_population(s, "--preregistration", str(path))) == 2
+    err = capsys.readouterr().err
+    assert "model differs" in err and "code differs" not in err
+    assert not s["out"].exists()
+
+
+def test_scoring_refuses_a_rule_version_that_differs_from_the_preregistration(tmp_path, capsys):
+    s = _setup(tmp_path)
+    path = _prereg_file(tmp_path)
+    argv = _as_test_population(s, "--preregistration", str(path), "--rule-version", "v1")
+    assert cli.main(argv) == 2
+    assert "rule version" in capsys.readouterr().err

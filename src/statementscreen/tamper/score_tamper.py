@@ -32,6 +32,7 @@ import polars as pl
 from statementscreen.tamper.detect.findings import Finding
 from statementscreen.tamper.detect.verdict import RULE_VERSION
 from statementscreen.tamper.fingerprint import StaleFindings, check
+from statementscreen.tamper.preregister import PreregError, load_and_verify, needs_preregistration
 from statementscreen.tamper.scoring import (
     Item,
     build_report,
@@ -226,6 +227,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         metavar="NAME=PATH",
         help="this population's own manifest.csv (e.g. the shift batch), instead of --manifest",
     )
+    p.add_argument(
+        "--preregistration",
+        type=Path,
+        help="reports/week6_preregistration.json: required for the test and shift "
+        "populations; scoring refuses if the detector or anything frozen differs from it",
+    )
     p.add_argument("--rule-version", default=RULE_VERSION)
     p.add_argument("--out", type=Path, required=True, help="the report (JSON)")
     p.add_argument("--table", type=Path, help="per-copy table (CSV)")
@@ -236,12 +243,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         if args.out.exists() and not args.overwrite:
             raise ScoreError(f"{args.out} exists; pass --overwrite to replace it")
+        if args.preregistration:
+            load_and_verify(args.preregistration, args.rule_version)
+        elif needs_preregistration(args.copies, args.genuine):
+            raise ScoreError(
+                "the test and shift populations are scored once, against the "
+                "pre-registration: pass --preregistration reports/week6_preregistration.json"
+            )
         copies, genuine, inputs = load_inputs(
             args.copies, args.copies_run, args.genuine, args.manifest, args.genuine_manifest
         )
         report = build_report(copies, genuine, args.rule_version)
         report["inputs"] = inputs
-    except (ScoreError, StaleFindings) as e:
+    except (ScoreError, StaleFindings, PreregError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
 
