@@ -165,6 +165,8 @@ KNOWN_LIMITS = [
     "seed.",
     "The stand-ins in the test suite (the remote branch, the upstream commit) mean the full "
     "remote flow is exercised only on a throwaway repository, not end to end.",
+    "log_run does not prevent a second MLflow entry for the same report; the committed report "
+    "is the record of truth.",
     "The generator always prints every summary label, so a missing label here means it could "
     "not be read. Real statements may omit totals by design; that will need a per-layout "
     "list of expected labels.",
@@ -228,7 +230,9 @@ RULES = [
     "RuntimeError included, still fails loudly.",
     "A registered command that fails with no output (a crash, not a result) is not a result: "
     "its partial output is deleted by hand and the identical command is re-run once; a second "
-    "failure means STOP and report. Nothing about the seed, the counts or the code changes.",
+    "failure means STOP and report. Nothing about the seed, the counts or the code changes. "
+    "An interrupted registered detector run may be continued with --resume, which re-checks "
+    "the detector fingerprint and skips finished chunks; this is not a re-run.",
     "Any code change after this freeze needs a new pre-registration: delete this file, "
     "re-run tamper.preregister and commit and push the new one (both versions stay in git "
     "history and only the pushed one is used). The report discloses it as a post-freeze "

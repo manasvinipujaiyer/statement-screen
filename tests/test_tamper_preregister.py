@@ -311,6 +311,10 @@ def test_the_builder_recovery_and_post_freeze_rules_are_stated():
     assert "RebuildError or CopyError" in rules and "RuntimeError included" in rules
     assert "If more than 5 sources fail across the test build" in rules and "STOP" in rules
     assert "re-run once" in rules and "a second failure means STOP" in rules
+    assert (
+        "An interrupted registered detector run may be continued with --resume, which "
+        "re-checks the detector fingerprint and skips finished chunks; this is not a re-run."
+    ) in rules
     assert "Any code change after this freeze needs a new pre-registration" in rules
     assert "discloses it as a post-freeze change" in rules
     assert "labelled post-hoc only if a first result already exists" in rules
@@ -326,5 +330,7 @@ def test_the_extra_limits_are_stated():
     assert "rebuild check" in limits and "300 dev statements" in limits
     assert "deleted and rebuilt data/tamper/test" in limits
     assert "stand-ins in the test suite" in limits
+    assert "log_run does not prevent a second MLflow entry for the same report" in limits
+    assert "the committed report is the record of truth" in limits
     assert "The generator always prints every summary label" in limits
     assert "per-layout list of expected labels" in limits

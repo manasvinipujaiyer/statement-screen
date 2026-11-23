@@ -318,6 +318,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                     f"{args.out} already holds a finished run; a registered run's output is "
                     "kept as it is (an interrupted one is continued with --resume)"
                 )
+            if (args.out / "_parts").exists() and not args.resume:
+                raise RunError(f"{args.out} holds an interrupted run; continue it with --resume")
         summary = run(
             pdfs,
             args.out,

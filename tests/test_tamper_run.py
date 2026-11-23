@@ -399,3 +399,16 @@ def test_a_finished_registered_run_is_kept_and_an_interrupted_one_resumes(
     assert driver.main(_argv(folder, out, "--population", "shift", "--resume")) == 2
     err = capsys.readouterr().err
     assert "kept as it is" in err and "use --overwrite" not in err
+
+
+def test_an_interrupted_registered_run_points_only_at_resume(tmp_path, fake, monkeypatch, capsys):
+    monkeypatch.setattr(driver, "CHUNK", 2)
+    folder, out = _pdfs(tmp_path / "pdfs", NAMES), tmp_path / "out"
+    fake["interrupt_at"] = "x_04"
+    with pytest.raises(KeyboardInterrupt):
+        driver.main(_argv(folder, out, "--population", "shift"))
+    assert driver.main(_argv(folder, out, "--population", "shift")) == 2
+    err = capsys.readouterr().err
+    assert "interrupted run" in err and "--resume" in err and "--overwrite" not in err
+    fake["interrupt_at"] = None
+    assert driver.main(_argv(folder, out, "--population", "shift", "--resume")) == 0
