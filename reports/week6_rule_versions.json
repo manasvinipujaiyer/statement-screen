@@ -1,0 +1,21 @@
+{
+  "what": "Every verdict rule version tried in Week 6, in order. Append only; frozen at step 6.",
+  "versions": [
+    {
+      "version": "v1",
+      "defined": "step 3, before any copy was scored",
+      "rules": [
+        "any strong finding -> tampered",
+        "else two or more different weak finding codes -> suspicious",
+        "else PARSE_FAILED (the PDF could not be parsed) -> suspicious",
+        "else -> no evidence of tampering"
+      ],
+      "notes": [
+        "info findings are listed and never counted",
+        "weak findings count by distinct code, not by instance",
+        "PARSE_FAILED stays a weak finding; the third rule is what makes it suspicious"
+      ],
+      "dev_results": null
+    }
+  ]
+}
