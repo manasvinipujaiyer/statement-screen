@@ -1,8 +1,11 @@
 """Anomaly finding: an IsolationForest on per-statement money features. Weak.
 
     ANOMALY_SCORE  weak  the statement's money pattern is unusual compared with genuine
-                         train statements (score above the threshold set on genuine dev
-                         statements for a 2% false-alarm rate)
+                         train statements (score above a threshold chosen so that 2% of
+                         genuine dev statements exceed it). The 2% is the target on the
+                         set that fixed the threshold, so it holds there by construction;
+                         the rate on statements the threshold never saw is measured
+                         separately (genuine train, test and shift: see the reports)
 
 Features come from the parsed rows and the income profile only: never from metadata,
 fonts, layout name or anything about how the file was made (Week 4's lesson: a model
@@ -138,5 +141,5 @@ def anomaly_findings(parsed: ParsedStatement, profile: dict | None = None,
         return []
     return [Finding("ANOMALY_SCORE", "anomaly", None, None, "weak",
                     f"the statement's money pattern is unusual (score {s:.4f} above the "
-                    f"threshold {model['threshold']:.4f}, set for 2% false alarms on genuine "
-                    "dev statements)")]  # fmt: skip
+                    f"threshold {model['threshold']:.4f}, which about 2% of genuine dev "
+                    "statements exceed)")]  # fmt: skip

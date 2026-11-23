@@ -4,12 +4,14 @@
 
 1. Features (tamper/detect/anomaly.py) for every genuine train and dev statement, read
    fresh from its PDF one at a time (parse, then the profile's own steps). Cached in
-   data/tamper/anomaly_features/<split>.parquet; --refresh recomputes them.
+   data/tamper/anomaly_features/<split>.parquet. The cache is keyed by split name only:
+   after changing the feature code or the batch, pass --refresh to recompute it.
 2. IsolationForest (300 trees, random_state 42) fitted on genuine TRAIN only.
-3. Threshold = the 98th percentile of the genuine DEV scores, so about 2% of genuine dev
-   statements score above it (the target false-alarm rate).
+3. Threshold = the 98th percentile of the genuine DEV scores, so 2% of genuine dev
+   statements score above it BY CONSTRUCTION (the target, not a measured rate). The rate
+   on statements the threshold never saw is the genuine-train share in the report.
 4. Writes models/week6_iforest.pkl (model, threshold, feature names) and
-   reports/week6_anomaly_fit.json (counts, threshold, dev false alarms, timings).
+   reports/week6_anomaly_fit.json (counts, threshold, shares above it, timings).
 
 Genuine train and dev only: no tampered copies, no test statements.
 """

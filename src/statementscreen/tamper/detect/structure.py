@@ -1,5 +1,6 @@
 """Structure findings: page numbering, the header repeated on every page, and the
-balance carried from one page to the next. All strong.
+balance carried from one page to the next. Findings are strong; a check that couldn't
+run (page 1's account number or period wasn't read) is listed as info, never as a pass.
 
     PAGE_NUMBER      a page has no "Page X of Y", X isn't this page's position in the
                      file, the pages disagree on Y, or Y isn't the file's page count

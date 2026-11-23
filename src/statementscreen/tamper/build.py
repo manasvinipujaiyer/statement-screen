@@ -164,6 +164,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument("--include-overlay", action="store_true", help=held)
     args = p.parse_args(argv)
     try:
+        if args.set not in ("dev", "test"):
+            raise ValueError(f"--set must be dev or test, not {args.set!r}: train gets no "
+                             "tampered copies (train statements are for fitting the "
+                             "anomaly model and measuring tolerances)")  # fmt: skip
         if args.include_overlay and (args.set != "test" or os.environ.get(OPEN_TEST_ENV) != "1"):
             raise ValueError(f"overlay is held out: --include-overlay needs --set test and "
                              f"{OPEN_TEST_ENV}=1 (the one-time step 6 command)")  # fmt: skip

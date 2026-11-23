@@ -67,6 +67,13 @@ def test_overlay_is_refused_unless_it_is_the_one_time_test_command(tmp_path, mon
     assert not (tmp_path / "out").exists()  # refused before anything was written
 
 
+def test_train_gets_no_copies_and_nothing_is_written(tmp_path) -> None:
+    for name in ("train", "other"):
+        argv = [str(tmp_path), "--set", name, "--per-type", "1", "--out", str(tmp_path / "out")]
+        assert build.main(argv) == 2
+    assert not (tmp_path / "out").exists()  # refused before anything was read or written
+
+
 def test_a_test_set_is_never_overwritten(tmp_path) -> None:
     argv = [str(tmp_path), "--set", "test", "--per-type", "1", "--overwrite"]
     assert build.main(argv) == 2

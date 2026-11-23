@@ -15,7 +15,13 @@ Types (TYPES):
   inplace_edit            one digit of one amount changed in the page's content stream
                           (same length, so same width and alignment); balances untouched
   inplace_edit_consistent as above, plus every later balance on that page and the
-                          summary's totals (x moved to keep right or centre alignment)
+                          summary's totals (x moved to keep right or centre alignment).
+                          "Consistent" means consistent where the page allows: only that
+                          page's balances are rewritten, so when a page follows the edited
+                          one, its first balance no longer follows from this page's last
+                          (a PAGE_CARRYOVER break). Only an edit on the last page leaves
+                          the whole statement's arithmetic correct. The key's changes list
+                          every balance rewritten, so which case a copy is can be read off
   page_swap               one middle page replaced by the same page of a donor statement
   page_remove             one middle page deleted
   overlay (HELD OUT)      a white box over one amount and new text drawn on top; refused
