@@ -17,6 +17,36 @@ def closed_ids(monkeypatch):
     monkeypatch.setattr(prov, "shift_batch_ids", lambda manifest=None: {"closed_shift_stmt"})
 
 
+DATA_ARTEFACTS = ("data/week1_n2000/manifest.csv", "data/week4_shift_n300/manifest.csv")
+
+
+def real_data_present() -> bool:
+    """The two generated manifests (git-ignored, so absent from a fresh checkout such as CI)."""
+    return all((pre.ROOT / a).is_file() for a in DATA_ARTEFACTS)
+
+
+@pytest.fixture(autouse=True)
+def stand_in_manifests(monkeypatch, tmp_path_factory):
+    """On a checkout without data/, hash small stand-in manifests (written to a pytest temp
+    folder, never into data/) where the pre-registration hashes the two real ones. The recorded
+    names stay the real ones; only the bytes behind them differ. With the real files present
+    nothing is patched. Tests that need the real bytes are skipped (see needs_real_data)."""
+    if real_data_present():
+        return
+    folder = tmp_path_factory.mktemp("stand_in_manifests")
+    stand_in = {}
+    for n, name in enumerate(DATA_ARTEFACTS):
+        path = folder / f"manifest_{n}.csv"
+        path.write_text(f"statement_id,layout\nstand_in_{n},columns\n", encoding="utf-8")
+        stand_in[(pre.ROOT / name).resolve()] = path
+    real_sha256 = pre.sha256
+
+    def sha256(path: Path) -> str:
+        return real_sha256(stand_in.get(Path(path).resolve(), path))
+
+    monkeypatch.setattr(pre, "sha256", sha256)
+
+
 @pytest.fixture
 def pushed(monkeypatch):
     """Stand in for the remote: the pre-registration counts as pushed exactly as it is on disk,

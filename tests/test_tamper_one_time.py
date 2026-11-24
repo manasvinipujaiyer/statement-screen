@@ -449,6 +449,11 @@ def test_copies_without_pdf_hashes_are_refused(world, capsys):
     assert "records no SHA-256" in capsys.readouterr().err
 
 
+@pytest.mark.skipif(
+    not (pre.ROOT / "data/week4_shift_n300/manifest.csv").is_file(),
+    reason="needs the real shift manifest, which is git-ignored (data/); absent from a fresh "
+    "checkout such as CI. Run it locally.",
+)
 def test_the_real_split_and_shift_files_each_hold_300_statements(monkeypatch):
     monkeypatch.undo()  # drop the stand-in ids: read the real files (ids only)
     # the two batches reuse statement ids, so they overlap: identity is decided per batch
