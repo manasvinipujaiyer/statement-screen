@@ -1,0 +1,9 @@
+{
+  "batch": "default_v1",
+  "manifest_sha256": "27e744e2c62dddfb2b434e6061d81b53287331371c319b5269a4c057346a5ffe",
+  "name": "blind_default_v1",
+  "parsed_rows_sha256": "7f93f26fb090b71cf01d0274abb2fe795cc53c09065a5f0ad7b6885e1602a713",
+  "reference_manifest_sha256": "4bb5f314b131bcf01927e12a7ca1f71dfaf7c331757c1e0890dfd1eee42f0fb0",
+  "statement_ids_sha256": "7f5c9856c189920b06bfd9201c2d5154d4ea751bbddd68e2be57c2e3ef619433",
+  "statements": 100
+}
