@@ -1,0 +1,801 @@
+copy,tamper_type,layout,save_mode,verdict,first_check
+copy_0001,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0002,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0003,resaved_genuine,columns,full,no evidence of tampering,
+copy_0004,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0005,rerender_consistent,drcr,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0006,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0007,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0008,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0009,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0010,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0011,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0012,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0013,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0014,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0015,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0016,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0017,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0018,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0019,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0020,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0021,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0022,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0023,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0024,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0025,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0026,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0027,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0028,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0029,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0030,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0031,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0032,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0033,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0034,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0035,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0036,resaved_genuine,columns,full,no evidence of tampering,
+copy_0037,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0038,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0039,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0040,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0041,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0042,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0043,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0044,page_swap,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0045,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0046,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0047,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0048,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0049,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0050,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0051,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0052,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0053,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0054,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0055,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0056,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0057,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0058,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0059,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0060,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0061,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0062,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0063,resaved_genuine,columns,full,no evidence of tampering,
+copy_0064,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0065,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0066,resaved_genuine,columns,full,no evidence of tampering,
+copy_0067,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0068,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0069,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0070,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0071,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0072,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0073,resaved_genuine,columns,full,no evidence of tampering,
+copy_0074,rerender_consistent,drcr,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0075,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0076,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0077,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0078,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0079,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0080,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0081,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0082,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0083,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0084,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0085,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0086,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0087,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0088,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0089,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0090,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0091,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0092,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0093,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0094,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0095,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0096,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0097,resaved_genuine,columns,full,no evidence of tampering,
+copy_0098,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0099,resaved_genuine,columns,incremental,suspicious,history:INCREMENTAL_UPDATE
+copy_0100,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0101,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0102,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0103,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0104,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0105,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0106,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0107,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0108,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0109,page_swap,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0110,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0111,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0112,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0113,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0114,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0115,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0116,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0117,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0118,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0119,rerender_consistent,columns,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0120,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0121,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0122,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0123,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0124,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0125,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0126,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0127,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0128,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0129,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0130,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0131,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0132,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0133,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0134,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0135,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0136,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0137,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0138,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0139,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0140,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0141,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0142,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0143,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0144,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0145,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0146,resaved_genuine,columns,full,no evidence of tampering,
+copy_0147,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0148,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0149,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0150,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0151,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0152,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0153,page_swap,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0154,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0155,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0156,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0157,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0158,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0159,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0160,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0161,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0162,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0163,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0164,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0165,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0166,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0167,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0168,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0169,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0170,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0171,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0172,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0173,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0174,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0175,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0176,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0177,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0178,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0179,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0180,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0181,resaved_genuine,columns,full,no evidence of tampering,
+copy_0182,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0183,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0184,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0185,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0186,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0187,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0188,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0189,resaved_genuine,columns,full,no evidence of tampering,
+copy_0190,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0191,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0192,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0193,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0194,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0195,resaved_genuine,columns,full,no evidence of tampering,
+copy_0196,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0197,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0198,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0199,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0200,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0201,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0202,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0203,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0204,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0205,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0206,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0207,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0208,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0209,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0210,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0211,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0212,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0213,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0214,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0215,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0216,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0217,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0218,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0219,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0220,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0221,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0222,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0223,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0224,resaved_genuine,columns,full,no evidence of tampering,
+copy_0225,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0226,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0227,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0228,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0229,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0230,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0231,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0232,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0233,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0234,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0235,resaved_genuine,columns,full,no evidence of tampering,
+copy_0236,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0237,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0238,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0239,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0240,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0241,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0242,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0243,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0244,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0245,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0246,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0247,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0248,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0249,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0250,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0251,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0252,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0253,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0254,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0255,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0256,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0257,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0258,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0259,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0260,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0261,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0262,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0263,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0264,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0265,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0266,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0267,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0268,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0269,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0270,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0271,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0272,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0273,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0274,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0275,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0276,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0277,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0278,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0279,rerender_consistent,drcr,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0280,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0281,resaved_genuine,columns,full,no evidence of tampering,
+copy_0282,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0283,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0284,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0285,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0286,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0287,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0288,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0289,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0290,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0291,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0292,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0293,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0294,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0295,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0296,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0297,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0298,resaved_genuine,columns,full,no evidence of tampering,
+copy_0299,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0300,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0301,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0302,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0303,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0304,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0305,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0306,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0307,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0308,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0309,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0310,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0311,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0312,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0313,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0314,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0315,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0316,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0317,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0318,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0319,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0320,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0321,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0322,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0323,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0324,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0325,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0326,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0327,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0328,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0329,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0330,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0331,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0332,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0333,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0334,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0335,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0336,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0337,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0338,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0339,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0340,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0341,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0342,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0343,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0344,rerender_consistent,columns,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0345,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0346,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0347,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0348,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0349,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0350,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0351,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0352,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0353,resaved_genuine,columns,full,no evidence of tampering,
+copy_0354,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0355,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0356,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0357,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0358,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0359,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0360,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0361,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0362,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0363,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0364,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0365,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0366,resaved_genuine,columns,full,no evidence of tampering,
+copy_0367,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0368,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0369,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0370,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0371,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0372,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0373,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0374,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0375,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0376,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0377,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0378,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0379,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0380,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0381,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0382,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0383,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0384,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0385,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0386,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0387,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0388,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0389,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0390,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0391,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0392,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0393,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0394,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0395,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0396,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0397,rerender_consistent,drcr,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0398,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0399,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0400,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0401,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0402,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0403,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0404,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0405,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0406,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0407,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0408,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0409,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0410,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0411,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0412,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0413,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0414,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0415,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0416,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0417,rerender_consistent,drcr,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0418,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0419,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0420,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0421,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0422,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0423,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0424,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0425,page_swap,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0426,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0427,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0428,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0429,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0430,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0431,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0432,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0433,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0434,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0435,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0436,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0437,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0438,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0439,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0440,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0441,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0442,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0443,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0444,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0445,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0446,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0447,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0448,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0449,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0450,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0451,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0452,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0453,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0454,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0455,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0456,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0457,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0458,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0459,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0460,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0461,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0462,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0463,rerender_consistent,columns,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0464,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0465,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0466,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0467,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0468,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0469,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0470,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0471,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0472,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0473,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0474,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0475,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0476,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0477,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0478,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0479,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0480,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0481,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0482,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0483,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0484,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0485,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0486,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0487,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0488,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0489,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0490,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0491,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0492,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0493,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0494,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0495,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0496,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0497,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0498,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0499,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0500,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0501,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0502,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0503,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0504,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0505,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0506,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0507,rerender_consistent,columns,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0508,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0509,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0510,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0511,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0512,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0513,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0514,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0515,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0516,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0517,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0518,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0519,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0520,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0521,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0522,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0523,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0524,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0525,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0526,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0527,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0528,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0529,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0530,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0531,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0532,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0533,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0534,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0535,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0536,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0537,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0538,inplace_edit_consistent,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0539,rerender_consistent,columns,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0540,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0541,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0542,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0543,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0544,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0545,resaved_genuine,columns,full,no evidence of tampering,
+copy_0546,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0547,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0548,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0549,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0550,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0551,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0552,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0553,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0554,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0555,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0556,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0557,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0558,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0559,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0560,page_swap,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0561,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0562,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0563,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0564,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0565,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0566,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0567,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0568,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0569,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0570,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0571,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0572,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0573,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0574,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0575,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0576,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0577,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0578,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0579,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0580,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0581,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0582,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0583,inplace_edit_consistent,columns,full,no evidence of tampering,
+copy_0584,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0585,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0586,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0587,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0588,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0589,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0590,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0591,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0592,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0593,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0594,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0595,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0596,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0597,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0598,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0599,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0600,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0601,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0602,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0603,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0604,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0605,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0606,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0607,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0608,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0609,rerender_consistent,drcr,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0610,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0611,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0612,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0613,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0614,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0615,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0616,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0617,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0618,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0619,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0620,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0621,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0622,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0623,resaved_genuine,columns,full,no evidence of tampering,
+copy_0624,resaved_genuine,columns,full,no evidence of tampering,
+copy_0625,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0626,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0627,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0628,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0629,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0630,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0631,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0632,rerender_consistent,columns,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0633,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0634,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0635,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0636,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0637,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0638,inplace_edit_consistent,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0639,resaved_genuine,columns,full,no evidence of tampering,
+copy_0640,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0641,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0642,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0643,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0644,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0645,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0646,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0647,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0648,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0649,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0650,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0651,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0652,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0653,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0654,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0655,rerender_consistent,columns,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0656,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0657,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0658,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0659,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0660,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0661,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0662,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0663,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0664,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0665,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0666,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0667,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0668,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0669,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0670,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0671,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0672,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0673,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0674,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0675,rerender_consistent,columns,n/a,suspicious,anomaly:ANOMALY_SCORE
+copy_0676,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0677,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0678,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0679,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0680,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0681,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0682,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0683,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0684,page_swap,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0685,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0686,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0687,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0688,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0689,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0690,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0691,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0692,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0693,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0694,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0695,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0696,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0697,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0698,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0699,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0700,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0701,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0702,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0703,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0704,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0705,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0706,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0707,inplace_edit,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0708,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0709,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0710,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0711,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0712,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0713,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0714,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0715,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0716,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0717,resaved_genuine,columns,full,suspicious,anomaly:ANOMALY_SCORE
+copy_0718,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0719,page_swap,columns,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0720,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0721,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0722,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0723,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0724,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0725,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0726,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0727,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0728,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0729,resaved_genuine,columns,full,no evidence of tampering,
+copy_0730,resaved_genuine,columns,full,no evidence of tampering,
+copy_0731,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0732,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0733,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0734,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0735,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0736,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0737,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0738,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0739,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0740,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0741,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0742,page_swap,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0743,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0744,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0745,inplace_edit,columns,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0746,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0747,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0748,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0749,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0750,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0751,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0752,resaved_genuine,columns,full,no evidence of tampering,
+copy_0753,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0754,overlay,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0755,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0756,inplace_edit_consistent,columns,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0757,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0758,inplace_edit_consistent,columns,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0759,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0760,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0761,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0762,inplace_edit_consistent,drcr,full,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0763,rerender_consistent,columns,n/a,no evidence of tampering,
+copy_0764,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0765,resaved_genuine,drcr,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0766,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0767,resaved_genuine,drcr,full,no evidence of tampering,
+copy_0768,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0769,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0770,overlay,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0771,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0772,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0773,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0774,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0775,page_remove,columns,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0776,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0777,resaved_genuine,columns,incremental,no evidence of tampering,history:INCREMENTAL_UPDATE
+copy_0778,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0779,page_swap,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0780,rerender_inconsistent,drcr,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0781,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0782,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0783,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0784,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0785,page_remove,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0786,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0787,overlay,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0788,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0789,inplace_edit_consistent,drcr,incremental,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0790,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0791,page_remove,drcr,full,tampered,arithmetic:SUMMARY_COUNTS
+copy_0792,inplace_edit,drcr,incremental,tampered,arithmetic:SUMMARY_TOTALS
+copy_0793,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0794,rerender_inconsistent,columns,n/a,tampered,arithmetic:SUMMARY_IDENTITY
+copy_0795,page_remove,drcr,incremental,tampered,arithmetic:SUMMARY_COUNTS
+copy_0796,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0797,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0798,rerender_consistent,drcr,n/a,no evidence of tampering,
+copy_0799,inplace_edit,drcr,full,tampered,arithmetic:SUMMARY_TOTALS
+copy_0800,overlay,columns,incremental,tampered,arithmetic:SUMMARY_COUNTS
