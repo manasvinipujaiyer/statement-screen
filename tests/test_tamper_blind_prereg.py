@@ -13,6 +13,22 @@ from statementscreen.tamper.detect.verdict import RULE_VERSION
 KEY = "a" * 64
 SET = "b" * 64
 HEAD = "c" * 40
+LIVE_FINGERPRINT = fp.fingerprint  # the real function, kept before the fixture below replaces it
+
+
+def _week6_fingerprint() -> dict:
+    prereg = json.loads((bp.ROOT / bp.WEEK6_PREREG).read_text(encoding="utf-8"))
+    return prereg["detector_fingerprint"]
+
+
+@pytest.fixture(autouse=True)
+def week6_detector(monkeypatch):
+    """The logic tests below run against Week 6's recorded detector fingerprint, not the live
+    one: uv.lock gained the service's web dependencies in Week 7 Part 2, so the live uv_lock
+    part no longer equals Week 6's and never will again. The last test in this file still
+    holds the live code, config and model to Week 6's record."""
+    recorded = _week6_fingerprint()
+    monkeypatch.setattr(fp, "fingerprint", lambda *args, **kwargs: dict(recorded))
 
 
 def _build(**kwargs) -> dict:
@@ -220,3 +236,14 @@ def test_the_command_refuses_pdfs_that_are_not_the_sealed_set(writer, capsys):
     assert bp.main(_argv(writer, **{"--pdf-set-sha256": "e" * 64})) == 2
     assert "do not match --pdf-set-sha256" in capsys.readouterr().err
     assert not writer["out"].exists()
+
+
+# ---------------------------------------------------------------- the live detector
+
+
+def test_the_live_detector_code_config_and_model_equal_week_6s():
+    """Strict and live: no stand-in. uv_lock is left out on purpose (see week6_detector); the
+    three parts that decide every finding must still be Week 6's."""
+    live, recorded = LIVE_FINGERPRINT(), _week6_fingerprint()
+    for part in ("code", "config", "model"):
+        assert live[part] == recorded[part], f"{part} differs from Week 6's record"
