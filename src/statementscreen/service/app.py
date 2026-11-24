@@ -35,6 +35,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
 
+from statementscreen.service.audit import Audit
 from statementscreen.service.screen import screen_pdf
 from statementscreen.service.upload import MAX_BYTES, Rejected, store
 from statementscreen.service.version import code_version
@@ -62,21 +63,43 @@ class Service:
         self.screen = screen
         self.lock = asyncio.Lock()
 
-    def reject(self, request_id: str, rejected: Rejected) -> JSONResponse:
-        self.audit({
-            "request_id": request_id, "status": "error", "error_code": rejected.code,
-            "size_bytes": rejected.size, "pdf_sha256": rejected.sha256, "pages": rejected.pages,
-            "result": None, "version": self.version,
-        })  # fmt: skip
+    def reject(
+        self, request_id: str, rejected: Rejected, declared: int | None = None
+    ) -> JSONResponse:
+        self.audit(
+            {
+                "request_id": request_id,
+                "status": "error",
+                "error_code": rejected.code,
+                "declared_bytes": declared,
+                "size_bytes": rejected.size,
+                "pdf_sha256": rejected.sha256,
+                "pages": rejected.pages,
+                "result": None,
+                "version": self.version,
+            }
+        )
         body = {"request_id": request_id, "status": "error", "error_code": rejected.code,
                 "message": rejected.message, "version": self.version}  # fmt: skip
         return JSONResponse(body, status_code=rejected.status)
 
-    def failed(self, request_id: str, error: Exception) -> JSONResponse:
+    def failed(
+        self, request_id: str, error: Exception, declared: int | None = None
+    ) -> JSONResponse:
         log.error("%s: %s", INTERNAL_ERROR, type(error).__name__)
-        self.audit({"request_id": request_id, "status": "error", "error_code": INTERNAL_ERROR,
-                    "size_bytes": None, "pdf_sha256": None, "pages": None, "result": None,
-                    "version": self.version})  # fmt: skip
+        self.audit(
+            {
+                "request_id": request_id,
+                "status": "error",
+                "error_code": INTERNAL_ERROR,
+                "declared_bytes": declared,
+                "size_bytes": None,
+                "pdf_sha256": None,
+                "pages": None,
+                "result": None,
+                "version": self.version,
+            }
+        )
         body = {
             "request_id": request_id,
             "status": "error",
@@ -98,19 +121,25 @@ class ContentLengthLimit:
             length = dict(scope["headers"]).get(b"content-length", b"")
             if length.isdigit() and int(length) > self.limit:
                 rejected = Rejected(
-                    413, "TOO_LARGE", f"the upload is larger than {MAX_BYTES // 2**20} MB",
-                    size=int(length),
-                )  # fmt: skip
-                response = self.service.reject(uuid.uuid4().hex, rejected)
+                    413, "TOO_LARGE", f"the upload is larger than {MAX_BYTES // 2**20} MB"
+                )  # nothing was read: size stays None, the declared length is recorded
+                response = self.service.reject(uuid.uuid4().hex, rejected, int(length))
                 await response(scope, receive, send)
                 return
         await self.app(scope, receive, send)
+
+
+def declared_length(request: Request) -> int | None:
+    """The Content-Length the client declared, or None if it sent none."""
+    raw = request.headers.get("content-length", "")
+    return int(raw) if raw.isdigit() else None
 
 
 def create_app(
     version: dict | None = None,
     audit: Callable[[dict], None] | None = None,
     screen: Callable[[Path], dict] = screen_pdf,
+    audit_log: Audit | None = None,
 ) -> FastAPI:
     service = Service(code_version() if version is None else version, audit, screen)
     app = FastAPI(
@@ -128,30 +157,53 @@ def create_app(
     async def health() -> dict:
         return {"status": "ok", "version": service.version}
 
+    if audit_log is not None:
+
+        @app.get("/audit/{request_id}")
+        async def audit_row(request_id: str) -> JSONResponse:
+            row = audit_log.get(request_id)
+            if row is None:  # never echo the id back
+                body = {
+                    "status": "error",
+                    "error_code": "NOT_FOUND",
+                    "message": "no audit row for that request id",
+                }
+                return JSONResponse(body, status_code=404)
+            return JSONResponse(row)
+
     @app.post("/screen")
-    async def screen_endpoint(file: Annotated[UploadFile | None, File()] = None) -> JSONResponse:
+    async def screen_endpoint(
+        request: Request, file: Annotated[UploadFile | None, File()] = None
+    ) -> JSONResponse:
         request_id = uuid.uuid4().hex
+        declared = declared_length(request)
         try:
             if file is None:
-                return service.reject(
-                    request_id, Rejected(422, "NO_FILE", "send one PDF as 'file'")
-                )
+                rejected = Rejected(422, "NO_FILE", "send one PDF as 'file'")
+                return service.reject(request_id, rejected, declared)
             with tempfile.TemporaryDirectory(prefix="statementscreen-") as folder:
                 try:
                     stored = await store(file, Path(folder), request_id)
                 except Rejected as rejected:
-                    return service.reject(request_id, rejected)
+                    return service.reject(request_id, rejected, declared)
                 async with service.lock:  # one PDF at a time
                     result = await run_in_threadpool(service.screen, stored.path)
-            service.audit({
-                "request_id": request_id, "status": result["status"],
-                "error_code": result["error_code"], "size_bytes": stored.size,
-                "pdf_sha256": stored.sha256, "pages": stored.pages, "result": result,
-                "version": service.version,
-            })  # fmt: skip
+            service.audit(
+                {
+                    "request_id": request_id,
+                    "status": result["status"],
+                    "error_code": result["error_code"],
+                    "declared_bytes": declared,
+                    "size_bytes": stored.size,
+                    "pdf_sha256": stored.sha256,
+                    "pages": stored.pages,
+                    "result": result,
+                    "version": service.version,
+                }
+            )
             return JSONResponse({"request_id": request_id, **result, "version": service.version})
         except Exception as e:  # outside the profile and tamper blocks: a JSON 500, no trace
-            return service.failed(request_id, e)
+            return service.failed(request_id, e, declared)
         finally:
             if file is not None:
                 await file.close()
