@@ -21,5 +21,9 @@ data/*
 mlruns/
 mlartifacts/
 
+# Local review notes and per-machine Claude settings: never commit
+.review/
+.claude/settings.local.json
+
 # macOS clutter
 .DS_Store

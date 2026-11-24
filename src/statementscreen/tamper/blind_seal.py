@@ -238,7 +238,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument(
         "--detector-reference",
         type=Path,
-        default=WEEK6_PREREG,
+        default=ROOT / WEEK6_PREREG,
         help="the Week 6 pre-registration whose detector fingerprint must match",
     )
     args = p.parse_args(argv)

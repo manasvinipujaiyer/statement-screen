@@ -14,9 +14,10 @@ file, read as plain text: no code or git check, so anyone can run this), that ev
 and manifest is the one the key hashed, and that the key's PDF-set hash is the rebuilt set's.
 
 The source batches are read from --blind-src (data/blind_src, which stays on disk for this).
-They are regenerated from the two source seeds recorded in the key (7101 default dialect, 7102
-karan_v1) with the project's generator, whose output was confirmed byte-identical between runs
-at step 2; this command checks the sources against the key's hashes rather than regenerating.
+They were generated from the two source seeds recorded in the key (7101 default dialect, 7102
+karan_v1) with the project's generator. At Week 7 step 2 the generator's output was compared
+by hand (diff -rq of two runs, identical); that comparison is not recorded in the repository.
+This command does not regenerate the sources: it checks them against the key's hashes.
 
 Exit 0: every PDF rebuilt byte for byte. Exit 1: something differs (every difference is listed,
 none hidden). Exit 2: an input is missing or is not the pre-registered one.

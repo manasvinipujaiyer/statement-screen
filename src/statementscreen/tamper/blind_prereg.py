@@ -130,8 +130,13 @@ KNOWN_LIMITS = [
     "A lone anomaly score gives 'suspicious', never 'tampered' (verdict rule v2), and two "
     "anomaly features depend indirectly on the Week 3 salary rule (Week 6 limits).",
     "The anomaly threshold and the layout and font baselines came from Week 6's train and dev "
-    "statements; the blind sources were checked to share no seed or content with any earlier "
-    "batch, so false alarms here are independent of them.",
+    "statements. Before sealing, blind_fresh (a read-only audit that reads the earlier batches "
+    "under data/ and never the key) found no seed or content shared between the blind sources "
+    "and any earlier batch; its output was read by hand and is not committed, so this is "
+    "stated here, not checkable from the repository.",
+    "A genuine PDF is a byte copy of a file in data/blind_src/, which stays on disk: hashing "
+    "a blind PDF against those files identifies the genuine ones before any scoring. Nothing "
+    "in the pipeline does this, and the seal does not prevent it.",
     "log_run style limit: blind_log does not prevent a second MLflow entry for the same report; "
     "the committed report is the record of truth.",
     "Week 6's other known limits (reports/week6_preregistration.json) apply.",
@@ -139,8 +144,16 @@ KNOWN_LIMITS = [
 RULES = [
     "One run only. The sealing command ran once (it never overwrites). The detector, verdict "
     "and scoring commands run once each, in the order listed.",
-    "The sealed key is never read, opened or printed before the unseal step. The detector and "
-    "the verdict step never read it.",
+    "The sealing command writes the key, copies it to the backup folder and reads the copy "
+    "back only to compare hashes; it prints only hashes and counts. Nothing else reads, opens "
+    "or prints the key before the unseal step, and the detector and the verdict step never "
+    "read it.",
+    "Sealing: a source that cannot take its drawn type (NotApplicable, RebuildError or "
+    "CopyError) is redrawn to another tamper type from the key's seed, never to genuine; "
+    "page_swap donors come from the same sub-batch and layout, at most 5 tried. Each "
+    "RebuildError or CopyError EVENT is recorded in the key and counted (a source that fails "
+    "twice counts twice, so this counts events, not sources); more than 5 events is a STOP "
+    "and nothing is written. This is stated for the record: sealing already ran.",
     "The verdict file is committed and pushed BEFORE the unseal step. Scoring refuses a key "
     "whose SHA-256 differs from the one recorded here, a verdict file whose SHA-256 differs from "
     "the committed one, PDFs whose set hash differs, and a detector fingerprint that differs "

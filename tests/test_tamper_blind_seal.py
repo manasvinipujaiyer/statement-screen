@@ -21,6 +21,7 @@ from statementscreen.tamper.blind_common import (
     pdf_set_sha256,
 )
 from statementscreen.tamper.copy import CopyError, NotApplicable
+from statementscreen.tamper.rebuild import RebuildError
 from statementscreen.writer import write_batch
 
 PER_BATCH = 12
@@ -220,6 +221,26 @@ def test_exactly_five_build_errors_are_accepted_and_six_are_a_stop(world, tmp_pa
     with pytest.raises(bs.SealError, match="STOP"):
         bs.seal(world["sources"], stopped["out"], stopped["backup"], seed=6, p_genuine=0.0)
     assert not stopped["out"].exists() and not stopped["backup"].exists()
+
+
+def test_a_rebuild_error_is_a_build_error_like_a_copy_error(world, monkeypatch):
+    def behave(tamper_type):
+        if tamper_type == "inplace_edit":
+            raise RebuildError("cannot rebuild")
+
+    _fake_copy(monkeypatch, behave)
+    monkeypatch.setattr(bs, "MAX_BUILD_ERRORS", 1000)
+    _seal(world, seed=4, p_genuine=0.0)
+    key = _key(world)
+    assert "inplace_edit" not in {e["truth"] for e in key["pdfs"].values()}
+    assert key["build_errors"]
+    assert all(e["detail"].startswith("RebuildError") for e in key["build_errors"])
+
+
+def test_the_key_is_written_atomically_and_leaves_no_temporary_file(world, monkeypatch):
+    _fake_copy(monkeypatch)
+    _seal(world, seed=5)
+    assert sorted(p.name for p in world["out"].iterdir()) == ["pdfs", KEY_NAME]
 
 
 def test_a_tampered_source_is_never_switched_to_genuine(world, monkeypatch):

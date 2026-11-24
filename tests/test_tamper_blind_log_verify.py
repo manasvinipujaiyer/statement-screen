@@ -154,6 +154,15 @@ def test_nothing_is_logged_for_a_missing_report_a_refused_preregistration_or_no_
     assert logged["calls"] == []
 
 
+def test_the_real_log_writes_one_run_to_a_temporary_store(tmp_path):
+    artifact = tmp_path / "artifact.txt"
+    artifact.write_text("x", encoding="utf-8")
+    store = tmp_path / "mlruns"
+    run_id, seen = bl.log({"frozen_commit": HEAD}, {"mix.total": 6.0}, [artifact], store)
+    assert len(run_id) == 32 and isinstance(seen, list)
+    assert store.exists()
+
+
 def test_a_store_warning_exits_3_without_changing_the_report(logged, monkeypatch, capsys):
     def refuse(*args, **kwargs):
         raise TrackingRefused("the store warns")

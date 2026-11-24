@@ -146,6 +146,23 @@ def test_the_week_6_numbers_are_the_ones_the_preregistration_states():
     assert texts == {"100/100", "97/100", "0/100"}
 
 
+def test_the_precision_interval_is_exact_when_every_call_is_right_and_bounded_otherwise(
+    tmp_path, monkeypatch
+):
+    right = [("genuine", NONE, "default", "columns", "", "")] + [
+        ("page_swap", TAMPERED, "default", "columns", "", "")
+    ] * 3
+    w = _world(tmp_path / "a", monkeypatch, right)
+    assert bs.main(_argv(w)) == 0
+    p = json.loads(w["out"].read_text(encoding="utf-8"))["precision_of_tampered"]
+    assert p["text"] == "3/3 (100.0%)" and p["ci95"] == [1.0, 1.0]
+    w = _world(tmp_path / "b", monkeypatch)  # SPEC: 2 of the 3 'tampered' calls are right
+    assert bs.main(_argv(w)) == 0
+    p = json.loads(w["out"].read_text(encoding="utf-8"))["precision_of_tampered"]
+    lo, hi = p["ci95"]
+    assert 0.0 <= lo <= hi <= 1.0 and p["resamples_with_no_tampered_call"] >= 0
+
+
 def test_precision_has_no_interval_when_nothing_was_called_tampered(tmp_path, monkeypatch):
     spec = [("genuine", NONE, "default", "columns", "", ""),
             ("page_swap", NONE, "default", "columns", "", "")]  # fmt: skip

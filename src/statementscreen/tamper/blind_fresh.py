@@ -18,6 +18,10 @@ Statement ids prove nothing here: every batch numbers its statements stmt_0001, 
 It prints counts and statement ids only, never a narration or an amount. A manifest with no
 transactions.parquet beside it cannot be compared; it is listed as skipped, not hidden.
 Exit 0: nothing matches; 1: something matches; 2: the check could not be made.
+
+A pre-seal audit, not part of the blind run: unlike the detector, verdict and scoring steps it
+reads the earlier batches under data/ (manifests and transactions, never a PDF or the sealed
+key, which does not exist yet). The run itself never calls it.
 """
 
 import argparse
