@@ -1,0 +1,74 @@
+{
+  "what": "Week 6 anomaly model: IsolationForest on genuine train, threshold on dev",
+  "features": [
+    "income_to_debits",
+    "salary_to_spending",
+    "credits_to_debits",
+    "round_100_share",
+    "round_1000_share",
+    "last_digit_chi2",
+    "balance_volatility",
+    "largest_to_median_credit",
+    "credits_per_month"
+  ],
+  "model_file": "models/week6_iforest.pkl",
+  "seed": 42,
+  "trees": 300,
+  "sklearn_version": "1.9.1",
+  "train": {
+    "statements": 1400,
+    "cached": true,
+    "above_threshold": 23
+  },
+  "dev": {
+    "statements": 300,
+    "cached": true,
+    "above_threshold": 6,
+    "above_threshold_share": 0.02,
+    "above_threshold_by_layout": {
+      "columns": 2,
+      "drcr": 4
+    }
+  },
+  "threshold": 0.598769,
+  "false_alarm_target": 0.02,
+  "score_quantiles": {
+    "train": {
+      "0.5": 0.434427,
+      "0.9": 0.510125,
+      "0.98": 0.592167,
+      "1.0": 0.698386
+    },
+    "dev": {
+      "0.5": 0.441372,
+      "0.9": 0.51722,
+      "0.98": 0.598769,
+      "1.0": 0.640237
+    }
+  },
+  "feature_medians": {
+    "train": {
+      "income_to_debits": 1.203983,
+      "salary_to_spending": 1.037035,
+      "credits_to_debits": 1.334485,
+      "round_100_share": 0.027721,
+      "round_1000_share": 0.007592,
+      "last_digit_chi2": 0.037028,
+      "balance_volatility": 0.406705,
+      "largest_to_median_credit": 2.26143,
+      "credits_per_month": 2.166667
+    },
+    "dev": {
+      "income_to_debits": 1.207918,
+      "salary_to_spending": 1.012925,
+      "credits_to_debits": 1.317041,
+      "round_100_share": 0.028636,
+      "round_1000_share": 0.007105,
+      "last_digit_chi2": 0.037537,
+      "balance_volatility": 0.415351,
+      "largest_to_median_credit": 2.528859,
+      "credits_per_month": 2.166667
+    }
+  },
+  "peak_mb": 271.8
+}

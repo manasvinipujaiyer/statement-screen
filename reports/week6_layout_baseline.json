@@ -1,0 +1,39 @@
+{
+  "what": "largest font/layout values on genuine train PDFs (sets Week 6 tolerances)",
+  "split": "train",
+  "statements": 1400,
+  "by_layout": {
+    "columns": {
+      "statements": 711,
+      "cells": 830400,
+      "cells_off_usual_font": 0,
+      "max_alignment_off": 0.0,
+      "max_spacing_spread": 0.0,
+      "max_overlap_share": 0.0,
+      "worst": {
+        "cells_off_usual_font": "stmt_0001",
+        "max_alignment_off": "stmt_0030",
+        "max_spacing_spread": "stmt_0242",
+        "max_overlap_share": "stmt_0001"
+      }
+    },
+    "drcr": {
+      "statements": 689,
+      "cells": 820236,
+      "cells_off_usual_font": 0,
+      "max_alignment_off": 0.0,
+      "max_spacing_spread": 0.0,
+      "max_overlap_share": 1.0,
+      "worst": {
+        "cells_off_usual_font": "stmt_0004",
+        "max_alignment_off": "stmt_0004",
+        "max_spacing_spread": "stmt_0004",
+        "max_overlap_share": "stmt_1832"
+      }
+    }
+  },
+  "problems": [],
+  "seconds": 2195.8,
+  "seconds_per_pdf": 1.5684,
+  "peak_mb": 76.7
+}

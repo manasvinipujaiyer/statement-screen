@@ -1,0 +1,32 @@
+{
+  "what": "distinct fonts per genuine train PDF, per layout (sets config.MAX_FONTS)",
+  "split": "train",
+  "statements": 1400,
+  "by_layout": {
+    "columns": {
+      "statements": 711,
+      "font_count_histogram": {
+        "2": 711
+      },
+      "max_fonts": 2,
+      "font_names": {
+        "Helvetica": 711,
+        "Helvetica-Bold": 711
+      }
+    },
+    "drcr": {
+      "statements": 689,
+      "font_count_histogram": {
+        "3": 689
+      },
+      "max_fonts": 3,
+      "font_names": {
+        "Helvetica": 689,
+        "Times-Bold": 689,
+        "Times-Roman": 689
+      }
+    }
+  },
+  "unknown_layout": [],
+  "seconds": 84.6
+}
