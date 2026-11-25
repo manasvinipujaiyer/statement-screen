@@ -573,10 +573,12 @@ and the versions. `GET /audit/{request_id}` returns the audit row of one request
 > by default. Anyone who can reach the port can screen PDFs, read audit rows and add rows.
 
 **The detector is unchanged.** The service's detector code, config and model are identical
-to Week 6's. Only `uv.lock` changed, because it gained the service's dependencies: FastAPI
-(MIT), uvicorn (BSD-3-Clause) and python-multipart (Apache-2.0), plus httpx and httpcore
-(both BSD-3-Clause) in the dev group for the test client. The `uv.lock` diff showed no
-removed line, so no package that was already locked changed version. A test checks the
+to Week 6's. What changed in the dependency files is `pyproject.toml` (the dependency lists)
+and `uv.lock`, because they gained the service's dependencies: FastAPI (MIT), uvicorn
+(BSD-3-Clause) and python-multipart (Apache-2.0), plus httpx and httpcore (both
+BSD-3-Clause) in the dev group for the test client. The `uv.lock` diff showed no removed
+line, so no package that was already locked changed version. The fingerprint's `uv_lock`
+part is the only part that changed. A test checks the
 code, config and model parts of the live fingerprint against Week 6's record
 (`reports/week6_preregistration.json`); the `uv_lock` part cannot match any more and is
 tested with a stand-in. `/health` shows the four parts:
@@ -626,7 +628,9 @@ installed in the image (LightGBM would need one), and the container still screen
 the service path does not need LightGBM's runtime. The image keeps the
 repository's folder layout, because the fingerprint finds `uv.lock` and the model by their
 place relative to the source. Inside the container the code, config and model hashes were
-the same as Week 6's. No CI job builds the image.
+the same as Week 6's (the `/health` output is in
+[`reports/week7_service_measurements.txt`](reports/week7_service_measurements.txt)). No CI
+job builds the image.
 
 #### Example
 
@@ -663,10 +667,11 @@ codes `BALANCE_CHAIN` and `SUMMARY_IDENTITY`, and a synthetic gig-worker stateme
 
 The upload must start with `%PDF`, be at most 10 MB and at most 50 pages. It is copied to a
 private temp folder (named after the request id), hashed, screened, and the folder is
-deleted in every case, including errors. One PDF is processed at a time (a second request
-waits), and the work runs off the event loop. Every refusal is a JSON body with the
-request id, `"status": "error"`, an error code and no stack trace, and every refusal is
-logged:
+deleted in every case, including errors. One PDF is copied, checked and screened at a time
+(a second request waits its turn; receiving a request's body happens before that wait), and
+the screening and the audit write run off the event loop. Every refusal is a JSON body with
+the request id, `"status": "error"`, an error code and no stack trace, and every refusal is
+recorded in the audit log:
 
 | Case | HTTP | `error_code` |
 |---|---|---|
@@ -701,14 +706,15 @@ free-text column at all: verdicts, customer types and error codes come from fixe
 finding codes must match a strict pattern, and any value that does not fit is stored as
 NULL, not as text. A test builds a statement full of a made-up holder, account number,
 employer and narrations and searches the raw bytes of the database file for them. Another
-does the same for a generated PDF's real holder name, account number, employer and
-narrations after real requests.
+does the same for a generated PDF's holder name, account number, employer and narrations
+after requests through the service.
 
 The service only inserts. `BEFORE UPDATE` and `BEFORE DELETE` triggers abort anything else,
 and lookups use a read-only connection. The file is mode 0600.
 
 **It fails closed.** If the row cannot be written, the client gets `AUDIT_FAILED` and no
-result, so every response a client sees has a matching row. The withheld result is not
+result, so every result a client sees has a row (the `AUDIT_FAILED` response itself has
+none, because its write failed). The withheld result is not
 written anywhere else, and there are no retries beyond SQLite's 5-second busy timeout.
 The service refuses to start unless the database opens for writing, is at schema version 1
 and has both triggers (an existing table is never repaired), and `/health` reports 503 if
@@ -717,11 +723,19 @@ that stops being true.
 #### Limits of the service
 
 - **No authentication, local use only.** Anyone who can reach the port can add junk rows.
-- **One PDF at a time.** Other requests queue behind it.
-- **Chunked uploads.** A request with no `Content-Length` header cannot be refused early;
-  only the size check while copying applies, so the 10 MB limit is enforced after up to
-  10 MB has been received. An oversized declared length is refused before the body is read,
-  and some clients (curl, for one) may show a broken pipe instead of the 413.
+- **One PDF at a time.** Copying, page counting and screening take turns, and other
+  requests queue behind them. Receiving a request's body does not wait, so several uploads
+  can be in flight at once.
+- **One audit row per `POST /screen` request.** Requests to other paths (an unknown path,
+  `GET /screen`) get the framework's own 404 or 405 and no row.
+- **Size limit and chunked uploads.** An oversized `Content-Length` is refused before the
+  body is read. A request with no `Content-Length` (a chunked upload) cannot be refused that
+  way, so its bytes are counted as they arrive and it is refused with a 413 once more than
+  10 MB plus 64 KiB of multipart framing have arrived. The exact 10 MB limit on the file
+  itself is checked afterwards, while the file is copied. Until then FastAPI and Starlette
+  receive and parse the whole body and spool each file part to a temporary file, so up to
+  10 MB + 64 KiB per request can be on disk before any check on the file runs. Some clients
+  (curl, for one) may show a broken pipe instead of the 413.
 - **Page count.** If the page count cannot be read, the 50-page limit cannot be enforced for
   that PDF (the size limit still applies); the PDF is still screened and gets the
   unreadable-PDF answer.
@@ -753,7 +767,11 @@ runs, with 5 tampered and 15 "no evidence of tampering" verdicts.
 The two runs differ by about 1% at p50 and 4% at p95, well inside the spread between the
 fastest and slowest request, so this does not show either is faster. Memory was not
 measured. The image: 646,472,434 bytes by `docker image inspect` (arm64); Docker's listing
-shows 646 MB content size and 2.91 GB disk usage.
+shows 646 MB content size and 2.91 GB disk usage. These were measured before the review
+fixes (the lock now also covers copying and page counting, audit writes moved to worker
+threads, and the request body is counted as it arrives); the screening code and the
+detector did not change, and nothing was re-measured. The raw output of these commands is in
+[`reports/week7_service_measurements.txt`](reports/week7_service_measurements.txt).
 
 ### The blind tamper test
 
@@ -778,7 +796,8 @@ scored against it.
    [`reports/week7_blind_report.json`](reports/week7_blind_report.json).
 5. `blind_log` logged the run to MLflow (experiment `week7_blind`; `mlruns/` is git-ignored).
 6. The key was published as [`reports/week7_blind_key.json`](reports/week7_blind_key.json),
-   and `blind_verify` rebuilt all 200 PDFs from it: **200 of 200 identical**.
+   and `blind_verify` rebuilt all 200 PDFs from it. Re-run after the service changes, its
+output is saved in [`reports/week7_blind_verify.txt`](reports/week7_blind_verify.txt).
 
 The commands are in the pre-registration. The `blind_*` commands that check the
 pre-registration (`blind_detect`, `blind_verdicts`, `blind_score`, `blind_log`) now refuse to

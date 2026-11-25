@@ -1,0 +1,2 @@
+Rebuilt 200 of 200 PDFs; 200 identical to the key and the verdict file
+  every PDF matches the key and the committed verdicts byte for byte
