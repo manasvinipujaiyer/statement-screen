@@ -42,4 +42,5 @@ none of these stages used real statements.
 
 Every tampered copy comes from this project's own tamper code, and every statement from its
 own generator. The protocol keeps results from being tuned to, but it cannot show how the
-code behaves on real statements or on forgeries made by someone else.
+code behaves on real statements or on forgeries made by someone else. See
+[limits, errata and disclosures](limits.md).

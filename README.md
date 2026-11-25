@@ -180,6 +180,7 @@ The detailed write-ups, one per stage:
 - [The service](docs/service.md)
 - [The blind tamper test](docs/blind_test.md)
 - [Evaluation protocol](docs/evaluation_protocol.md)
+- [Limits, errata and disclosures](docs/limits.md)
 
 ## License
 
