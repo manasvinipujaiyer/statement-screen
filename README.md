@@ -117,6 +117,56 @@ What these show, and what they do not:
 
 <!-- results:end -->
 
+## How it works
+
+Each box is a stage with its own page under `docs/`.
+
+```mermaid
+flowchart LR
+    pdf["Statement PDF"] --> parser["Parser<br/>layout detection, money as integer paise"]
+    parser --> checks["Self-checks<br/>balance chain, summary totals, dates"]
+    parser --> clean["Cleaning<br/>channel, direction, counterparty"]
+    clean --> group["Grouping<br/>fuzzy match and character n-grams"]
+    group --> rules["Rules<br/>salary, EMI, bounce, rent,<br/>each with a plain reason"]
+    rules --> profile["Income profile<br/>income, employer, EMIs, bounces, warnings"]
+    pdf --> tamper["Tamper checks<br/>arithmetic, structure, file history,<br/>layout and font, anomaly score"]
+    checks -->|"arithmetic findings"| tamper
+    profile -.->|"two anomaly features"| tamper
+    tamper --> verdict["Verdict<br/>no evidence, suspicious,<br/>tampered or could not check"]
+    profile --> service["Service: POST /screen<br/>one PDF at a time"]
+    verdict --> service
+    service --> response["JSON response<br/>profile, verdict, timing, code version"]
+    service --> audit["SQLite audit log<br/>one row per request, no statement text,<br/>fails closed"]
+```
+
+## How it was evaluated
+
+Which data each result used. Dev was used for tuning, so dev results are in-sample.
+
+```mermaid
+flowchart TD
+    gen["Generator<br/>synthetic statements from fixed seeds"] --> ref["Reference batch"]
+    ref --> split["Split by statement<br/>train, dev, test"]
+    split --> train["Train<br/>examples, model training, baselines"]
+    split --> dev["Dev<br/>all tuning"]
+    split --> test["Test<br/>closed until scored once"]
+    gen -->|"formats written by an independent collaborator"| shift["Shift batch<br/>narration formats the code had never seen"]
+    tamper["Our own tamper code"] --> copies["Tampered copies<br/>of dev and test statements"]
+    dev --> r3["Week 3 rules: dev results only"]
+    dev --> r4["Week 4 model against rules:<br/>shift batch scored once"]
+    shift --> r4
+    dev --> r5["Week 5 income profile: test and shift<br/>scored once after a pre-registration"]
+    test --> r5
+    shift --> r5
+    dev --> r6["Week 6 tamper detector: test copies and genuine<br/>test and shift scored once, pre-registered"]
+    copies --> r6
+    test --> r6
+    shift --> r6
+    gen --> blind["Sealed blind batch<br/>genuine and tampered, our own tamper code"]
+    tamper --> blind
+    blind --> r7["Week 7 blind run: key opened once, after the<br/>verdicts were pushed, pre-registered"]
+```
+
 ## Documentation
 
 The detailed write-ups, one per stage:
