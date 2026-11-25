@@ -178,14 +178,36 @@ class Audit:
                 version = db.execute("PRAGMA user_version").fetchone()[0]
                 if version not in (0, SCHEMA_VERSION):
                     raise AuditError(f"{self.path} has schema version {version}")
-                db.executescript(SCHEMA)
-                db.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
-                names = tuple(r[1] for r in db.execute("PRAGMA table_info(audit)"))
-            if names != COLUMNS:
-                raise AuditError(f"{self.path} has an audit table with other columns")
+                table = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'audit'"
+                if db.execute(table).fetchone() is None:  # a new file: make it. An existing
+                    db.executescript(SCHEMA)  # table is never altered or repaired here
+                    db.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
             os.chmod(self.path, 0o600)
         except (OSError, sqlite3.Error) as e:
             raise AuditError(f"cannot open the audit log: {type(e).__name__}") from e
+        self.check()  # refuse to start on anything but a sound, writable, append-only log
+
+    def check(self) -> dict:
+        """Raise AuditError unless the log is writable, at schema version 1, has exactly the
+        agreed columns and both append-only triggers. Returns a small status dict (no paths)."""
+        try:
+            with closing(self._connect()) as db:
+                names = tuple(r[1] for r in db.execute("PRAGMA table_info(audit)"))
+                if names != COLUMNS:
+                    raise AuditError(f"{self.path} has an audit table with other columns")
+                version = db.execute("PRAGMA user_version").fetchone()[0]
+                if version != SCHEMA_VERSION:
+                    raise AuditError(f"{self.path} has schema version {version}")
+                found = db.execute(
+                    "SELECT name FROM sqlite_master WHERE type = 'trigger' AND tbl_name = 'audit'"
+                )
+                if {"audit_no_update", "audit_no_delete"} - {r[0] for r in found}:
+                    raise AuditError(f"{self.path} is missing an append-only trigger")
+                db.execute("BEGIN IMMEDIATE")  # takes the write lock: fails if not writable
+                db.rollback()
+        except (OSError, sqlite3.Error) as e:
+            raise AuditError(f"the audit log is not usable: {type(e).__name__}") from e
+        return {"status": "ok", "schema_version": SCHEMA_VERSION, "append_only": True}
 
     def _connect(self) -> sqlite3.Connection:
         return sqlite3.connect(self.path, timeout=5)

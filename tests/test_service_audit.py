@@ -3,6 +3,7 @@
 import re
 import sqlite3
 import stat
+import tempfile
 from contextlib import closing
 from datetime import UTC, datetime
 from pathlib import Path
@@ -11,7 +12,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from statementscreen.service import audit
-from statementscreen.service.app import create_app
+from statementscreen.service.app import FRAMING, create_app
+from statementscreen.service.upload import MAX_BYTES
 
 HOLDER = "Zebulon Quillfeather"
 ACCOUNT = "9876543210123456"
@@ -226,3 +228,147 @@ def test_the_audit_route_gives_a_json_404_and_never_echoes_the_id(client):
         assert response.status_code == 404
         assert response.json()["error_code"] == "NOT_FOUND"
         assert bad not in response.text
+
+
+# ---------------------------------------------------------------- failing closed
+
+PDF = b"%PDF-1.7\nnot really a pdf"
+
+
+def _broken(events: list):
+    """An audit hook that notes the event it was given and then fails to write it."""
+
+    def hook(event: dict) -> None:
+        events.append(event)
+        raise audit.AuditError("cannot write the audit log: OperationalError")
+
+    return hook
+
+
+def _screen(path):
+    return _result()  # a result full of the sentinels: it must never leave the service
+
+
+def _crash(path):
+    raise RuntimeError(HOLDER)
+
+
+@pytest.fixture
+def temp_root(tmp_path, monkeypatch):
+    """Point the service's temp folders at an empty folder so a leftover file is visible."""
+    root = tmp_path / "service-temp"
+    root.mkdir()
+    monkeypatch.setattr(tempfile, "tempdir", str(root))
+    return root
+
+
+def _post(client, data: bytes = PDF):
+    return client.post("/screen", files={"file": ("statement.pdf", data, "application/pdf")})
+
+
+def _only_code_and_id(response, events: list, error_code: str | None = None) -> None:
+    assert response.status_code == 500
+    body = response.json()
+    assert body["error_code"] == "AUDIT_FAILED" and set(body) == {"request_id", "error_code"}
+    assert events[-1]["request_id"] == body["request_id"]  # a row was attempted for this id
+    if error_code:
+        assert events[-1]["error_code"] == error_code
+
+
+def test_a_failed_audit_write_withholds_the_result_and_writes_it_nowhere_else(
+    temp_root, caplog, capsys
+):
+    events: list = []
+    client = TestClient(create_app(version=VERSION, audit=_broken(events), screen=_screen))
+    response = _post(client)
+    _only_code_and_id(response, events)
+    assert len(events) == 1 and events[0]["status"] == "ok"
+    for sentinel in (*SENTINELS, "suspicious", "ANOMALY_SCORE"):
+        assert sentinel not in response.text
+    seen = capsys.readouterr()
+    everywhere = caplog.text + seen.out + seen.err
+    assert not [s for s in (*SENTINELS, "suspicious") if s in everywhere]
+    assert list(temp_root.iterdir()) == []
+
+
+def test_a_refusal_that_cannot_be_logged_becomes_audit_failed_too(temp_root):
+    events: list = []
+    client = TestClient(create_app(version=VERSION, audit=_broken(events), screen=_screen))
+    _only_code_and_id(_post(client, b"hello"), events, "NOT_A_PDF")
+    _only_code_and_id(client.post("/screen", data={"other": "x"}), events, "NO_FILE")
+    too_big = {"content-length": str(MAX_BYTES + FRAMING + 1)}
+    _only_code_and_id(client.post("/screen", content=b"x", headers=too_big), events, "TOO_LARGE")
+    assert len(events) == 3 and list(temp_root.iterdir()) == []
+
+
+def test_a_crash_that_cannot_be_logged_is_audit_failed_and_leaks_nothing(temp_root, caplog):
+    events: list = []
+    client = TestClient(create_app(version=VERSION, audit=_broken(events), screen=_crash))
+    response = _post(client)
+    _only_code_and_id(response, events, "INTERNAL_ERROR")
+    assert HOLDER not in response.text and HOLDER not in caplog.text
+    assert list(temp_root.iterdir()) == []
+
+
+def test_when_the_audit_write_works_the_response_and_the_row_agree(log, temp_root):
+    client = TestClient(create_app(version=VERSION, audit_log=log, screen=_screen))
+    ok = _post(client)
+    assert ok.status_code == 200 and ok.json()["tamper"]["verdict"] == "suspicious"
+    row = log.get(ok.json()["request_id"])
+    assert (row["status"], row["verdict"], row["error_code"]) == ("ok", "suspicious", None)
+    refused = _post(client, b"hello")
+    assert refused.status_code == 400
+    row = log.get(refused.json()["request_id"])
+    assert (row["status"], row["error_code"], row["verdict"]) == ("error", "NOT_A_PDF", None)
+    assert list(temp_root.iterdir()) == []
+
+
+# ---------------------------------------------------------------- startup and /health
+
+
+def test_startup_refuses_a_log_without_both_triggers_or_not_at_version_1(tmp_path):
+    path = tmp_path / "a.db"
+    audit.Audit(path)
+    with closing(sqlite3.connect(path)) as db:
+        db.execute("DROP TRIGGER audit_no_delete")
+    with pytest.raises(audit.AuditError, match="trigger"):
+        audit.Audit(path)
+    other = tmp_path / "b.db"
+    audit.Audit(other)
+    with closing(sqlite3.connect(other)) as db:
+        db.execute("PRAGMA user_version = 0")
+    with pytest.raises(audit.AuditError, match="schema version 0"):
+        audit.Audit(other)
+
+
+def test_startup_does_not_repair_an_existing_table(tmp_path):
+    path = tmp_path / "a.db"
+    audit.Audit(path)
+    with closing(sqlite3.connect(path)) as db:
+        db.execute("DROP TRIGGER audit_no_update")
+    for _ in range(2):  # it refuses each time and never quietly puts the trigger back
+        with pytest.raises(audit.AuditError):
+            audit.Audit(path)
+    with closing(sqlite3.connect(path)) as db:
+        names = {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='trigger'")}
+    assert names == {"audit_no_delete"}
+
+
+def test_health_reports_the_audit_status_and_goes_503_when_the_log_stops_being_sound(log):
+    client = TestClient(create_app(version=VERSION, audit_log=log))
+    ok = client.get("/health")
+    assert ok.status_code == 200 and ok.json()["status"] == "ok"
+    assert ok.json()["audit"] == {"status": "ok", "schema_version": 1, "append_only": True}
+    with closing(sqlite3.connect(log.path)) as db:
+        db.execute("DROP TRIGGER audit_no_update")
+    bad = client.get("/health")
+    assert bad.status_code == 503
+    assert bad.json()["error_code"] == "AUDIT_UNAVAILABLE" and bad.json()["audit"] == {
+        "status": "error"
+    }
+    assert str(log.path) not in bad.text
+
+
+def test_health_without_an_audit_log_says_so():
+    health = TestClient(create_app(version=VERSION)).get("/health").json()
+    assert health["status"] == "ok" and health["audit"] == {"status": "not_configured"}
