@@ -1,0 +1,1307 @@
+{
+  "bootstrap": {
+    "interval": "2.5th to 97.5th percentile",
+    "resampled": "PDFs",
+    "resamples": 1000,
+    "seed": 2026
+  },
+  "build_errors": 0,
+  "by_layout": {
+    "genuine": {
+      "columns": {
+        "n": 40,
+        "tampered": 0,
+        "tampered_or_suspicious": 0
+      },
+      "drcr": {
+        "n": 39,
+        "tampered": 0,
+        "tampered_or_suspicious": 0
+      }
+    },
+    "tampered": {
+      "columns": {
+        "n": 65,
+        "tampered": 56,
+        "tampered_or_suspicious": 58
+      },
+      "drcr": {
+        "n": 56,
+        "tampered": 48,
+        "tampered_or_suspicious": 48
+      }
+    }
+  },
+  "comparison_with_week6": {
+    "genuine": {
+      "blind_tampered": "0/79 (0.0%)",
+      "blind_tampered_or_suspicious": "0/79 (0.0%)",
+      "week6_shift": {
+        "tampered": "0/300",
+        "tampered_or_suspicious": "5/300"
+      },
+      "week6_test": {
+        "tampered": "0/300",
+        "tampered_or_suspicious": "7/300"
+      }
+    },
+    "note": "Week 6 used the same detector and tamper code on another source batch with 100 copies per type; these are not targets, the counts here are small and the batches differ, so a difference is not by itself a change in the detector.",
+    "per_type": {
+      "inplace_edit": {
+        "blind_tampered": "21/21 (100.0%)",
+        "blind_tampered_or_suspicious": "21/21 (100.0%)",
+        "week6_test_tampered": "100/100"
+      },
+      "inplace_edit_consistent": {
+        "blind_tampered": "12/13 (92.3%)",
+        "blind_tampered_or_suspicious": "12/13 (92.3%)",
+        "week6_test_tampered": "97/100"
+      },
+      "overlay": {
+        "blind_tampered": "15/15 (100.0%)",
+        "blind_tampered_or_suspicious": "15/15 (100.0%)",
+        "week6_test_tampered": "100/100"
+      },
+      "page_remove": {
+        "blind_tampered": "11/11 (100.0%)",
+        "blind_tampered_or_suspicious": "11/11 (100.0%)",
+        "week6_test_tampered": "100/100"
+      },
+      "page_swap": {
+        "blind_tampered": "28/28 (100.0%)",
+        "blind_tampered_or_suspicious": "28/28 (100.0%)",
+        "week6_test_tampered": "100/100"
+      },
+      "rerender_consistent": {
+        "blind_tampered": "0/16 (0.0%)",
+        "blind_tampered_or_suspicious": "2/16 (12.5%)",
+        "week6_test_flagged": "14/100",
+        "week6_test_tampered": "0/100"
+      },
+      "rerender_inconsistent": {
+        "blind_tampered": "17/17 (100.0%)",
+        "blind_tampered_or_suspicious": "17/17 (100.0%)",
+        "week6_test_tampered": "100/100"
+      }
+    }
+  },
+  "confusion_verdict_by_truth": {
+    "genuine": {
+      "could not check": 0,
+      "no evidence of tampering": 79,
+      "suspicious": 0,
+      "tampered": 0
+    },
+    "inplace_edit": {
+      "could not check": 0,
+      "no evidence of tampering": 0,
+      "suspicious": 0,
+      "tampered": 21
+    },
+    "inplace_edit_consistent": {
+      "could not check": 0,
+      "no evidence of tampering": 1,
+      "suspicious": 0,
+      "tampered": 12
+    },
+    "overlay": {
+      "could not check": 0,
+      "no evidence of tampering": 0,
+      "suspicious": 0,
+      "tampered": 15
+    },
+    "page_remove": {
+      "could not check": 0,
+      "no evidence of tampering": 0,
+      "suspicious": 0,
+      "tampered": 11
+    },
+    "page_swap": {
+      "could not check": 0,
+      "no evidence of tampering": 0,
+      "suspicious": 0,
+      "tampered": 28
+    },
+    "rerender_consistent": {
+      "could not check": 0,
+      "no evidence of tampering": 14,
+      "suspicious": 2,
+      "tampered": 0
+    },
+    "rerender_inconsistent": {
+      "could not check": 0,
+      "no evidence of tampering": 0,
+      "suspicious": 0,
+      "tampered": 17
+    }
+  },
+  "could_not_check": {
+    "cases": [],
+    "genuine": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "count": 0,
+      "rate": 0.0,
+      "text": "0/79 (0.0%)",
+      "total": 79
+    },
+    "tampered": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "count": 0,
+      "rate": 0.0,
+      "text": "0/121 (0.0%)",
+      "total": 121
+    }
+  },
+  "detection": {
+    "inplace_edit": {
+      "checks_not_run": {},
+      "codes_fired": {
+        "BALANCE_CHAIN": 21,
+        "INCREMENTAL_UPDATE": 11,
+        "SUMMARY_TOTALS": 21
+      },
+      "could_not_check": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/21 (0.0%)",
+        "total": 21
+      },
+      "labels": {
+        "could not check": 0,
+        "no evidence of tampering": 0,
+        "suspicious": 0,
+        "tampered": 21
+      },
+      "n": 21,
+      "tampered": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 21,
+        "rate": 1.0,
+        "text": "21/21 (100.0%)",
+        "total": 21
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 21,
+        "rate": 1.0,
+        "text": "21/21 (100.0%)",
+        "total": 21
+      },
+      "without_history": {
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 21
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 21,
+          "rate": 1.0,
+          "text": "21/21 (100.0%)",
+          "total": 21
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 21,
+          "rate": 1.0,
+          "text": "21/21 (100.0%)",
+          "total": 21
+        }
+      }
+    },
+    "inplace_edit_consistent": {
+      "checks_not_run": {},
+      "codes_fired": {
+        "BALANCE_CHAIN": 12,
+        "INCREMENTAL_UPDATE": 7,
+        "PAGE_CARRYOVER": 12,
+        "SUMMARY_IDENTITY": 12
+      },
+      "could_not_check": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/13 (0.0%)",
+        "total": 13
+      },
+      "labels": {
+        "could not check": 0,
+        "no evidence of tampering": 1,
+        "suspicious": 0,
+        "tampered": 12
+      },
+      "n": 13,
+      "tampered": {
+        "ci95": [
+          0.7692,
+          1.0
+        ],
+        "count": 12,
+        "rate": 0.9231,
+        "text": "12/13 (92.3%)",
+        "total": 13
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          0.7692,
+          1.0
+        ],
+        "count": 12,
+        "rate": 0.9231,
+        "text": "12/13 (92.3%)",
+        "total": 13
+      },
+      "without_history": {
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 1,
+          "suspicious": 0,
+          "tampered": 12
+        },
+        "tampered": {
+          "ci95": [
+            0.7692,
+            1.0
+          ],
+          "count": 12,
+          "rate": 0.9231,
+          "text": "12/13 (92.3%)",
+          "total": 13
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.7692,
+            1.0
+          ],
+          "count": 12,
+          "rate": 0.9231,
+          "text": "12/13 (92.3%)",
+          "total": 13
+        }
+      }
+    },
+    "overlay": {
+      "checks_not_run": {},
+      "codes_fired": {
+        "BAD_ROW": 15,
+        "BALANCE_CHAIN": 15,
+        "CHAR_OVERLAP": 15,
+        "DIGIT_SPACING": 7,
+        "INCREMENTAL_UPDATE": 6,
+        "SUMMARY_COUNTS": 15,
+        "SUMMARY_TOTALS": 15
+      },
+      "could_not_check": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/15 (0.0%)",
+        "total": 15
+      },
+      "labels": {
+        "could not check": 0,
+        "no evidence of tampering": 0,
+        "suspicious": 0,
+        "tampered": 15
+      },
+      "n": 15,
+      "tampered": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 15,
+        "rate": 1.0,
+        "text": "15/15 (100.0%)",
+        "total": 15
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 15,
+        "rate": 1.0,
+        "text": "15/15 (100.0%)",
+        "total": 15
+      },
+      "without_history": {
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 15
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 15,
+          "rate": 1.0,
+          "text": "15/15 (100.0%)",
+          "total": 15
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 15,
+          "rate": 1.0,
+          "text": "15/15 (100.0%)",
+          "total": 15
+        }
+      }
+    },
+    "page_remove": {
+      "checks_not_run": {},
+      "codes_fired": {
+        "BALANCE_CHAIN": 11,
+        "INCREMENTAL_UPDATE": 6,
+        "PAGE_CARRYOVER": 11,
+        "PAGE_NUMBER": 11,
+        "SUMMARY_COUNTS": 11,
+        "SUMMARY_TOTALS": 11
+      },
+      "could_not_check": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/11 (0.0%)",
+        "total": 11
+      },
+      "labels": {
+        "could not check": 0,
+        "no evidence of tampering": 0,
+        "suspicious": 0,
+        "tampered": 11
+      },
+      "n": 11,
+      "tampered": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 11,
+        "rate": 1.0,
+        "text": "11/11 (100.0%)",
+        "total": 11
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 11,
+        "rate": 1.0,
+        "text": "11/11 (100.0%)",
+        "total": 11
+      },
+      "without_history": {
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 11
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 11,
+          "rate": 1.0,
+          "text": "11/11 (100.0%)",
+          "total": 11
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 11,
+          "rate": 1.0,
+          "text": "11/11 (100.0%)",
+          "total": 11
+        }
+      }
+    },
+    "page_swap": {
+      "checks_not_run": {},
+      "codes_fired": {
+        "BALANCE_CHAIN": 28,
+        "CLOSING_MISMATCH": 1,
+        "DATE_ORDER": 27,
+        "DATE_OUT_OF_PERIOD": 17,
+        "HEADER_MISMATCH": 28,
+        "INCREMENTAL_UPDATE": 12,
+        "PAGE_CARRYOVER": 28,
+        "PAGE_NUMBER": 26,
+        "SUMMARY_COUNTS": 25,
+        "SUMMARY_TOTALS": 28
+      },
+      "could_not_check": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/28 (0.0%)",
+        "total": 28
+      },
+      "labels": {
+        "could not check": 0,
+        "no evidence of tampering": 0,
+        "suspicious": 0,
+        "tampered": 28
+      },
+      "n": 28,
+      "tampered": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 28,
+        "rate": 1.0,
+        "text": "28/28 (100.0%)",
+        "total": 28
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 28,
+        "rate": 1.0,
+        "text": "28/28 (100.0%)",
+        "total": 28
+      },
+      "without_history": {
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 28
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 28,
+          "rate": 1.0,
+          "text": "28/28 (100.0%)",
+          "total": 28
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 28,
+          "rate": 1.0,
+          "text": "28/28 (100.0%)",
+          "total": 28
+        }
+      }
+    },
+    "rerender_consistent": {
+      "checks_not_run": {},
+      "codes_fired": {
+        "ANOMALY_SCORE": 2
+      },
+      "could_not_check": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/16 (0.0%)",
+        "total": 16
+      },
+      "labels": {
+        "could not check": 0,
+        "no evidence of tampering": 14,
+        "suspicious": 2,
+        "tampered": 0
+      },
+      "n": 16,
+      "tampered": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/16 (0.0%)",
+        "total": 16
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          0.0,
+          0.3125
+        ],
+        "count": 2,
+        "rate": 0.125,
+        "text": "2/16 (12.5%)",
+        "total": 16
+      },
+      "without_history": {
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 14,
+          "suspicious": 2,
+          "tampered": 0
+        },
+        "tampered": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/16 (0.0%)",
+          "total": 16
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.0,
+            0.3125
+          ],
+          "count": 2,
+          "rate": 0.125,
+          "text": "2/16 (12.5%)",
+          "total": 16
+        }
+      }
+    },
+    "rerender_inconsistent": {
+      "checks_not_run": {},
+      "codes_fired": {
+        "BALANCE_CHAIN": 17,
+        "SUMMARY_IDENTITY": 17
+      },
+      "could_not_check": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/17 (0.0%)",
+        "total": 17
+      },
+      "labels": {
+        "could not check": 0,
+        "no evidence of tampering": 0,
+        "suspicious": 0,
+        "tampered": 17
+      },
+      "n": 17,
+      "tampered": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 17,
+        "rate": 1.0,
+        "text": "17/17 (100.0%)",
+        "total": 17
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "count": 17,
+        "rate": 1.0,
+        "text": "17/17 (100.0%)",
+        "total": 17
+      },
+      "without_history": {
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 0,
+          "suspicious": 0,
+          "tampered": 17
+        },
+        "tampered": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 17,
+          "rate": 1.0,
+          "text": "17/17 (100.0%)",
+          "total": 17
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "count": 17,
+          "rate": 1.0,
+          "text": "17/17 (100.0%)",
+          "total": 17
+        }
+      }
+    }
+  },
+  "detector_fingerprint": {
+    "code": "3dd2362819c5233d45e1a7f0c3615eb1d4b1c8ac53c2a6ff2f346187051300b3",
+    "config": "5b332b4b4ff8e5ef8dfee4dfe6e286d7db7e038ea3c72568da183fedfd95f0b8",
+    "model": "d1a8aff502819286c572ce5891008ce4f274317b8ec640cd181031bef2939ccb",
+    "uv_lock": "68f70d808c4c2377ab2fb651d3aedad4a10206f1dcda0915428c5a0a41f7b1c5"
+  },
+  "false_alarms": {
+    "by_dialect": {
+      "default": {
+        "checks_not_run": {},
+        "codes_fired": {},
+        "could_not_check": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/41 (0.0%)",
+          "total": 41
+        },
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 41,
+          "suspicious": 0,
+          "tampered": 0
+        },
+        "n": 41,
+        "tampered": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/41 (0.0%)",
+          "total": 41
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/41 (0.0%)",
+          "total": 41
+        },
+        "without_history": {
+          "labels": {
+            "could not check": 0,
+            "no evidence of tampering": 41,
+            "suspicious": 0,
+            "tampered": 0
+          },
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/41 (0.0%)",
+            "total": 41
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/41 (0.0%)",
+            "total": 41
+          }
+        }
+      },
+      "karan_v1": {
+        "checks_not_run": {},
+        "codes_fired": {},
+        "could_not_check": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/38 (0.0%)",
+          "total": 38
+        },
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 38,
+          "suspicious": 0,
+          "tampered": 0
+        },
+        "n": 38,
+        "tampered": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/38 (0.0%)",
+          "total": 38
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/38 (0.0%)",
+          "total": 38
+        },
+        "without_history": {
+          "labels": {
+            "could not check": 0,
+            "no evidence of tampering": 38,
+            "suspicious": 0,
+            "tampered": 0
+          },
+          "tampered": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/38 (0.0%)",
+            "total": 38
+          },
+          "tampered_or_suspicious": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "count": 0,
+            "rate": 0.0,
+            "text": "0/38 (0.0%)",
+            "total": 38
+          }
+        }
+      }
+    },
+    "cases": [],
+    "flagged_by_the_anomaly_check_alone": 0,
+    "overall": {
+      "checks_not_run": {},
+      "codes_fired": {},
+      "could_not_check": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/79 (0.0%)",
+        "total": 79
+      },
+      "labels": {
+        "could not check": 0,
+        "no evidence of tampering": 79,
+        "suspicious": 0,
+        "tampered": 0
+      },
+      "n": 79,
+      "tampered": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/79 (0.0%)",
+        "total": 79
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "rate": 0.0,
+        "text": "0/79 (0.0%)",
+        "total": 79
+      },
+      "without_history": {
+        "labels": {
+          "could not check": 0,
+          "no evidence of tampering": 79,
+          "suspicious": 0,
+          "tampered": 0
+        },
+        "tampered": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/79 (0.0%)",
+          "total": 79
+        },
+        "tampered_or_suspicious": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "count": 0,
+          "rate": 0.0,
+          "text": "0/79 (0.0%)",
+          "total": 79
+        }
+      }
+    }
+  },
+  "genuine_called_tampered": [],
+  "inputs": {
+    "key_sha256": "a88dd1cbfe4f30a110af1053d318b633d20eb2f6f83c68529af392ca1cb6e141",
+    "pdf_set_sha256": "345c08b44d75f2e31dd995155f6a253d8334382d9e154d3a7faf9f4860e5722c",
+    "pdfs": 200,
+    "verdicts_sha256": "01d474b703457425b63ab8a66561e6247c498cec4acc8c3fbefbac540c89dafb"
+  },
+  "known_limits": [
+    "Everything is synthetic, and every tampered PDF comes from this project's own tamper code. No outside person edited a PDF.",
+    "The seal proves the key was not changed after it was sealed, not that nobody could have read it.",
+    "File sizes may differ between genuine and tampered PDFs; the seal hides the mix from the scoring process, not from someone inspecting the files.",
+    "data/blind_src/ stays on disk because the rebuild-and-verify check needs it; once the key is published, anyone can rebuild everything anyway.",
+    "Genuine PDFs are byte copies of their sources and are not re-saved, because the two re-render types are not written by pypdf, so no re-save step could hide the difference from every tampered copy. The other tampered types are written by pypdf, so file-structure cues may separate them from genuine PDFs; the report gives the numbers without file-history findings. Re-save false alarms are not measured here (Week 6 measured them).",
+    "A source that cannot take its drawn type gets another type, so the seven types are not exactly uniform: rerender_consistent, which needs a salary, is probably the rarest.",
+    "Per-type counts are small, so most intervals are wide, and a group that is all hits has a zero-width bootstrap interval that is narrower than the real uncertainty.",
+    "The bootstrap resamples PDFs. A page_swap donor is another blind source, so a donor's own PDF and a swapped copy are not strictly independent.",
+    "A lone anomaly score gives 'suspicious', never 'tampered' (verdict rule v2), and two anomaly features depend indirectly on the Week 3 salary rule (Week 6 limits).",
+    "The anomaly threshold and the layout and font baselines came from Week 6's train and dev statements. Before sealing, blind_fresh (a read-only audit that reads the earlier batches under data/ and never the key) found no seed or content shared between the blind sources and any earlier batch; its output was read by hand and is not committed, so this is stated here, not checkable from the repository.",
+    "A genuine PDF is a byte copy of a file in data/blind_src/, which stays on disk: hashing a blind PDF against those files identifies the genuine ones before any scoring. Nothing in the pipeline does this, and the seal does not prevent it.",
+    "log_run style limit: blind_log does not prevent a second MLflow entry for the same report; the committed report is the record of truth.",
+    "Week 6's other known limits (reports/week6_preregistration.json) apply."
+  ],
+  "misses": [
+    {
+      "checks_not_run": [],
+      "dialect": "default",
+      "finding_codes": [],
+      "layout": "drcr",
+      "name": "blind_0017",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "karan_v1",
+      "finding_codes": [],
+      "layout": "drcr",
+      "name": "blind_0019",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "karan_v1",
+      "finding_codes": [],
+      "layout": "columns",
+      "name": "blind_0030",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "default",
+      "finding_codes": [],
+      "layout": "drcr",
+      "name": "blind_0032",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "inplace_edit_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "karan_v1",
+      "finding_codes": [],
+      "layout": "drcr",
+      "name": "blind_0033",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "karan_v1",
+      "finding_codes": [
+        "ANOMALY_SCORE"
+      ],
+      "layout": "columns",
+      "name": "blind_0034",
+      "outcome": "suspicious",
+      "reasons": "the statement's money pattern is unusual (score 0.6149 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "default",
+      "finding_codes": [],
+      "layout": "columns",
+      "name": "blind_0055",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "default",
+      "finding_codes": [],
+      "layout": "columns",
+      "name": "blind_0074",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "karan_v1",
+      "finding_codes": [
+        "ANOMALY_SCORE"
+      ],
+      "layout": "columns",
+      "name": "blind_0078",
+      "outcome": "suspicious",
+      "reasons": "the statement's money pattern is unusual (score 0.6230 above the threshold 0.5988, which about 2% of genuine dev statements exceed)",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "karan_v1",
+      "finding_codes": [],
+      "layout": "drcr",
+      "name": "blind_0084",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "default",
+      "finding_codes": [],
+      "layout": "columns",
+      "name": "blind_0090",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "karan_v1",
+      "finding_codes": [],
+      "layout": "drcr",
+      "name": "blind_0105",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "karan_v1",
+      "finding_codes": [],
+      "layout": "columns",
+      "name": "blind_0115",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "karan_v1",
+      "finding_codes": [],
+      "layout": "columns",
+      "name": "blind_0142",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "default",
+      "finding_codes": [],
+      "layout": "drcr",
+      "name": "blind_0150",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "default",
+      "finding_codes": [],
+      "layout": "columns",
+      "name": "blind_0151",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    },
+    {
+      "checks_not_run": [],
+      "dialect": "default",
+      "finding_codes": [],
+      "layout": "drcr",
+      "name": "blind_0173",
+      "outcome": "not flagged",
+      "reasons": "",
+      "truth": "rerender_consistent"
+    }
+  ],
+  "mix": {
+    "genuine": 79,
+    "inplace_edit": 21,
+    "inplace_edit_consistent": 13,
+    "overlay": 15,
+    "page_remove": 11,
+    "page_swap": 28,
+    "rerender_consistent": 16,
+    "rerender_inconsistent": 17,
+    "tampered_total": 121,
+    "total": 200
+  },
+  "pooled_detection": {
+    "checks_not_run": {},
+    "codes_fired": {
+      "ANOMALY_SCORE": 2,
+      "BAD_ROW": 15,
+      "BALANCE_CHAIN": 104,
+      "CHAR_OVERLAP": 15,
+      "CLOSING_MISMATCH": 1,
+      "DATE_ORDER": 27,
+      "DATE_OUT_OF_PERIOD": 17,
+      "DIGIT_SPACING": 7,
+      "HEADER_MISMATCH": 28,
+      "INCREMENTAL_UPDATE": 42,
+      "PAGE_CARRYOVER": 51,
+      "PAGE_NUMBER": 37,
+      "SUMMARY_COUNTS": 51,
+      "SUMMARY_IDENTITY": 29,
+      "SUMMARY_TOTALS": 75
+    },
+    "could_not_check": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "count": 0,
+      "rate": 0.0,
+      "text": "0/121 (0.0%)",
+      "total": 121
+    },
+    "labels": {
+      "could not check": 0,
+      "no evidence of tampering": 15,
+      "suspicious": 2,
+      "tampered": 104
+    },
+    "n": 121,
+    "tampered": {
+      "ci95": [
+        0.7934,
+        0.9256
+      ],
+      "count": 104,
+      "rate": 0.8595,
+      "text": "104/121 (86.0%)",
+      "total": 121
+    },
+    "tampered_or_suspicious": {
+      "ci95": [
+        0.8099,
+        0.9339
+      ],
+      "count": 106,
+      "rate": 0.876,
+      "text": "106/121 (87.6%)",
+      "total": 121
+    },
+    "without_history": {
+      "labels": {
+        "could not check": 0,
+        "no evidence of tampering": 15,
+        "suspicious": 2,
+        "tampered": 104
+      },
+      "tampered": {
+        "ci95": [
+          0.7934,
+          0.9256
+        ],
+        "count": 104,
+        "rate": 0.8595,
+        "text": "104/121 (86.0%)",
+        "total": 121
+      },
+      "tampered_or_suspicious": {
+        "ci95": [
+          0.8099,
+          0.9339
+        ],
+        "count": 106,
+        "rate": 0.876,
+        "text": "106/121 (87.6%)",
+        "total": 121
+      }
+    }
+  },
+  "post_hoc": false,
+  "precision_of_tampered": {
+    "ci95": [
+      1.0,
+      1.0
+    ],
+    "count": 104,
+    "rate": 1.0,
+    "resamples_with_no_tampered_call": 0,
+    "text": "104/104 (100.0%)",
+    "total": 104
+  },
+  "preregistration": {
+    "frozen_commit": "2c129d8c86ff28ed0dbaca8973922187fe9532d5",
+    "path": "reports/week7_blind_preregistration.json"
+  },
+  "recall_of_tampered": {
+    "ci95": [
+      0.7934,
+      0.9256
+    ],
+    "count": 104,
+    "rate": 0.8595,
+    "text": "104/121 (86.0%)",
+    "total": 121
+  },
+  "redraws": [
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0034",
+      "sub_batch": "blind_default_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0039",
+      "sub_batch": "blind_default_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0046",
+      "sub_batch": "blind_default_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0065",
+      "sub_batch": "blind_default_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0078",
+      "sub_batch": "blind_default_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0083",
+      "sub_batch": "blind_default_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0001",
+      "sub_batch": "blind_karan_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0020",
+      "sub_batch": "blind_karan_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0030",
+      "sub_batch": "blind_karan_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0052",
+      "sub_batch": "blind_karan_v1",
+      "type": "rerender_consistent"
+    },
+    {
+      "detail": "no salary found by the Week 3 rules",
+      "reason": "not applicable",
+      "source": "stmt_0055",
+      "sub_batch": "blind_karan_v1",
+      "type": "rerender_consistent"
+    }
+  ],
+  "rule_version": "v2",
+  "what": "Week 7 blind tamper run: the frozen Week 6 detector on 200 sealed PDFs"
+}

@@ -1,0 +1,65 @@
+Week 7 service measurements, 2026-11-25. Synthetic PDFs only.
+
+NOTE: measured before the review fixes to src/statementscreen/service/app.py (the lock now also
+covers copying and page counting, audit writes moved to worker threads, the request body is
+counted as it arrives) and audit.py (/health no longer recreates a deleted file). The
+screening code and the detector did not change. Nothing was re-measured after those fixes.
+
+These blocks are the terminal output of the commands named above each one, copied by hand
+into this file (the commands print to the terminal only). Docker ran in Colima with 2 CPUs
+and 2 GB on an arm64 Mac; the local run was on the same Mac without Docker. Both runs were
+made with the image and tree described by the git_commit line (+dirty: that tree had
+uncommitted changes when the image was built).
+
+----------------------------------------------------------------------------------------------
+docker image inspect statementscreen:w7 --format 'size {{.Size}} bytes, arch {{.Architecture}}'
+
+size 646472434 bytes, arch arm64
+
+docker image ls statementscreen:w7 (columns as Docker printed them)
+
+IMAGE: statementscreen:w7   ID: 36cd18e04459   DISK USAGE: 2.91GB   CONTENT SIZE: 646MB
+
+----------------------------------------------------------------------------------------------
+curl http://127.0.0.1:8000/health (container)
+
+{"status": "ok",
+ "audit": {"status": "ok", "schema_version": 1, "append_only": true},
+ "version": {"git_commit": "5f77e703f94832113f11f5bfa7c2261c5f053cdf+dirty",
+  "detector_fingerprint": {
+   "code": "3dd2362819c5233d45e1a7f0c3615eb1d4b1c8ac53c2a6ff2f346187051300b3",
+   "config": "5b332b4b4ff8e5ef8dfee4dfe6e286d7db7e038ea3c72568da183fedfd95f0b8",
+   "model": "d1a8aff502819286c572ce5891008ce4f274317b8ec640cd181031bef2939ccb",
+   "uv_lock": "d44f6245fb43a1fd0ff7746978b4ac04f8b7d21e0b712d96d6c5da431e3885c1"},
+  "rule_version": "v2", "profile_version": 1}}
+
+(The code, config and model values are the ones in reports/week6_preregistration.json.)
+
+----------------------------------------------------------------------------------------------
+uv run python scripts/service_latency.py --url http://127.0.0.1:8000 --label docker
+
+label            docker
+url              http://127.0.0.1:8000
+git_commit       5f77e703f94832113f11f5bfa7c2261c5f053cdf+dirty
+fingerprint      {"code": "3dd2362819c5233d45e1a7f0c3615eb1d4b1c8ac53c2a6ff2f346187051300b3", "config": "5b332b4b4ff8e5ef8dfee4dfe6e286d7db7e038ea3c72568da183fedfd95f0b8", "model": "d1a8aff502819286c572ce5891008ce4f274317b8ec640cd181031bef2939ccb", "uv_lock": "d44f6245fb43a1fd0ff7746978b4ac04f8b7d21e0b712d96d6c5da431e3885c1"}
+pdf_set_sha256   23e66d4fd401b5151a8c604835c66e44b3ffb1c1ff901b9fd2bcccb9602f006a
+requests         20   status codes {200: 20}   verdicts {'tampered': 5, 'no evidence of tampering': 15}
+first request    2.834 s (includes any warm-up)
+client  p50      2.834 s   p95 4.249 s
+client  min/max  2.015 s / 5.390 s
+server  p50      2.824 s   p95 4.243 s   (processing_seconds)
+
+----------------------------------------------------------------------------------------------
+STATEMENTSCREEN_AUDIT_DB=<temp>/local_audit.db STATEMENTSCREEN_PORT=8001 .venv/bin/python -m statementscreen.service
+uv run python scripts/service_latency.py --url http://127.0.0.1:8001 --label local
+
+label            local
+url              http://127.0.0.1:8001
+git_commit       5f77e703f94832113f11f5bfa7c2261c5f053cdf+dirty
+fingerprint      {"code": "3dd2362819c5233d45e1a7f0c3615eb1d4b1c8ac53c2a6ff2f346187051300b3", "config": "5b332b4b4ff8e5ef8dfee4dfe6e286d7db7e038ea3c72568da183fedfd95f0b8", "model": "d1a8aff502819286c572ce5891008ce4f274317b8ec640cd181031bef2939ccb", "uv_lock": "d44f6245fb43a1fd0ff7746978b4ac04f8b7d21e0b712d96d6c5da431e3885c1"}
+pdf_set_sha256   23e66d4fd401b5151a8c604835c66e44b3ffb1c1ff901b9fd2bcccb9602f006a
+requests         20   status codes {200: 20}   verdicts {'tampered': 5, 'no evidence of tampering': 15}
+first request    2.657 s (includes any warm-up)
+client  p50      2.806 s   p95 4.093 s
+client  min/max  1.928 s / 5.987 s
+server  p50      2.800 s   p95 4.089 s   (processing_seconds)

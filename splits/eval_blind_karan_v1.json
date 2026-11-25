@@ -1,0 +1,9 @@
+{
+  "batch": "karan_v1",
+  "manifest_sha256": "633c31d22075752d3fd3ec2b58a45e982e9924dfa372a6764f7482195b2f36b9",
+  "name": "blind_karan_v1",
+  "parsed_rows_sha256": "240e1f6adf47a510492c4ec865857c209726e76b03620c40673eb385aeb2bd44",
+  "reference_manifest_sha256": "4bb5f314b131bcf01927e12a7ca1f71dfaf7c331757c1e0890dfd1eee42f0fb0",
+  "statement_ids_sha256": "7f5c9856c189920b06bfd9201c2d5154d4ea751bbddd68e2be57c2e3ef619433",
+  "statements": 100
+}
