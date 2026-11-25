@@ -67,7 +67,11 @@ def post_pdf(url: str, data: bytes) -> tuple[int, dict, float]:
             status, text = response.status, response.read()
     except urllib.error.HTTPError as e:
         status, text = e.code, e.read()
-    return status, json.loads(text), time.perf_counter() - started
+    try:
+        body = json.loads(text)
+    except ValueError:  # a non-JSON answer (an error page, say): counted by status, not parsed
+        body = {}
+    return status, body, time.perf_counter() - started
 
 
 def percentile(values: list[float], q: float) -> float:
@@ -82,6 +86,8 @@ def main() -> None:
     parser.add_argument("--n", type=int, default=20)
     parser.add_argument("--label", default="run")
     args = parser.parse_args()
+    if args.n < 1:
+        parser.error("--n must be at least 1")
 
     with tempfile.TemporaryDirectory(prefix="latency-") as folder:
         pdfs = make_pdfs(Path(folder), args.n)

@@ -370,5 +370,5 @@ def test_health_reports_the_audit_status_and_goes_503_when_the_log_stops_being_s
 
 
 def test_health_without_an_audit_log_says_so():
-    health = TestClient(create_app(version=VERSION)).get("/health").json()
+    health = TestClient(create_app(version=VERSION, audit_disabled=True)).get("/health").json()
     assert health["status"] == "ok" and health["audit"] == {"status": "not_configured"}

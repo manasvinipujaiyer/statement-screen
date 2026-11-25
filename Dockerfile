@@ -3,7 +3,7 @@
 #   docker build -t statementscreen:w7 \
 #     --build-arg UV_VERSION="$(uv --version | cut -d' ' -f2)" \
 #     --build-arg GIT_COMMIT="<commit>[+dirty]" .
-ARG UV_VERSION
+ARG UV_VERSION=0.13.6
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
 FROM python:3.12-slim

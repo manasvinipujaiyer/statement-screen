@@ -191,7 +191,7 @@ class Audit:
         """Raise AuditError unless the log is writable, at schema version 1, has exactly the
         agreed columns and both append-only triggers. Returns a small status dict (no paths)."""
         try:
-            with closing(self._connect()) as db:
+            with closing(self._existing()) as db:  # never creates a missing file
                 names = tuple(r[1] for r in db.execute("PRAGMA table_info(audit)"))
                 if names != COLUMNS:
                     raise AuditError(f"{self.path} has an audit table with other columns")
@@ -211,6 +211,10 @@ class Audit:
 
     def _connect(self) -> sqlite3.Connection:
         return sqlite3.connect(self.path, timeout=5)
+
+    def _existing(self) -> sqlite3.Connection:
+        """A read-write connection to a file that must already exist (mode=rw)."""
+        return sqlite3.connect(f"{self.path.resolve().as_uri()}?mode=rw", uri=True, timeout=5)
 
     def _read_connection(self) -> sqlite3.Connection:
         db = sqlite3.connect(f"{self.path.resolve().as_uri()}?mode=ro", uri=True, timeout=5)
