@@ -1,0 +1,21 @@
+# The image gets only what the Dockerfile COPYs, and this keeps everything else out of the
+# build context: generated data, experiment tracking, review notes, git history, reports.
+data/
+mlruns/
+mlartifacts/
+.review/
+.claude/
+.git/
+reports/
+splits/
+tests/
+scripts/
+app/
+week6_iforest.pkl
+
+.venv/
+__pycache__/
+*.py[oc]
+.pytest_cache/
+.ruff_cache/
+.DS_Store
