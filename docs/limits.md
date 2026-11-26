@@ -34,7 +34,7 @@ carry over to real statements has not been measured.
   list of expected labels. ([Tamper detection](tamper_detection.md#known-limits),
   [`reports/week6_preregistration.json`](../reports/week6_preregistration.json))
 - **D6. The shift batch's narration formats are unfamiliar to the code:** of the 177,425
-  narrations the collaborator's lines wrote, 89.80% start with one of the 29 known openings,
+  narrations the collaborator's lines wrote, 89.80% start with one of the code's known openings,
   but only 21.59% are fully recognised by the Week 3 cleaning. The formats were written by
   an independent collaborator who had not seen the code.
   ([Classifier vs rules](classifier_vs_rules.md),
@@ -97,7 +97,7 @@ carry over to real statements has not been measured.
 - **E10. Other income-profile limits.** Date jitter of up to 3 days costs 10.81 points of
   salary recall ([`reports/week5_stress.json`](../reports/week5_stress.json)), because the
   salary rule expects most payments within 3 days of the usual day. A shifted salary next to
-  another credit is left out by the Week 3 rule, so a few salaried incomes are 10-17% low.
+  another credit is left out by the Week 3 rule, so a few salaried incomes are 10-17% low (from the run's own output, not committed).
   Money from family is counted as customer income for self-employed statements, because
   one-off transfers from people look the same.
   ([Income profile](income_profile.md#known-limits))
@@ -136,7 +136,7 @@ carry over to real statements has not been measured.
 - **T1. Everything here is synthetic.** The copies are made by this project's own tamper code
   and the layouts by its own generator, so these rates say nothing about real forgeries.
   ([Tamper detection](tamper_detection.md#known-limits))
-- **T2. A fraud with correct arithmetic is mostly not caught.** Every `rerender_consistent`
+- **T2. A tampered copy with correct arithmetic is mostly not caught.** Every `rerender_consistent`
   copy (salary raised, every balance and total recalculated, re-rendered by the project's own
   renderer) got no "tampered" verdict in the Week 6 test (0/100 tampered, 14/100 flagged, all
   by the anomaly score alone), and 0/16 were called tampered on the blind run (2/16 flagged).

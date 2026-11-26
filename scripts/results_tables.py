@@ -287,7 +287,7 @@ def tables() -> list[Table]:
 
     names = ["Statements", "Rows parsed exactly (date, amount, balance)",
              "Exact-row rate", "Layout detected correctly", "Narrations wrong",
-             "Narrations cut short by the drcr layout"]  # fmt: skip
+             "Narrations cut short by the layout (share of all narrations)"]  # fmt: skip
     ref, shift = parse_col(W2), parse_col(W4S)
     parser = Table(
         f"**Parser (the whole reference batch, and the shift batch).** Sources: {link(W2)} "

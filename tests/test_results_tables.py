@@ -89,6 +89,17 @@ def test_a_percentage_never_rounds_into_perfection_or_zero(value, shown):
     assert rt.pct(value) == shown
 
 
+def test_formats_render_known_report_values_to_fixed_strings():
+    # Literal expectations, so a bug shared by the script and the checks cannot hide.
+    # Inputs are copied from reports/week7_blind_report.json (pooled tampered cell).
+    assert rt.FORMATS["kpci"](104, 121, 0.8595, 0.7934, 0.9256) == (
+        "104/121 (85.95%) [79.34%, 92.56%]"
+    )
+    assert rt.FORMATS["frac"](1738, 2000) == "1,738/2,000"
+    assert rt.FORMATS["int"](177425) == "177,425"
+    assert rt.FORMATS["kpct"](14, 100, 0.14) == "14/100 (14.00%)"
+
+
 def test_f1_and_signed_differences_follow_the_same_guards():
     assert rt.f1(1) == "1.0000" and rt.f1(0.99996) == "0.9999" and rt.f1(0.00001) == "0.0001"
     assert rt.f1(0.38903) == "0.3890" and rt.f1(None) == "n/a"
