@@ -8,16 +8,17 @@ softened or shortened from the page that first stated it; this page only gathers
 entry says where it is explained, and names the committed report behind any figure.
 Entries are numbered so the table at the end can show where each source limit went.
 
-All data is synthetic, from this project's own generator. **No real statement has been
-evaluated.** Every result in this repository is on synthetic statements, and how far they
-carry over to real statements has not been measured.
+All data is synthetic, from this project's own generator. **Real statements are out of scope
+for this project.** Every result in this repository is on synthetic statements from our own
+generator. The gap between synthetic and real statements is unmeasured, and that is a
+deliberate limit.
 
 ## Data and the generator
 
 - **D1. Everything is synthetic.** The banks, IFSC-style codes, UPI handles, employers and
   merchants are fictional, and every generated PDF carries a "SYNTHETIC DOCUMENT" footer.
-  Real statements are used only for private evaluation, stay on one laptop and are never
-  published; none has been evaluated yet. ([README](../README.md))
+  Real statements are out of scope for this project, and none is in this repository.
+  ([README](../README.md))
 - **D2. The parser was scored on clean, text-based PDFs** from this project's own renderer,
   so 100% exact rows shows that the parser handles the synthetic layouts. It says nothing yet
   about real banks' statements. ([Parsing](parsing.md#week-2-reference-run),
@@ -129,7 +130,8 @@ carry over to real statements has not been measured.
 - **E15. `log_run` does not prevent a second MLflow entry for the same report;** the committed
   report is the record of truth. ([Tamper detection](tamper_detection.md#known-limits),
   [`reports/week6_preregistration.json`](../reports/week6_preregistration.json))
-- **E16. Real statements are not yet evaluated.** See the top of this page.
+- **E16. Real statements are out of scope.** The synthetic-to-real gap is unmeasured, a
+  deliberate limit. See the top of this page.
 
 ## Tamper detection
 

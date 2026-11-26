@@ -21,7 +21,8 @@ a lender shouldn't count them as stable income.
 > shift batch were each scored once**, after a pre-registration
 > ([`reports/week5_preregistration.json`](../reports/week5_preregistration.json)) was committed
 > and pushed: the frozen commit, hashes of every source file, config, model and split, and
-> the exact metrics. Checks against real statements are still to come.
+> the exact metrics. Real statements are out of scope for this project: the gap between
+> synthetic and real statements is unmeasured, a deliberate limit.
 
 ## How the profile is built
 
