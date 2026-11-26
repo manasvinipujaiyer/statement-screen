@@ -1,6 +1,8 @@
 """Fixes from the Week 7 review: the receive-side size cap, a required audit log, routes outside
 /screen, a failing audit lookup, /health on a deleted database and the startup entry point."""
 
+import asyncio
+import json
 import sqlite3
 import tempfile
 from contextlib import closing
@@ -41,6 +43,48 @@ def temp_root(tmp_path, monkeypatch):
 def _rows(log) -> int:
     with closing(sqlite3.connect(log.path)) as db:
         return db.execute("SELECT count(*) FROM audit").fetchone()[0]
+
+
+def test_two_content_length_headers_are_refused_before_the_body_is_read(log):
+    """Sent straight to the ASGI app, because an HTTP client or server would not normally let
+    two Content-Length headers through. The body must never be read."""
+    app = create_app(version=VERSION, audit_log=log)
+    scope = {
+        "type": "http",
+        "asgi": {"version": "3.0"},
+        "http_version": "1.1",
+        "method": "POST",
+        "scheme": "http",
+        "path": "/screen",
+        "raw_path": b"/screen",
+        "query_string": b"",
+        "headers": [
+            (b"host", b"testserver"),
+            (b"content-type", b"multipart/form-data; boundary=x"),
+            (b"content-length", b"10"),
+            (b"content-length", b"20"),
+        ],
+        "client": ("testclient", 50000),
+        "server": ("testserver", 80),
+    }
+    sent: list[dict] = []
+
+    async def receive():
+        raise AssertionError("the body was read")
+
+    async def send(message):
+        sent.append(message)
+
+    asyncio.run(app(scope, receive, send))
+    assert sent[0]["status"] == 400
+    body = json.loads(b"".join(m.get("body", b"") for m in sent[1:]))
+    assert body["status"] == "error" and body["error_code"] == "BAD_REQUEST"
+    assert "traceback" not in json.dumps(body).lower()
+    assert _rows(log) == 1
+    row = log.get(body["request_id"])
+    assert row["status"] == "error" and row["error_code"] == "BAD_REQUEST"
+    assert row["declared_bytes"] is None and row["size_bytes"] is None
+    assert row["pdf_sha256"] is None and row["verdict"] is None
 
 
 def test_an_audit_log_is_required_unless_the_test_flag_is_given():

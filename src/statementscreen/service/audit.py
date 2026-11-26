@@ -1,7 +1,8 @@
 """The SQLite audit log: one row per request, and nothing from inside a statement.
 
     path     STATEMENTSCREEN_AUDIT_DB, default data/audit/audit.db (inside git-ignored data/);
-             the folder is created and the file is set to mode 0600
+             the folder is created and the file is created with mode 0600 (and set to it
+             again after the schema is written)
     table    audit: the columns in COLUMNS and no others. There is no column for a PDF's
              contents, a holder's name, an account number, an employer, a counterparty or a
              narration, and no free-text column at all: verdicts, customer types and error
@@ -174,6 +175,9 @@ class Audit:
         self.path = Path(chosen) if chosen else DEFAULT_DB
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
+            # Create the file with mode 0600 before sqlite3 connects, so it never exists with
+            # default permissions. An existing file is left alone here (no O_TRUNC).
+            os.close(os.open(self.path, os.O_CREAT | os.O_WRONLY, 0o600))
             with closing(self._connect()) as db:
                 version = db.execute("PRAGMA user_version").fetchone()[0]
                 if version not in (0, SCHEMA_VERSION):
