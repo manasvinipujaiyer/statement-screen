@@ -6,6 +6,7 @@ from functools import cache
 from pathlib import Path
 
 import polars as pl
+import pypdf
 import pytest
 from pypdf import PdfReader
 
@@ -34,17 +35,25 @@ def _page_text_hashes(pdf: Path) -> tuple[int, list[str]]:
     return len(reader.pages), [hashlib.sha256(t.encode("utf-8")).hexdigest() for t in texts]
 
 
-def test_default_output_is_byte_identical_to_before_dialects(tmp_path) -> None:
+def test_default_output_matches_before_dialects(tmp_path) -> None:
     """The fingerprint was recorded with the generator as it was before dialects existed.
 
     Labels, the manifest and the Parquet file are compared by their exact SHA-256. PDF bytes
     are not the same on every platform (the same generator writes different bytes on Linux
     and on macOS), so each PDF is compared by its page count and by the SHA-256 of the text
-    pypdf extracts from each page, recorded in default_batch_pdf_text.json from the same
-    PDFs whose bytes the fingerprint hashed.
+    pypdf extracts from each page. Layout and drawing operations are not compared: a change
+    that moves or restyles content but keeps the text would pass.
+
+    default_batch_pdf_text.json was recorded once, on macOS with pypdf 6.21.4, from the same
+    PDFs whose bytes default_batch_sha256.json hashed. No committed command regenerates it.
     """
     recorded = json.loads(FIXTURE.read_text(encoding="utf-8"))
-    pdf_text = json.loads(PDF_TEXT.read_text(encoding="utf-8"))["batches"]
+    pdf_text_file = json.loads(PDF_TEXT.read_text(encoding="utf-8"))
+    assert pypdf.__version__ == pdf_text_file["pypdf_version"], (
+        "pypdf changed since default_batch_pdf_text.json was recorded; "
+        "its text extraction may differ"
+    )
+    pdf_text = pdf_text_file["batches"]
     now = fingerprint(tmp_path)
     assert set(now) == set(recorded) == set(pdf_text) == {"mixed", "self_employed"}
     for name in now:

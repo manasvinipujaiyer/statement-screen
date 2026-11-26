@@ -53,7 +53,7 @@ on train only and thresholds tuned on dev only.
 
 > **Synthetic dev results.** These come from the 300 dev statements of the synthetic
 > reference batch, the split every threshold was tuned on. **The test set is still
-> closed**, so these are not a held-out estimate, and they say nothing yet about real
+> closed**, so these are not a held-out estimate, and they say nothing about real
 > statements.
 
 From [`reports/week3_patterns_dev.json`](../reports/week3_patterns_dev.json):

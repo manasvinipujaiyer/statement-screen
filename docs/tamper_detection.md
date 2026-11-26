@@ -69,7 +69,8 @@ anomaly score, and none of those is "tampered".
   of its gain on that type comes from the in-sample anomaly threshold.
 - The generator always prints every summary label, so a missing label here means it could
   not be read. Real statements may omit totals by design; that will need a per-layout list
-  of expected labels.
+  of expected labels. Real statements are out of scope for this project, so that work is
+  not planned.
 - The shift batch's flag rate (1.7%) was not given a pre-stated number; the anomaly model
   never saw that distribution.
 - `log_run` does not prevent a second MLflow entry for the same report; the committed report

@@ -20,7 +20,7 @@ deliberate limit.
   Real statements are out of scope for this project, and none is in this repository.
   ([README](../README.md))
 - **D2. The parser was scored on clean, text-based PDFs** from this project's own renderer,
-  so 100% exact rows shows that the parser handles the synthetic layouts. It says nothing yet
+  so 100% exact rows shows that the parser handles the synthetic layouts. It says nothing
   about real banks' statements. ([Parsing](parsing.md#week-2-reference-run),
   [`reports/week2_parse_report.json`](../reports/week2_parse_report.json))
 - **D3. The drcr layout truncates long narrations when rendering,** so the full text is not
@@ -32,7 +32,8 @@ deliberate limit.
   to expose this. ([Classifier vs rules](classifier_vs_rules.md#results))
 - **D5. The generator always prints every summary label,** so a missing label here means it
   could not be read. Real statements may omit totals by design; that will need a per-layout
-  list of expected labels. ([Tamper detection](tamper_detection.md#known-limits),
+  list of expected labels. Real statements are out of scope for this project, so that work
+  is not planned. ([Tamper detection](tamper_detection.md#known-limits),
   [`reports/week6_preregistration.json`](../reports/week6_preregistration.json))
 - **D6. The shift batch's narration formats are unfamiliar to the code:** of the 177,425
   narrations the collaborator's lines wrote, 89.80% start with one of the code's known openings,

@@ -218,7 +218,8 @@ The full list, with each figure and its report where one exists, is
 are in [docs/issues_and_fixes.md](docs/issues_and_fixes.md). The limits to read first:
 
 1. **Everything is synthetic, from our own generator.** How far the results carry over to real
-   statements has not been measured ([data](docs/limits.md#data-and-the-generator)).
+   statements has not been measured, and that is a deliberate limit
+   ([data](docs/limits.md#data-and-the-generator)).
 2. **Every tampered PDF comes from our own tamper code.** No outside person edited a PDF, so
    the rates say nothing about real forgeries ([tamper detection](docs/limits.md#tamper-detection)).
 3. **A tampered copy with correct arithmetic is mostly missed.** Re-rendered copies with consistent
