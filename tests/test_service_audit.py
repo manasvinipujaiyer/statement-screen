@@ -1,5 +1,6 @@
 """The audit log: what a row keeps, what it never keeps, and that it can only be appended to."""
 
+import os
 import re
 import sqlite3
 import stat
@@ -177,6 +178,35 @@ def test_the_path_comes_from_the_environment_the_folder_is_made_and_the_mode_is_
     assert log.path == path and path.is_file()
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
     assert audit.DEFAULT_DB == Path("data/audit/audit.db")
+
+
+def test_the_file_is_created_with_mode_0600_not_fixed_afterwards(tmp_path, monkeypatch):
+    """The later chmod is switched off and the umask opened, so only the mode the file was
+    created with counts: SQLite would create it 0644 here."""
+    monkeypatch.setattr(audit.os, "chmod", lambda *args, **kwargs: None)
+    old = os.umask(0)
+    try:
+        log = audit.Audit(tmp_path / "new" / "audit.db")
+    finally:
+        os.umask(old)
+    assert stat.S_IMODE(log.path.stat().st_mode) == 0o600
+
+
+def test_reopening_an_existing_log_keeps_its_rows(tmp_path):
+    path = tmp_path / "audit" / "audit.db"
+    audit.Audit(path).record(_event())
+    reopened = audit.Audit(path)
+    assert reopened.get(REQUEST)["status"] == "ok"
+    assert stat.S_IMODE(path.stat().st_mode) == 0o600
+
+
+def test_an_existing_read_only_log_is_still_repaired_to_0600(tmp_path):
+    path = tmp_path / "audit" / "audit.db"
+    audit.Audit(path).record(_event())
+    path.chmod(0o400)
+    reopened = audit.Audit(path)
+    assert stat.S_IMODE(path.stat().st_mode) == 0o600
+    assert reopened.get(REQUEST) is not None
 
 
 def test_a_database_with_another_schema_is_refused(tmp_path):

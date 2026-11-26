@@ -1,7 +1,8 @@
 """The SQLite audit log: one row per request, and nothing from inside a statement.
 
     path     STATEMENTSCREEN_AUDIT_DB, default data/audit/audit.db (inside git-ignored data/);
-             the folder is created and the file is set to mode 0600
+             the folder is created and the file is created with mode 0600 (and set to it
+             again after the schema is written)
     table    audit: the columns in COLUMNS and no others. There is no column for a PDF's
              contents, a holder's name, an account number, an employer, a counterparty or a
              narration, and no free-text column at all: verdicts, customer types and error
@@ -18,7 +19,8 @@ verdict, finding codes and six profile numbers (has_salary, estimated monthly in
 type, EMI count, bounce count), never a reason, warning, employer, payee, lender or any text.
 
 A refused upload is a row with status "error", its error code, declared_bytes (the
-Content-Length the client declared, if any) and size_bytes (bytes actually read before it was
+Content-Length the client declared, if any; not recorded when the request had two
+Content-Length headers) and size_bytes (bytes actually read before it was
 refused, NULL if none were read). pdf_sha256 is set only when the whole file was read.
 Requests are not authenticated, so a local client can add junk rows. Rows are never deleted.
 
@@ -174,6 +176,11 @@ class Audit:
         self.path = Path(chosen) if chosen else DEFAULT_DB
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
+            # Create the file with mode 0600 before sqlite3 connects, so it never exists with
+            # default permissions. An existing file is left alone here: no O_TRUNC, its mode is
+            # untouched, and read-only access is enough, so a read-only file is still repaired
+            # by the chmod below.
+            os.close(os.open(self.path, os.O_CREAT | os.O_RDONLY, 0o600))
             with closing(self._connect()) as db:
                 version = db.execute("PRAGMA user_version").fetchone()[0]
                 if version not in (0, SCHEMA_VERSION):

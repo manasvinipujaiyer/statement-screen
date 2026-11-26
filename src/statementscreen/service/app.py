@@ -6,7 +6,8 @@ over 10 MB, over 50 pages, no file) are 4xx with a JSON body that has the same r
 status "error" and error_code, and no stack trace.
 
 Safety, in the order a request meets it:
-  1. a pure-ASGI middleware refuses a request whose Content-Length is over the limit (plus a
+  1. a pure-ASGI middleware refuses a request with more than one Content-Length header (a 400,
+     BAD_REQUEST, with an audit row), then one whose Content-Length is over the limit (plus a
      margin for the multipart framing) before the body is read, and counts the body's bytes
      as they arrive, so a chunked upload with no length header is also refused with a 413 once
      more than the limit has arrived. FastAPI and Starlette still receive, parse and spool the
@@ -169,7 +170,15 @@ class ContentLengthLimit:
         ):
             await self.app(scope, receive, send)
             return
-        length = dict(scope["headers"]).get(b"content-length", b"")
+        lengths = [value for name, value in scope["headers"] if name == b"content-length"]
+        if len(lengths) > 1:
+            # Two Content-Length headers are refused even when their values match, before the
+            # body is read. No declared length is recorded.
+            rejected = Rejected(400, "BAD_REQUEST", "send exactly one Content-Length header")
+            response = await self.service.reject(uuid.uuid4().hex, rejected)
+            await response(scope, receive, send)
+            return
+        length = lengths[0] if lengths else b""
         if length.isdigit() and int(length) > self.limit:
             # nothing was read: size stays None, the declared length is recorded
             response = await self.service.reject(uuid.uuid4().hex, too_large(), int(length))
