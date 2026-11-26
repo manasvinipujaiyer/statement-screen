@@ -213,8 +213,6 @@ def tables() -> list[Table]:
         ["Tamper type", "n", "Tampered", "Tampered or suspicious"],
         [[t, cell("int", BLIND, f"detection.{t}.n"), kpct(BLIND, f"detection.{t}.tampered"),
           kpct(BLIND, f"detection.{t}.tampered_or_suspicious")] for t in BLIND_TYPES],
-        "A type where every PDF was caught has a zero-width bootstrap interval, narrower "
-        "than the real uncertainty (see docs/blind_test.md).",
     )  # fmt: skip
 
     def w6_row(label: str, base: str) -> list:
@@ -230,8 +228,9 @@ def tables() -> list[Table]:
         w6_row("resaved genuine", "false_alarms.resaved_genuine"),
     ]
     week6 = Table(
-        f"**Tamper detection, Week 6 test (one-time test: scored once, copies of the test "
-        f"split).** Source: {link(W6)}. Intervals are the report's bootstrap intervals.",
+        f"**Tamper detection, Week 6 (one-time test: copies of the test split, and the "
+        f"genuine test and shift batches, each scored once).** Source: {link(W6)}. "
+        f"Intervals are the report's bootstrap intervals.",
         ["Group", "n", "Tampered", "Tampered or suspicious [interval]"],
         w6_rows,
         ZERO_WIDTH,
@@ -270,9 +269,8 @@ def tables() -> list[Table]:
          "Shift: model minus rules [interval]"],
         [[label] + f1_cells(sub) for label, sub in LABEL_ROWS],
         "n/a: the rules flag no bounce row on the shift batch, so their F1 is undefined in "
-        "the first, one-time scoring, and the interval shown for that row is the report's, "
-        "computed with their F1 taken as 0; the post-hoc re-run is described in "
-        "docs/classifier_vs_rules.md.",
+        "the first, one-time scoring, and the interval for that row uses F1 = 0; the "
+        "post-hoc re-run is described in docs/classifier_vs_rules.md.",
     )  # fmt: skip
 
     def parse_col(report: str) -> list:
@@ -314,15 +312,17 @@ def sentences() -> list[Sentence]:
              cell("int", BLIND, "false_alarms.overall.tampered_or_suspicious.total")],
         ),
         Sentence(
-            "A tampered copy with correct arithmetic is mostly missed:{0} of {1} such PDFs were "
-            "called tampered on the blind run, and {2} of {3} in the Week 6 test.",
+            "A tampered copy with correct arithmetic is mostly not called tampered: "
+            "only {0} of {1} such PDFs were called tampered on the blind run, "
+            "and {2} of {3} in the Week 6 test.",
             [cell("int", BLIND, "detection.rerender_consistent.tampered.count"),
              cell("int", BLIND, "detection.rerender_consistent.tampered.total"),
              cell("int", W6, "detection.rerender_consistent.with_history.tampered.count"),
              cell("int", W6, "detection.rerender_consistent.with_history.tampered.total")],
         ),
         Sentence(
-            "On the shift batch, where the narration formats were unseen, the income "
+            "On the shift batch, whose narration formats an independent collaborator wrote, "
+            "the income "
             "profile matched the employer exactly for {0} of the salaried statements (test: "
             "{1}) and got the bounce count exactly right for {2} of the statements (test: {3}).",
             [cell("pct", W5, f"{s2}.profile.intervals.employer_exact.value"),
@@ -331,7 +331,7 @@ def sentences() -> list[Sentence]:
              cell("pct", W5, "sets.test.profile.intervals.bounce_count_exact.value")],
         ),
         Sentence(
-            "On those unseen formats the model's is_salary F1 was {0}, against {1} for the "
+            "On those formats the model's is_salary F1 was {0}, against {1} for the "
             "rules; the model had learned that a NEFT credit means salary (see "
             "docs/classifier_vs_rules.md).",
             [cell("f1", W4, f"{s2}.labels.is_salary.model.f1"),

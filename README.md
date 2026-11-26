@@ -11,11 +11,9 @@ anomaly score. It uses classical ML and rules, no LLMs. Everything used to build
 result below is synthetic, made by this project's own generator, and no real statement has
 been evaluated.
 
-> **All data in this repo is synthetic.** If real statements are evaluated later, that will
-> be private: they will stay on my laptop and never be published.
->
-> The banks, IFSC-style codes, UPI handles, employers and merchants in the synthetic data
-> are fictional, and every generated PDF carries a "SYNTHETIC DOCUMENT" footer.
+> **All data in this repo is synthetic.** If real statements are evaluated later, they will
+> stay private and never be published. The banks, codes, UPI handles, employers and
+> merchants are fictional, and every generated PDF carries a "SYNTHETIC DOCUMENT" footer.
 
 ## Results at a glance
 
@@ -48,9 +46,7 @@ Blind run by tamper type. Source: [`reports/week7_blind_report.json`](reports/we
 | inplace_edit_consistent | 13 | 12/13 (92.31%) | 12/13 (92.31%) |
 | rerender_consistent | 16 | 0/16 (0.00%) | 2/16 (12.50%) |
 
-A type where every PDF was caught has a zero-width bootstrap interval, narrower than the real uncertainty (see docs/blind_test.md).
-
-**Tamper detection, Week 6 test (one-time test: scored once, copies of the test split).** Source: [`reports/week6_tamper_test.json`](reports/week6_tamper_test.json). Intervals are the report's bootstrap intervals.
+**Tamper detection, Week 6 (one-time test: copies of the test split, and the genuine test and shift batches, each scored once).** Source: [`reports/week6_tamper_test.json`](reports/week6_tamper_test.json). Intervals are the report's bootstrap intervals.
 
 | Group | n | Tampered | Tampered or suspicious [interval] |
 |---|---|---|---|
@@ -94,7 +90,7 @@ Dev was used for tuning, so the dev column is in-sample and not a held-out estim
 | is_rent | 0.9981 | 1.0000 | 0.9959 | 0.9956 | -0.0002 [-0.0007, 0.0000] |
 | has_salary | 1.0000 | 1.0000 | 1.0000 | 0.4079 | -0.5921 [-0.6593, -0.5279] |
 
-n/a: the rules flag no bounce row on the shift batch, so their F1 is undefined in the first, one-time scoring, and the interval shown for that row is the report's, computed with their F1 taken as 0; the post-hoc re-run is described in docs/classifier_vs_rules.md.
+n/a: the rules flag no bounce row on the shift batch, so their F1 is undefined in the first, one-time scoring, and the interval for that row uses F1 = 0; the post-hoc re-run is described in docs/classifier_vs_rules.md.
 
 **Parser (the whole reference batch, and the shift batch).** Sources: [`reports/week2_parse_report.json`](reports/week2_parse_report.json) and [`reports/week4_shift_parse_report.json`](reports/week4_shift_parse_report.json). Clean, text-based PDFs from this project's own renderer.
 
@@ -110,9 +106,9 @@ n/a: the rules flag no bounce row on the shift batch, so their F1 is undefined i
 What these show, and what they do not:
 
 - On the sealed blind run the frozen detector called 104 of 121 tampered PDFs tampered (precision 104 of 104) and called 0 of 79 genuine PDFs tampered or suspicious.
-- A tampered copy with correct arithmetic is mostly missed:0 of 16 such PDFs were called tampered on the blind run, and 0 of 100 in the Week 6 test.
-- On the shift batch, where the narration formats were unseen, the income profile matched the employer exactly for 61.08% of the salaried statements (test: 95.14%) and got the bounce count exactly right for 77.33% of the statements (test: 100.00%).
-- On those unseen formats the model's is_salary F1 was 0.3890, against 0.9991 for the rules; the model had learned that a NEFT credit means salary (see docs/classifier_vs_rules.md).
+- A tampered copy with correct arithmetic is mostly not called tampered: only 0 of 16 such PDFs were called tampered on the blind run, and 0 of 100 in the Week 6 test.
+- On the shift batch, whose narration formats an independent collaborator wrote, the income profile matched the employer exactly for 61.08% of the salaried statements (test: 95.14%) and got the bounce count exactly right for 77.33% of the statements (test: 100.00%).
+- On those formats the model's is_salary F1 was 0.3890, against 0.9991 for the rules; the model had learned that a NEFT credit means salary (see docs/classifier_vs_rules.md).
 - All of these results are on synthetic statements from this project's own generator, and no real statement has been evaluated.
 
 <!-- results:end -->
@@ -167,21 +163,8 @@ curl -F "file=@data/synthetic/pdfs/stmt_0001.pdf;type=application/pdf" \
   http://127.0.0.1:8000/screen
 ```
 
-Or in Docker with Colima (no Docker Desktop):
-
-```bash
-colima start --cpu 2 --memory 2
-COMMIT="$(git rev-parse HEAD)$([ -n "$(git status --porcelain)" ] && echo +dirty)"
-docker build -t statementscreen:w7 \
-  --build-arg UV_VERSION="$(uv --version | cut -d' ' -f2)" \
-  --build-arg GIT_COMMIT="$COMMIT" .
-docker volume create statementscreen-audit
-docker run -d --name statementscreen -p 127.0.0.1:8000:8000 \
-  -v statementscreen-audit:/audit statementscreen:w7
-```
-
-[docs/service.md](docs/service.md) has the response format, what the audit log keeps and
-never keeps, the limits, and the speed and image size.
+To run it in Docker with Colima, and for the response format, what the audit log keeps and
+never keeps, the limits, and the speed and image size, see [docs/service.md](docs/service.md).
 
 ## How it was evaluated
 
@@ -199,7 +182,7 @@ flowchart TD
     dev --> r3["Week 3 rules: dev results only"]
     dev --> r4["Week 4 model against rules:<br/>shift batch scored once"]
     shift --> r4
-    dev --> r5["Week 5 income profile: test and shift<br/>scored once after a pre-registration"]
+    dev --> r5["Week 5 income profile: test scored once after<br/>a pre-registration, also run on the shift batch"]
     test --> r5
     shift --> r5
     dev --> r6["Week 6 tamper detector: test copies and genuine<br/>test and shift scored once, pre-registered"]
@@ -222,19 +205,17 @@ flowchart TD
   blind run's detector started before the review of its pre-registration finished (see
   [the blind-test disclosure](docs/limits.md#the-blind-test)).
 - **The shift batch** uses narration formats written by an independent collaborator who had
-  not seen the code, to test what the rules and the model do on formats they were not built
-  on.
-- **The blind run.** 200 PDFs, genuine and tampered with this project's own tamper code,
-  were sealed with an answer key. The frozen Week 6 detector ran without the key, the
-  verdicts were committed and pushed, and only then was the key opened and published.
+  not seen the code. **The blind run** used 200 sealed PDFs, genuine and tampered with this
+  project's own tamper code; the verdicts were pushed before the key was opened.
 
 Stage by stage, with the report behind each: [docs/evaluation_protocol.md](docs/evaluation_protocol.md).
 The blind run in full: [docs/blind_test.md](docs/blind_test.md).
 
 ## Most important limits
 
-The full list, with every figure, and its report where one exists, is [docs/limits.md](docs/limits.md). The ones
-to read first:
+The full list, with each figure and its report where one exists, is
+[docs/limits.md](docs/limits.md); the mistakes, corrections and setbacks met along the way
+are in [docs/issues_and_fixes.md](docs/issues_and_fixes.md). The limits to read first:
 
 1. **Everything is synthetic, from our own generator.** How far the results carry over to real
    statements has not been measured ([data](docs/limits.md#data-and-the-generator)).
@@ -248,28 +229,25 @@ to read first:
 5. **The Week 4 model learned a shortcut** (a NEFT credit means salary) and collapsed on
    unseen narration formats; the rules held up on salary but failed on bounces and employer
    names ([evaluation](docs/limits.md#evaluation)).
-6. **The Week 7 detector ran under the first version of its pre-registration,** which was
-   regenerated after review. The detector fingerprint is the same in both and the run was not
-   repeated ([the blind test](docs/limits.md#the-blind-test)).
+6. **The Week 7 detector ran under the first version of its pre-registration**, which was
+   regenerated after review ([the blind test](docs/limits.md#the-blind-test)).
 7. **The seal proves the key was not changed, not that nobody read it** ([the blind
    test](docs/limits.md#the-blind-test)).
-8. **Week 5 erratum.** Its report text wrongly said the test split and shift batch were
-   unseen before scoring: the shift batch was scored in Week 4 and the test statements were
-   opened in Week 5 ([evaluation](docs/limits.md#evaluation)).
-9. **Real statements have not been evaluated** (next section).
-10. **The service has no authentication and is for local use only;** it handles one PDF at a
-    time ([the service](docs/limits.md#the-service)).
+8. **Real statements have not been evaluated** (next section).
+9. **The service has no authentication and is for local use only;** it handles one PDF at a
+   time ([the service](docs/limits.md#the-service)).
 
 ## Real statements: not yet evaluated
 
-Every result here is on synthetic statements from this project's own generator. The gap
-between synthetic and real statements is unmeasured, and the layouts, narration styles and
-edge cases of real banks may differ from anything the generator produces. Real statements are
-never committed or published, and no figure computed from them is in this repository.
+Every result here is on synthetic statements. The gap to real statements is unmeasured, and
+real banks' layouts and narration styles may differ from anything the generator produces.
+Real statements are never committed or published, and no figure computed from them is in
+this repository.
 
-The planned evaluation, not yet done: a small set of consented real statements, kept off the project and off any cloud service, scored privately with aggregate
-metrics only: parse rate by bank, hand-labelled salary, employer and EMIs, and income error.
-There are no dates and no expected numbers.
+The planned evaluation, not yet done: a small set of consented real statements, kept off the
+project and off any cloud service, scored privately with aggregate metrics only (parse rate
+by bank, hand-labelled salary, employer and EMIs, and income error). There are no dates and
+no expected numbers.
 
 ## Reproduce everything
 
@@ -296,12 +274,12 @@ fresh clone and use `git diff reports/` to see whether your run reproduced it.
 | Blind run | the `commands` list in [`week7_blind_preregistration.json`](reports/week7_blind_preregistration.json) | none | Yes: the scoring opened the key once and now refuses to run (see [the blind test](docs/blind_test.md)) |
 | Service | [the service](docs/service.md) | see that page | No |
 
-**Rebuild the blind set from the published key.** The two source batches were generated from
-seeds 7101 (default narrations) and 7102 (`karan_v1`), from `main_seed` in
-[`reports/week7_blind_preregistration.json`](reports/week7_blind_preregistration.json),
-100 statements each (from `splits/eval_blind_*.json`). The generation flags below are inferred from those, not recorded
-in one place; `blind_verify` checks every regenerated source against the key's hashes, so it
-fails if they are wrong.
+**Rebuild the blind set from the published key.** The sources are seeds 7101 (default
+narrations) and 7102 (`karan_v1`), from `main_seed` in
+[`reports/week7_blind_preregistration.json`](reports/week7_blind_preregistration.json), 100
+statements each (`splits/eval_blind_*.json`). The two generate commands below are inferred
+from those; `blind_verify` checks every regenerated PDF against the key's hashes, so it fails
+if they are wrong.
 
 ```bash
 uv run python -m statementscreen.generate --n 100 --seed 7101 --out data/blind_src/default_v1
@@ -317,44 +295,10 @@ It exits 0 when every PDF is rebuilt byte for byte. Its saved output is in
 **Rebuild the README tables:** `uv run python scripts/results_tables.py` prints them;
 `--write` rewrites the generated block in "Results at a glance".
 
-## Repository layout
-
-```
-src/statementscreen/   the package
-  synth/               generator, renderer, narration dialects
-  parsing/             PDF parser and its self-checks
-  patterns/            narration cleaning, grouping and rules
-  profile/             the income profile
-  tamper/              tamper generator, detector and the blind-test tools
-  service/             FastAPI service and SQLite audit log
-scripts/               helpers: anomaly model, layout and font measurement, latency, results tables
-tests/                 pytest suite (no test needs data/, so CI can run it)
-reports/               committed results: the source of the generated tables
-splits/                locked train/dev/test split and the registered shift and blind batches
-docs/                  the detailed write-ups
-models/                the IsolationForest model the tamper detector uses
-data/, mlruns/         generated data and MLflow runs (git-ignored)
-Dockerfile, pyproject.toml, uv.lock
-```
-
-## Documentation
-
-- [Generating synthetic statements](docs/data_generation.md)
-- [Parsing](docs/parsing.md)
-- [Pattern detection](docs/patterns.md)
-- [Classifier vs rules](docs/classifier_vs_rules.md)
-- [Income profile](docs/income_profile.md)
-- [Tamper detection](docs/tamper_detection.md)
-- [The service](docs/service.md)
-- [The blind tamper test](docs/blind_test.md)
-- [Evaluation protocol](docs/evaluation_protocol.md)
-- [Limits, errata and disclosures](docs/limits.md)
-
 ## Licences
 
-Dependencies that are not MIT, BSD or Apache (certifi, matplotlib and typing-extensions) are
-listed with their licences in [docs/limits.md](docs/limits.md) (E14), together with the notes
-on LightGBM's OpenMP runtime and the service's dependencies. All are used unmodified.
+Dependencies that are not MIT, BSD or Apache are listed in [docs/limits.md](docs/limits.md)
+(E14).
 
 ## License
 
