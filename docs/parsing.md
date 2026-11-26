@@ -44,5 +44,5 @@ full text is not in the PDF. Before any drcr code existed, forcing the columns r
 drcr PDFs scored **0%** exact rows (`first_contact`, 103 statements).
 
 These are clean, text-based PDFs from this project's own renderer, so 100% shows that
-the parser handles the synthetic layouts. It says nothing yet about real banks'
+the parser handles the synthetic layouts. It says nothing about real banks'
 statements.

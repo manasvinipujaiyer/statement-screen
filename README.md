@@ -11,9 +11,9 @@ anomaly score. It uses classical ML and rules, no LLMs. Everything used to build
 result below is synthetic, made by this project's own generator, and no real statement has
 been evaluated.
 
-> **All data in this repo is synthetic.** If real statements are evaluated later, they will
-> stay private and never be published. The banks, codes, UPI handles, employers and
-> merchants are fictional, and every generated PDF carries a "SYNTHETIC DOCUMENT" footer.
+> **All data in this repo is synthetic.** Real statements are out of scope for this project.
+> The banks, codes, UPI handles, employers and merchants are fictional, and every generated
+> PDF carries a "SYNTHETIC DOCUMENT" footer.
 
 ## Results at a glance
 
@@ -218,7 +218,8 @@ The full list, with each figure and its report where one exists, is
 are in [docs/issues_and_fixes.md](docs/issues_and_fixes.md). The limits to read first:
 
 1. **Everything is synthetic, from our own generator.** How far the results carry over to real
-   statements has not been measured ([data](docs/limits.md#data-and-the-generator)).
+   statements has not been measured, and that is a deliberate limit
+   ([data](docs/limits.md#data-and-the-generator)).
 2. **Every tampered PDF comes from our own tamper code.** No outside person edited a PDF, so
    the rates say nothing about real forgeries ([tamper detection](docs/limits.md#tamper-detection)).
 3. **A tampered copy with correct arithmetic is mostly missed.** Re-rendered copies with consistent
@@ -233,21 +234,19 @@ are in [docs/issues_and_fixes.md](docs/issues_and_fixes.md). The limits to read 
    regenerated after review ([the blind test](docs/limits.md#the-blind-test)).
 7. **The seal proves the key was not changed, not that nobody read it** ([the blind
    test](docs/limits.md#the-blind-test)).
-8. **Real statements have not been evaluated** (next section).
+8. **Real statements are out of scope;** the synthetic-to-real gap is unmeasured, a deliberate
+   limit (next section).
 9. **The service has no authentication and is for local use only;** it handles one PDF at a
    time ([the service](docs/limits.md#the-service)).
 
-## Real statements: not yet evaluated
+## Real statements: out of scope
 
-Every result here is on synthetic statements. The gap to real statements is unmeasured, and
-real banks' layouts and narration styles may differ from anything the generator produces.
-Real statements are never committed or published, and no figure computed from them is in
-this repository.
-
-The planned evaluation, not yet done: a small set of consented real statements, kept off the
-project and off any cloud service, scored privately with aggregate metrics only (parse rate
-by bank, hand-labelled salary, employer and EMIs, and income error). There are no dates and
-no expected numbers.
+Real statements are out of scope for this project. Every result here is on synthetic
+statements from this project's own generator. The gap between synthetic and real statements
+is unmeasured, and that is a deliberate limit: real banks' layouts and narration styles may
+differ from anything the generator produces, so these results say nothing about real
+statements. No real statement is committed or published here, and no figure computed from
+one is in this repository.
 
 ## Reproduce everything
 

@@ -340,10 +340,10 @@ def test_a_backup_folder_inside_the_repository_is_refused(world, registered, cap
     assert not world["out"].exists() and not inside.exists()
 
 
-# ---------------------------------------------------------------- real statements
+# ---------------------------------------------------------------- end to end, from the generator
 
 
-def test_a_few_really_generated_statements_can_be_sealed(tmp_path):
+def test_a_few_generated_statements_can_be_sealed(tmp_path):
     sources = []
     for n, name in enumerate(("blind_default_v1", "blind_karan_v1")):
         folder = tmp_path / "src" / name

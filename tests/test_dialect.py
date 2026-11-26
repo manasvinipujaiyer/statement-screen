@@ -1,11 +1,14 @@
 """Narration dialects: loading the files, and keeping the default output byte-identical."""
 
+import hashlib
 import json
 from functools import cache
 from pathlib import Path
 
 import polars as pl
+import pypdf
 import pytest
+from pypdf import PdfReader
 
 from statementscreen.batch import BatchConfig, plan_batch
 from statementscreen.batch_hash import fingerprint, fingerprint_one
@@ -19,20 +22,52 @@ from statementscreen.synth.dialect import (
 from statementscreen.synth.generator import generate_statement
 
 FIXTURE = Path(__file__).parent / "data" / "default_batch_sha256.json"
+PDF_TEXT = Path(__file__).parent / "data" / "default_batch_pdf_text.json"
 KARAN = Path(__file__).parents[1] / "src/statementscreen/synth/dialects/karan_v1.txt"
 
 
 # ---------------------------------------------------------------- the default stays identical
 
 
-def test_default_output_is_byte_identical_to_before_dialects(tmp_path) -> None:
-    """The fingerprint was recorded with the generator as it was before dialects existed."""
+def _page_text_hashes(pdf: Path) -> tuple[int, list[str]]:
+    reader = PdfReader(str(pdf))
+    texts = [page.extract_text() for page in reader.pages]
+    return len(reader.pages), [hashlib.sha256(t.encode("utf-8")).hexdigest() for t in texts]
+
+
+def test_default_output_matches_before_dialects(tmp_path) -> None:
+    """The fingerprint was recorded with the generator as it was before dialects existed.
+
+    Labels, the manifest and the Parquet file are compared by their exact SHA-256. PDF bytes
+    are not the same on every platform (the same generator writes different bytes on Linux
+    and on macOS), so each PDF is compared by its page count and by the SHA-256 of the text
+    pypdf extracts from each page. Layout and drawing operations are not compared: a change
+    that moves or restyles content but keeps the text would pass.
+
+    default_batch_pdf_text.json was recorded once, on macOS with pypdf 6.21.4, from the same
+    PDFs whose bytes default_batch_sha256.json hashed. No committed command regenerates it.
+    """
     recorded = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    pdf_text_file = json.loads(PDF_TEXT.read_text(encoding="utf-8"))
+    assert pypdf.__version__ == pdf_text_file["pypdf_version"], (
+        "pypdf changed since default_batch_pdf_text.json was recorded; "
+        "its text extraction may differ"
+    )
+    pdf_text = pdf_text_file["batches"]
     now = fingerprint(tmp_path)
-    assert set(now) == set(recorded) == {"mixed", "self_employed"}
+    assert set(now) == set(recorded) == set(pdf_text) == {"mixed", "self_employed"}
     for name in now:
         assert now[name]["plans"] == recorded[name]["plans"]
-        assert now[name]["sha256"] == recorded[name]["sha256"], name
+        assert set(now[name]["sha256"]) == set(recorded[name]["sha256"]), name
+        for path, digest in recorded[name]["sha256"].items():
+            if not path.startswith("pdfs/"):
+                assert now[name]["sha256"][path] == digest, (name, path)
+        recorded_pdfs = {p for p in recorded[name]["sha256"] if p.startswith("pdfs/")}
+        assert set(pdf_text[name]) == recorded_pdfs, name
+        for path, want in pdf_text[name].items():
+            pages, hashes = _page_text_hashes(tmp_path / name / path)
+            assert pages == want["pages"], (name, path, "page count")
+            assert hashes == want["text_sha256"], (name, path, "page text")
     assert all("self_employed" in line for line in now["self_employed"]["plans"])
 
 
