@@ -279,8 +279,9 @@ carry over to real statements has not been measured.
   itself has no row, because its write failed.
   ([The service](service.md#limits-of-the-service))
 - **S4. Size limit and chunked uploads.** An oversized `Content-Length` is refused before the
-  body is read. A request with no `Content-Length` (a chunked upload) is refused with a 413
-  only once more than 10 MB plus 64 KiB of multipart framing have arrived. The exact 10 MB
+  body is read. A request with no `Content-Length` (a chunked upload) cannot be refused that
+  way, so its bytes are counted as they arrive and it is refused with a 413 once more than
+  10 MB plus 64 KiB of multipart framing have arrived. The exact 10 MB
   limit on the file itself is checked afterwards, while the file is copied. Until then FastAPI
   and Starlette receive and parse the whole body and spool each file part to a temporary
   file, so up to 10 MB + 64 KiB per request can be on disk before any check on the file runs.
@@ -320,7 +321,7 @@ carry over to real statements has not been measured.
 | [Income profile](income_profile.md): the what-numbers-are note, the dev-overstated paragraph, the stress note, the five known limits | E1, E6, E7, E9, E10 |
 | [Tamper detection](tamper_detection.md): the seven known limits, the erratum | T1, T3, T4, T5, T6, D5, E15, E4 |
 | [The service](service.md): the nine limits, the detector-unchanged paragraph, the speed note | S1 to S10 |
-| [The blind test](blind_test.md): the nine limits, the disclosure, the refusing commands | B1 to B15 |
+| [The blind test](blind_test.md): the eight limits, the disclosure, the refusing commands | B1 to B15 |
 | `reports/week4_classifier.json` notes, `reports/week5_test_and_shift.json` notes | E1, E3, E5, E7, D1, D6 |
 | `reports/week6_preregistration.json` known_limits, items 1 to 15 | T3 (1, 5), T5 (2, 3), T4 (4), T7 (6), T8 (7), T9 (8), T10 (9), T11 (10), T12 (11), E15 (12), D5 (13), T13 (14, 15) |
 | `reports/week6_rule_versions.json` and `reports/week6_rule_comparison_dev.json` notes | T14, T5, T15 |

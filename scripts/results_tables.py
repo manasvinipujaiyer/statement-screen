@@ -270,7 +270,8 @@ def tables() -> list[Table]:
          "Shift: model minus rules [interval]"],
         [[label] + f1_cells(sub) for label, sub in LABEL_ROWS],
         "n/a: the rules flag no bounce row on the shift batch, so their F1 is undefined in "
-        "the first, one-time scoring; the post-hoc re-run is described in "
+        "the first, one-time scoring, and the interval shown for that row is the report's, "
+        "computed with their F1 taken as 0; the post-hoc re-run is described in "
         "docs/classifier_vs_rules.md.",
     )  # fmt: skip
 
@@ -313,7 +314,7 @@ def sentences() -> list[Sentence]:
              cell("int", BLIND, "false_alarms.overall.tampered_or_suspicious.total")],
         ),
         Sentence(
-            "A forgery with correct arithmetic is mostly missed: {0} of {1} such PDFs were "
+            "A tampered copy with correct arithmetic is mostly missed:{0} of {1} such PDFs were "
             "called tampered on the blind run, and {2} of {3} in the Week 6 test.",
             [cell("int", BLIND, "detection.rerender_consistent.tampered.count"),
              cell("int", BLIND, "detection.rerender_consistent.tampered.total"),

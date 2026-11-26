@@ -94,7 +94,7 @@ Dev was used for tuning, so the dev column is in-sample and not a held-out estim
 | is_rent | 0.9981 | 1.0000 | 0.9959 | 0.9956 | -0.0002 [-0.0007, 0.0000] |
 | has_salary | 1.0000 | 1.0000 | 1.0000 | 0.4079 | -0.5921 [-0.6593, -0.5279] |
 
-n/a: the rules flag no bounce row on the shift batch, so their F1 is undefined in the first, one-time scoring; the post-hoc re-run is described in docs/classifier_vs_rules.md.
+n/a: the rules flag no bounce row on the shift batch, so their F1 is undefined in the first, one-time scoring, and the interval shown for that row is the report's, computed with their F1 taken as 0; the post-hoc re-run is described in docs/classifier_vs_rules.md.
 
 **Parser (the whole reference batch, and the shift batch).** Sources: [`reports/week2_parse_report.json`](reports/week2_parse_report.json) and [`reports/week4_shift_parse_report.json`](reports/week4_shift_parse_report.json). Clean, text-based PDFs from this project's own renderer.
 
@@ -110,7 +110,7 @@ n/a: the rules flag no bounce row on the shift batch, so their F1 is undefined i
 What these show, and what they do not:
 
 - On the sealed blind run the frozen detector called 104 of 121 tampered PDFs tampered (precision 104 of 104) and called 0 of 79 genuine PDFs tampered or suspicious.
-- A forgery with correct arithmetic is mostly missed: 0 of 16 such PDFs were called tampered on the blind run, and 0 of 100 in the Week 6 test.
+- A tampered copy with correct arithmetic is mostly missed:0 of 16 such PDFs were called tampered on the blind run, and 0 of 100 in the Week 6 test.
 - On the shift batch, where the narration formats were unseen, the income profile matched the employer exactly for 61.08% of the salaried statements (test: 95.14%) and got the bounce count exactly right for 77.33% of the statements (test: 100.00%).
 - On those unseen formats the model's is_salary F1 was 0.3890, against 0.9991 for the rules; the model had learned that a NEFT credit means salary (see docs/classifier_vs_rules.md).
 - All of these results are on synthetic statements from this project's own generator, and no real statement has been evaluated.
@@ -172,7 +172,9 @@ Or in Docker with Colima (no Docker Desktop):
 ```bash
 colima start --cpu 2 --memory 2
 COMMIT="$(git rev-parse HEAD)$([ -n "$(git status --porcelain)" ] && echo +dirty)"
-docker build -t statementscreen:w7 --build-arg GIT_COMMIT="$COMMIT" .
+docker build -t statementscreen:w7 \
+  --build-arg UV_VERSION="$(uv --version | cut -d' ' -f2)" \
+  --build-arg GIT_COMMIT="$COMMIT" .
 docker volume create statementscreen-audit
 docker run -d --name statementscreen -p 127.0.0.1:8000:8000 \
   -v statementscreen-audit:/audit statementscreen:w7
@@ -218,7 +220,7 @@ flowchart TD
   frozen commit, hashes, commands and expectations were written to a file in `reports/`,
   committed and pushed before the held-out data was scored. One disclosed exception: the
   blind run's detector started before the review of its pre-registration finished (see
-  [B13](docs/limits.md#the-blind-test)).
+  [the blind-test disclosure](docs/limits.md#the-blind-test)).
 - **The shift batch** uses narration formats written by an independent collaborator who had
   not seen the code, to test what the rules and the model do on formats they were not built
   on.
@@ -231,7 +233,7 @@ The blind run in full: [docs/blind_test.md](docs/blind_test.md).
 
 ## Most important limits
 
-The full list, with every figure and its report, is [docs/limits.md](docs/limits.md). The ones
+The full list, with every figure, and its report where one exists, is [docs/limits.md](docs/limits.md). The ones
 to read first:
 
 1. **Everything is synthetic, from our own generator.** How far the results carry over to real
@@ -265,8 +267,7 @@ between synthetic and real statements is unmeasured, and the layouts, narration 
 edge cases of real banks may differ from anything the generator produces. Real statements are
 never committed or published, and no figure computed from them is in this repository.
 
-The planned evaluation, not yet done: a small set of consented real statements (planned: 15
-to 25), kept off the project and off any cloud service, scored privately with aggregate
+The planned evaluation, not yet done: a small set of consented real statements, kept off the project and off any cloud service, scored privately with aggregate
 metrics only: parse rate by bank, hand-labelled salary, employer and EMIs, and income error.
 There are no dates and no expected numbers.
 
@@ -296,8 +297,9 @@ fresh clone and use `git diff reports/` to see whether your run reproduced it.
 | Service | [the service](docs/service.md) | see that page | No |
 
 **Rebuild the blind set from the published key.** The two source batches were generated from
-seeds 7101 (default narrations) and 7102 (`karan_v1`), 100 statements each (from
-`splits/eval_blind_*.json`). The generation flags below are inferred from those, not recorded
+seeds 7101 (default narrations) and 7102 (`karan_v1`), from `main_seed` in
+[`reports/week7_blind_preregistration.json`](reports/week7_blind_preregistration.json),
+100 statements each (from `splits/eval_blind_*.json`). The generation flags below are inferred from those, not recorded
 in one place; `blind_verify` checks every regenerated source against the key's hashes, so it
 fails if they are wrong.
 
@@ -327,7 +329,7 @@ src/statementscreen/   the package
   service/             FastAPI service and SQLite audit log
 scripts/               helpers: anomaly model, layout and font measurement, latency, results tables
 tests/                 pytest suite (no test needs data/, so CI can run it)
-reports/               committed results: the only source of numbers in this README
+reports/               committed results: the source of the generated tables
 splits/                locked train/dev/test split and the registered shift and blind batches
 docs/                  the detailed write-ups
 models/                the IsolationForest model the tamper detector uses
