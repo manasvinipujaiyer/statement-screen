@@ -172,8 +172,8 @@ class ContentLengthLimit:
             return
         lengths = [value for name, value in scope["headers"] if name == b"content-length"]
         if len(lengths) > 1:
-            # Two Content-Length headers: parsers disagree on which one counts, so the request
-            # is refused before its body is read. No declared length is recorded.
+            # Two Content-Length headers are refused even when their values match, before the
+            # body is read. No declared length is recorded.
             rejected = Rejected(400, "BAD_REQUEST", "send exactly one Content-Length header")
             response = await self.service.reject(uuid.uuid4().hex, rejected)
             await response(scope, receive, send)

@@ -19,7 +19,8 @@ verdict, finding codes and six profile numbers (has_salary, estimated monthly in
 type, EMI count, bounce count), never a reason, warning, employer, payee, lender or any text.
 
 A refused upload is a row with status "error", its error code, declared_bytes (the
-Content-Length the client declared, if any) and size_bytes (bytes actually read before it was
+Content-Length the client declared, if any; not recorded when the request had two
+Content-Length headers) and size_bytes (bytes actually read before it was
 refused, NULL if none were read). pdf_sha256 is set only when the whole file was read.
 Requests are not authenticated, so a local client can add junk rows. Rows are never deleted.
 
@@ -176,8 +177,10 @@ class Audit:
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             # Create the file with mode 0600 before sqlite3 connects, so it never exists with
-            # default permissions. An existing file is left alone here (no O_TRUNC).
-            os.close(os.open(self.path, os.O_CREAT | os.O_WRONLY, 0o600))
+            # default permissions. An existing file is left alone here: no O_TRUNC, its mode is
+            # untouched, and read-only access is enough, so a read-only file is still repaired
+            # by the chmod below.
+            os.close(os.open(self.path, os.O_CREAT | os.O_RDONLY, 0o600))
             with closing(self._connect()) as db:
                 version = db.execute("PRAGMA user_version").fetchone()[0]
                 if version not in (0, SCHEMA_VERSION):

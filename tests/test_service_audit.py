@@ -192,6 +192,23 @@ def test_the_file_is_created_with_mode_0600_not_fixed_afterwards(tmp_path, monke
     assert stat.S_IMODE(log.path.stat().st_mode) == 0o600
 
 
+def test_reopening_an_existing_log_keeps_its_rows(tmp_path):
+    path = tmp_path / "audit" / "audit.db"
+    audit.Audit(path).record(_event())
+    reopened = audit.Audit(path)
+    assert reopened.get(REQUEST)["status"] == "ok"
+    assert stat.S_IMODE(path.stat().st_mode) == 0o600
+
+
+def test_an_existing_read_only_log_is_still_repaired_to_0600(tmp_path):
+    path = tmp_path / "audit" / "audit.db"
+    audit.Audit(path).record(_event())
+    path.chmod(0o400)
+    reopened = audit.Audit(path)
+    assert stat.S_IMODE(path.stat().st_mode) == 0o600
+    assert reopened.get(REQUEST) is not None
+
+
 def test_a_database_with_another_schema_is_refused(tmp_path):
     other = tmp_path / "other.db"
     with closing(sqlite3.connect(other)) as db:

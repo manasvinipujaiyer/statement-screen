@@ -45,7 +45,8 @@ def _rows(log) -> int:
         return db.execute("SELECT count(*) FROM audit").fetchone()[0]
 
 
-def test_two_content_length_headers_are_refused_before_the_body_is_read(log):
+@pytest.mark.parametrize("second", [b"20", b"10"], ids=["different values", "same value"])
+def test_two_content_length_headers_are_refused_before_the_body_is_read(log, second):
     """Sent straight to the ASGI app, because an HTTP client or server would not normally let
     two Content-Length headers through. The body must never be read."""
     app = create_app(version=VERSION, audit_log=log)
@@ -62,7 +63,7 @@ def test_two_content_length_headers_are_refused_before_the_body_is_read(log):
             (b"host", b"testserver"),
             (b"content-type", b"multipart/form-data; boundary=x"),
             (b"content-length", b"10"),
-            (b"content-length", b"20"),
+            (b"content-length", second),
         ],
         "client": ("testclient", 50000),
         "server": ("testserver", 80),
